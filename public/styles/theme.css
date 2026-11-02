@@ -1,0 +1,87 @@
+/* Senlay canonical design tokens — single source of truth.
+   Values match what dark-map-override.css currently forces sitewide (its
+   first, fully-!important :root block), extracted here as the real system
+   instead of a patch. Uses !important during the migration so it still wins
+   regardless of load order relative to the legacy stylesheets it is
+   replacing (style.css, landing.css, public-rebuild.css, investor*.css);
+   drop !important once dark-map-override.css's own :root overrides are
+   fully retired (see plan Phase 6/7). Link this AFTER a page's base
+   stylesheet and BEFORE dark-map-override.css. */
+:root {
+  /* Canonical concept tokens */
+  --bg: #07111f !important;
+  --bg2: #081726 !important;
+  --surface: rgba(10, 24, 40, 0.66) !important;
+  --surface2: rgba(15, 35, 54, 0.72) !important;
+  --surface3: rgba(4, 11, 20, 0.76) !important;
+  --border: rgba(120, 220, 190, 0.18) !important;
+  --border2: rgba(120, 220, 190, 0.28) !important;
+  --primary: #18d39a !important;
+  --primary-hover: #59f0bf !important;
+  --primary-soft: rgba(24, 211, 154, 0.12) !important;
+  --primary-glow: rgba(24, 211, 154, 0.25) !important;
+  --text: #f1f7f4 !important;
+  --text2: #a5b8c4 !important;
+  --text3: #6f8796 !important;
+  --danger: #ff6f61 !important;
+  --code: #9bddff !important;
+  --r: 8px !important;
+  --radius: 8px !important;
+  --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.24);
+  --shadow-hover: 0 30px 90px rgba(0, 0, 0, 0.30);
+  color-scheme: dark;
+
+  /* Extended palette (referenced by name across pages) */
+  --blue: #55b7ff !important;
+  --cyan: #18d39a !important;
+  --teal: #59f0bf !important;
+  --coral: #ff6f61 !important;
+  --amber: #ffd36a !important;
+  --warm: #ffd36a !important;
+  --red: #ff6f61 !important;
+  --yellow: #ffd36a !important;
+  --green: #18d39a !important;
+  --white: #ffffff !important;
+  --g100: #cde0dc !important;
+  --g200: #a5b8c4 !important;
+  --g300: rgba(165, 184, 196, 0.28) !important;
+  --essay-text: #cde0dc !important;
+
+  /* Legacy name aliases — kept so unmigrated pages/files resolve correctly
+     via var() until each is moved onto the canonical names above. */
+  --paper: var(--bg) !important;
+  --paper-2: var(--bg2) !important;
+  --glass: var(--surface) !important;
+  --line: var(--border) !important;
+  --accent: var(--primary) !important;
+  --accent-dim: rgba(24, 211, 154, 0.13) !important;
+  --ink: var(--text) !important;
+  --foam: var(--text) !important;
+  --muted: var(--text2) !important;
+}
+
+/* Shared tabs / progressive-disclosure components (ported structural
+   pattern from the old SmartSurf water-app dashboard: a tab nav plus one
+   visible panel at a time, driven by public/scripts/tabs.js). */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.tab-button {
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text2);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.tab-button:hover { color: var(--text); }
+.tab-button.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }

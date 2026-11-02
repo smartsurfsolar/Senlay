@@ -27,3 +27,6 @@ build/
 
 .vercel/
 .netlify/
+
+# Reviewed source-only robotics example distribution
+!public/downloads/senlay-robotics-v0.1.0.zip

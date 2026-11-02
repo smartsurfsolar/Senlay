@@ -1,0 +1,98 @@
+{
+  "name": "senlay-robotics-v0.1.0",
+  "version": "0.1.0",
+  "license": "MIT (scoped to enumerated example bundle)",
+  "sourceIdentity": {
+    "algorithm": "sha256",
+    "value": "88bd2fff932e5aa579dec52441243bf2b62886dd90ebcbb22e59f419a6883bc6",
+    "basis": "sorted bundle path + NUL + file SHA-256 + LF; independent of private backend/repository history"
+  },
+  "runtime": "Node.js 22; no npm install",
+  "replay": "node examples/robotics/robotics-context.mjs --transport replay",
+  "networkInReplay": "none; injected synthetic fetch",
+  "files": [
+    {
+      "path": "examples/robotics/LICENSE",
+      "source": "examples/robotics/LICENSE",
+      "bytes": 1526,
+      "sha256": "ed9e43ee00f09eff26fdb1d2c8ba61d3a92113e02496347f9f50ed03298765ef"
+    },
+    {
+      "path": "examples/robotics/README.md",
+      "source": "examples/robotics/README.md",
+      "bytes": 6934,
+      "sha256": "56d049389716f59797b71d30e673d13d57f68d44e40b30e0a38d79855b64879d"
+    },
+    {
+      "path": "examples/robotics/replay.mjs",
+      "source": "examples/robotics/replay.mjs",
+      "bytes": 2675,
+      "sha256": "bc795a58653930fbdf140046cf6d936d5d8b1b5d291e697128b2e538ac4cd804"
+    },
+    {
+      "path": "examples/robotics/robotics-context.mjs",
+      "source": "examples/robotics/robotics-context.mjs",
+      "bytes": 5811,
+      "sha256": "55c0b312c14919b4b8234c2dc3a45e644b6ac39d539261a35b291bef5d88e17d"
+    },
+    {
+      "path": "LICENSE",
+      "source": "examples/robotics/LICENSE",
+      "bytes": 1526,
+      "sha256": "ed9e43ee00f09eff26fdb1d2c8ba61d3a92113e02496347f9f50ed03298765ef"
+    },
+    {
+      "path": "README.md",
+      "source": "examples/robotics/README.md",
+      "bytes": 6934,
+      "sha256": "56d049389716f59797b71d30e673d13d57f68d44e40b30e0a38d79855b64879d"
+    },
+    {
+      "path": "sdk/client.mjs",
+      "source": "sdk/client.mjs",
+      "bytes": 9774,
+      "sha256": "7fda946c54abed01ab34375a2d4c35f88af38ea17471dbcc4e9ba1036d85dcf0"
+    },
+    {
+      "path": "sdk/fixtures/mavlink-reference.json",
+      "source": "sdk/fixtures/mavlink-reference.json",
+      "bytes": 1567,
+      "sha256": "864957d4041114cd9c0ed0007631d83e7d13e6a2894c2abbac6826c4ee7eb6fd"
+    },
+    {
+      "path": "sdk/fixtures/README.md",
+      "source": "sdk/fixtures/README.md",
+      "bytes": 1209,
+      "sha256": "2358d19760707a95451db860d9a99cd9a2084724ac434020e251a981f8609271"
+    },
+    {
+      "path": "sdk/fixtures/reference-generator.c",
+      "source": "sdk/fixtures/reference-generator.c",
+      "bytes": 1332,
+      "sha256": "8a6369361276a3e3eae152fb477011b5024ccdc213f451fb8d2e2dbc53cb8c11"
+    },
+    {
+      "path": "sdk/robotics-adapters.mjs",
+      "source": "sdk/robotics-adapters.mjs",
+      "bytes": 19104,
+      "sha256": "175406cb73eb24d257d3b7ac10970c63427be5efc49d6efb9fd74a48cd98ab91"
+    },
+    {
+      "path": "sdk/schemas/provider-capability-v1.schema.json",
+      "source": "sdk/schemas/provider-capability-v1.schema.json",
+      "bytes": 5224,
+      "sha256": "d7bf8a0971bd4eb0548a61e67623cb71d2ec882dca10a92dbea4d2ec706d69ab"
+    },
+    {
+      "path": "test/robotics-adapters.test.mjs",
+      "source": "test/robotics-adapters.test.mjs",
+      "bytes": 13671,
+      "sha256": "9929dcf86188b0739a4d55b7034903162d536bba7373b4ebee592efa2a024baa"
+    }
+  ],
+  "archive": {
+    "path": "/downloads/senlay-robotics-v0.1.0.zip",
+    "bytes": 83032,
+    "sha256": "ed045c16b17a65aa1210307ea6bd3332a562a5bff9390d9d849a5a330626bbfd"
+  }
+}

@@ -233,7 +233,8 @@ body {
   border-radius: 6px; color: var(--text); font-size: 13px; cursor: pointer; }
 
 .city-search { display: flex; gap: 6px; margin-bottom: 8px; }
-.city-search input { flex: 1; }
+.city-search input { flex: 1; min-width: 0; }
+.city-search .btn-sm { width: auto; flex: 0 0 auto; }
 
 .search-results {
   display: grid;
@@ -554,13 +555,28 @@ body {
     radial-gradient(circle at 50% 50%, rgba(24,211,154,0.12), transparent 34%),
     linear-gradient(rgba(46,117,182,0.10) 1px, transparent 1px),
     linear-gradient(90deg, rgba(46,117,182,0.10) 1px, transparent 1px),
-    #eaf2f5;
+    #102433;
   background-size: auto, 32px 32px, 32px 32px;
 }
 .layer-map-fallback strong {
   color: var(--text);
   font-size: 13px;
 }
+.layer-map-fallback small { color: #c6d9e5; }
+.layer-map-fallback p { max-width: 260px; margin: 0; color: #c6d9e5; font-size: 12px; }
+.demo-request-status { margin: 8px 0; color: var(--text2); font-size: 13px; }
+.demo-request-status button { margin: 6px 6px 0 0; padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; color: var(--text); background: var(--surface); }
+.evidence-first { padding: 14px; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; margin-bottom: 12px; }
+.evidence-first h3 { margin: 0 0 8px; font-size: 15px; }
+.evidence-first p { margin: 5px 0; font-size: 13px; line-height: 1.5; }
+.evidence-first dl { display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 7px; font-size: 12px; margin: 10px 0; }
+.evidence-first dt { color: var(--text2); }
+.evidence-first dd { margin: 0; overflow-wrap: anywhere; }
+.demo-boundary { border-left: 3px solid var(--accent); padding-left: 10px; color: var(--text2); }
+.explanation-options select { width: 100%; margin-top: 6px; padding: 8px; border-radius: 6px; }
+.demo-map-details > summary { padding: 10px 14px; cursor: pointer; color: var(--text2); font-size: 13px; }
+.sensor-panel > .evidence-first { margin: 12px; }
+.sensor-panel { min-width: 0; }
 .layer-map-target {
   position: absolute;
   width: 96px;
@@ -933,3 +949,9 @@ input, textarea, select {
   color: var(--text) !important;
   border-color: var(--border) !important;
 }
+
+@media(max-width:600px){.guide-steps{grid-template-columns:1fr 1fr}.guide-step{padding:10px}.guide-step small{font-size:11px}.explanation-options{font-size:13px}.evidence-first dl{grid-template-columns:78px minmax(0,1fr)}}
+
+/* Keep source evidence before optional explanation in reading order. */
+.main-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+@media(max-width:900px){.main-grid{grid-template-columns:1fr}.sensor-panel{min-height:0}.sensor-feed{max-height:380px}.chat-panel{min-height:420px}}

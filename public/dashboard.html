@@ -6,10 +6,11 @@
   <title>Senlay Developer Dashboard - Verification Keys and Sandbox</title>
   <meta name="robots" content="noindex,nofollow">
   <meta name="description" content="Manage Senlay verification API keys, BYOK model keys, sandbox testing, source evidence, and SmartSurf-style risk-aware workflows.">
-  <meta name="product-system" content="Senlay is the spot-level verification engine behind SmartSurf water-sports safety and outdoor/indie developer workflows.">
+  <meta name="product-system" content="Senlay is a physical-world intelligence infrastructure beta for autonomous systems, robotics and AI applications, providing available environmental context with source provenance and uncertainty.">
   <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
   <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
   <link rel="stylesheet" href="/styles/landing.css?v=4">
+  <link rel="stylesheet" href="/styles/theme.css?v=1">
   <style>
     .dash-container { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
     .dash-title { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
@@ -94,44 +95,13 @@
     .waitlist-row input { flex: 1; }
     .hidden { display: none !important; }
   </style>
-<link rel="stylesheet" href="/styles/dark-map-override.css?v=20260516-0536"></head>
+<link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness"></head>
 <body>
-    <header class="header">
-    <div class="header-inner">
-      <div class="logo-area">
-        <a href="/" class="logo-link" aria-label="Senlay home"><span class="logo-wordmark">SENLAY</span></a>
-      </div>
-      <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
-      <nav class="nav">
-        <a href="/">Home</a>
-        <details class="nav-menu">
-          <summary>Product</summary>
-          <div class="nav-menu-panel">
-            <a href="/demo">Demo</a>
-            <a href="/agents">For Agents</a>
-            <a href="https://smartsurf.cloud/">SmartSurf</a>
-            <a href="/network.html">Network</a>
-            <a href="/docs.html">Docs</a>
-          </div>
-        </details>
-        <a href="/pricing.html">Pricing</a>
-        <details class="nav-menu">
-          <summary>Company</summary>
-          <div class="nav-menu-panel">
-            <a href="/founder.html">Founder</a>
-            <a href="/roadmap.html">Roadmap</a>
-            <a href="/support.html">Contact</a>
-          </div>
-        </details>
-        <a href="/login.html">Sign In</a>
-        <a href="/pricing.html" class="nav-cta">Start Free API</a>
-      </nav>
-    </div>
-  </header>
+  <!-- SENLAY_HEADER:app -->
 
   <main class="dash-container">
     <h1 class="dash-title">Developer Dashboard</h1>
-    <p class="dash-sub">Manage verification API keys, test what your agent receives from the Physical World Model, and inspect the evidence layer behind SmartSurf-style safety workflows.</p>
+    <p class="dash-sub">Manage environmental API keys and account usage, then inspect available source provenance, freshness, model comparisons and unknowns for a coordinate.</p>
 
     <div id="alertBox" role="status" aria-live="polite"></div>
 
@@ -154,101 +124,18 @@
     <div id="dashSection" class="hidden">
       <div class="account-row"><div id="welcomeMsg" style="font-size:15px;color:var(--text2)"></div><div><button id="adminConsoleButton" class="btn-secondary hidden" type="button" onclick="openAdminConsole()">Admin Console</button> <button class="btn-secondary" type="button" onclick="logout()">Sign Out</button></div></div>
 
-      <div class="dash-card">
-        <h3>Account Security</h3>
-        <div class="form-group"><label for="currentPassword">Current password</label><input id="currentPassword" type="password" autocomplete="current-password"></div>
-        <div class="form-group"><label for="newPassword">New password (12+ characters)</label><input id="newPassword" type="password" minlength="12" autocomplete="new-password"></div>
-        <div class="form-group"><label for="confirmPassword">Confirm new password</label><input id="confirmPassword" type="password" minlength="12" autocomplete="new-password"></div>
-        <button class="btn-primary" type="button" onclick="changePassword()">Change Password</button>
-      </div>
 
-      <div class="dash-card">
-        <h3>Your API Keys</h3>
-        <table class="dash-table">
-          <thead><tr><th>Key</th><th>Name</th><th>Tier</th><th>Requests</th><th>Status</th></tr></thead>
-          <tbody id="keysTable"></tbody>
-        </table>
-        <p class="llm-note">Full API keys are shown once, when created. This dashboard keeps only masked previews; create a replacement if a key is lost.</p>
-        <div id="createdKeyNotice" class="one-time-key hidden" role="status" aria-live="polite"></div>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <label class="sr-only" for="newKeyName">New API key name</label>
-          <input type="text" id="newKeyName" placeholder="Key name (optional)" style="flex:1;padding:8px 12px;background:#0F172A;border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
-          <button class="btn-primary" type="button" style="padding:8px 16px;font-size:13px" onclick="generateKey()">+ New Key</button>
-        </div>
-      </div>
+      <nav class="tabs" aria-label="Dashboard sections">
+        <button class="tab-button active" type="button" data-tab="overview">Overview</button>
+        <button class="tab-button" type="button" data-tab="account" id="accountTabButton">Account</button>
+        <button class="tab-button" type="button" data-tab="network">Network</button>
+      </nav>
 
-      <div class="dash-card">
-        <h3>Open Network Stations</h3>
-        <p class="network-note">Register hardware that contributes signed, direct observations to Senlay. Your account session manages providers and stations; each station receives a separate secret that must be saved once and used only for signing.</p>
-        <div class="network-grid">
-          <div>
-            <div class="form-group"><label for="providerName">Provider / network name</label><input id="providerName" type="text" placeholder="My community network"></div>
-            <div class="form-group"><label for="providerSlug">Network slug (optional)</label><input id="providerSlug" type="text" placeholder="my-community-network"></div>
-            <button class="btn-primary" type="button" onclick="createProvider()">Create Provider</button>
-          </div>
-          <div>
-            <div class="form-group"><label for="stationProvider">Provider</label><select id="stationProvider"></select></div>
-            <div class="form-group"><label for="stationName">Station name</label><input id="stationName" type="text" placeholder="Beach wind station"></div>
-            <div class="form-group"><label for="stationType">Sensor type</label><input id="stationType" type="text" value="weather_station"></div>
-            <div class="network-grid"><div class="form-group"><label for="stationLat">Latitude</label><input id="stationLat" type="number" min="-90" max="90" step="0.000001" placeholder="15.8801"></div><div class="form-group"><label for="stationLng">Longitude</label><input id="stationLng" type="number" min="-180" max="180" step="0.000001" placeholder="108.3380"></div></div>
-            <button class="btn-primary" type="button" onclick="registerStation()">Register Station</button>
-          </div>
-        </div>
-        <div id="stationCredentialNotice" class="one-time-key hidden" role="status" aria-live="polite"></div>
-        <table class="dash-table"><thead><tr><th>Station</th><th>Provider</th><th>Location</th><th>Last data</th><th>Credential</th><th>Actions</th></tr></thead><tbody id="stationsTable"></tbody></table>
-        <section id="stationDiagnostics" class="station-diagnostics hidden" aria-live="polite"></section>
-      </div>
-
-      <div class="dash-card">
-        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px">
-          <h3 style="margin-bottom:0">AI Model Keys</h3>
-          <span id="llmStatus" class="llm-status locked">Pro BYOK</span>
-        </div>
-        <p class="llm-note">Paid users can store their own Anthropic, OpenAI, OpenRouter, or OpenAI-compatible model key and use Senlay directly inside the platform. Keys are encrypted server-side and never shown again after saving.</p>
-        <div id="llmAccessNote" class="alert alert-err hidden"></div>
-        <table class="dash-table">
-          <thead><tr><th>Provider</th><th>Model</th><th>Key</th><th>Default</th><th>Actions</th></tr></thead>
-          <tbody id="llmKeysTable"></tbody>
-        </table>
-        <div id="llmFormWrap">
-          <div class="llm-grid">
-            <div class="form-group">
-              <label for="llmProvider">Provider</label>
-              <select id="llmProvider" onchange="updateLlmProviderForm()">
-                <option value="anthropic">Anthropic Claude</option>
-                <option value="openai">OpenAI</option>
-                <option value="openrouter">OpenRouter</option>
-                <option value="openai-compatible">OpenAI-compatible</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="llmLabel">Label</label>
-              <input type="text" id="llmLabel" placeholder="e.g. Viktor Claude Pro">
-            </div>
-            <div class="form-group">
-              <label for="llmModel">Model</label>
-              <input type="text" id="llmModel" placeholder="claude-sonnet-4-20250514">
-            </div>
-            <div id="llmBaseUrlGroup" class="form-group hidden">
-              <label for="llmBaseUrl">Base URL</label>
-              <input type="text" id="llmBaseUrl" placeholder="https://openrouter.ai/api/v1">
-            </div>
-            <div class="form-group span-2">
-              <label for="llmApiKey">Provider API Key</label>
-              <input type="password" id="llmApiKey" placeholder="Paste provider key">
-            </div>
-            <label class="span-2" style="display:flex;align-items:center;gap:8px;color:var(--text2);font-size:13px">
-              <input type="checkbox" id="llmDefault" checked style="width:auto;accent-color:var(--primary)">
-              Use as default model key in Senlay Demo
-            </label>
-          </div>
-          <button class="btn-primary" type="button" style="padding:10px 18px;font-size:13px;margin-top:8px" onclick="saveLlmKey()">Save Model Key</button>
-        </div>
-      </div>
-
+      <section class="tab-panel active" data-panel="overview">
       <div class="dash-card">
         <h3>PWM Sandbox &mdash; What your agent receives</h3>
         <p style="font-size:13px;color:var(--text2);margin-bottom:12px">See exactly what your agent will receive: source evidence, freshness, confidence, context_string, and structured physical-world data. Pick a preset or enter coordinates.</p>
+        <div class="form-group" style="max-width:360px"><label for="sandboxField">Evidence profile</label><select id="sandboxField"><option value="drone">Drone / UAV — wind profile</option><option value="general">General environmental context</option></select></div>
         <div class="preset-row">
           <span class="preset-label">Presets:</span>
           <button class="preset-btn" type="button" onclick="fillPreset(36.01,-5.60,'Tarifa, Spain')">Tarifa</button>
@@ -280,92 +167,119 @@
         </div>
         <div id="waitlistMsg" role="status" aria-live="polite" style="margin-top:8px;font-size:13px"></div>
       </div>
+      </section>
+
+      <section class="tab-panel" data-panel="account" id="account">
+      <div class="dash-card">
+        <h3>Account Security</h3>
+        <div class="form-group"><label for="currentPassword">Current password</label><input id="currentPassword" type="password" autocomplete="current-password"></div>
+        <div class="form-group"><label for="newPassword">New password (12+ characters)</label><input id="newPassword" type="password" minlength="12" autocomplete="new-password"></div>
+        <div class="form-group"><label for="confirmPassword">Confirm new password</label><input id="confirmPassword" type="password" minlength="12" autocomplete="new-password"></div>
+        <button class="btn-primary" type="button" onclick="changePassword()">Change Password</button>
+      </div>
+
+      <div class="dash-card">
+        <h3>Your API Keys</h3>
+        <table class="dash-table">
+          <thead><tr><th>Key</th><th>Name</th><th>Tier</th><th>Requests</th><th>Status</th></tr></thead>
+          <tbody id="keysTable"></tbody>
+        </table>
+        <p class="llm-note">Full API keys are shown once, when created. This dashboard keeps only masked previews; create a replacement if a key is lost.</p>
+        <div id="createdKeyNotice" class="one-time-key hidden" role="status" aria-live="polite"></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <label class="sr-only" for="newKeyName">New API key name</label>
+          <input type="text" id="newKeyName" placeholder="Key name (optional)" style="flex:1;padding:8px 12px;background:#0F172A;border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
+          <button class="btn-primary" type="button" style="padding:8px 16px;font-size:13px" onclick="generateKey()">+ New Key</button>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px">
+          <h3 style="margin-bottom:0">AI Model Keys</h3>
+          <span id="llmStatus" class="llm-status locked">Pro BYOK</span>
+        </div>
+        <p class="llm-note">Eligible accounts can store their own Anthropic, OpenAI, OpenRouter, or OpenAI-compatible model key and use Senlay directly inside the platform. Keys are encrypted server-side and never shown again after saving.</p>
+        <div id="llmAccessNote" class="alert alert-err hidden"></div>
+        <table class="dash-table">
+          <thead><tr><th>Provider</th><th>Model</th><th>Key</th><th>Default</th><th>Actions</th></tr></thead>
+          <tbody id="llmKeysTable"></tbody>
+        </table>
+        <div id="llmFormWrap">
+          <div class="llm-grid">
+            <div class="form-group">
+              <label for="llmProvider">Provider</label>
+              <select id="llmProvider" onchange="updateLlmProviderForm()">
+                <option value="anthropic">Anthropic Claude</option>
+                <option value="openai" selected>OpenAI</option>
+                <option value="openrouter">OpenRouter</option>
+                <option value="openai-compatible">OpenAI-compatible</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="llmLabel">Label</label>
+              <input type="text" id="llmLabel" placeholder="e.g. Viktor Claude Pro">
+            </div>
+            <div class="form-group">
+              <label for="llmModel">Model</label>
+              <input type="text" id="llmModel" placeholder="gpt-6.1-sol">
+            </div>
+            <div id="llmBaseUrlGroup" class="form-group hidden">
+              <label for="llmBaseUrl">Base URL</label>
+              <input type="text" id="llmBaseUrl" placeholder="https://openrouter.ai/api/v1">
+            </div>
+            <div class="form-group span-2">
+              <label for="llmApiKey">Provider API Key</label>
+              <input type="password" id="llmApiKey" placeholder="Paste provider key">
+            </div>
+            <label class="span-2" style="display:flex;align-items:center;gap:8px;color:var(--text2);font-size:13px">
+              <input type="checkbox" id="llmDefault" checked style="width:auto;accent-color:var(--primary)">
+              Use as default model key in Senlay Demo
+            </label>
+          </div>
+          <button class="btn-primary" type="button" style="padding:10px 18px;font-size:13px;margin-top:8px" onclick="saveLlmKey()">Save Model Key</button>
+        </div>
+      </div>
+      </section>
+
+      <section class="tab-panel" data-panel="network">
+      <div class="dash-card">
+        <h3>Open Network Stations</h3>
+        <p class="network-note">Register hardware that contributes signed, direct observations to Senlay. Your account session manages providers and stations; each station receives a separate secret that must be saved once and used only for signing.</p>
+        <div class="network-grid">
+          <div>
+            <div class="form-group"><label for="providerName">Provider / network name</label><input id="providerName" type="text" placeholder="My community network"></div>
+            <div class="form-group"><label for="providerSlug">Network slug (optional)</label><input id="providerSlug" type="text" placeholder="my-community-network"></div>
+            <button class="btn-primary" type="button" onclick="createProvider()">Create Provider</button>
+          </div>
+          <div>
+            <div class="form-group"><label for="stationProvider">Provider</label><select id="stationProvider"></select></div>
+            <div class="form-group"><label for="stationName">Station name</label><input id="stationName" type="text" placeholder="Beach wind station"></div>
+            <div class="form-group"><label for="stationType">Sensor type</label><input id="stationType" type="text" value="weather_station"></div>
+            <div class="network-grid"><div class="form-group"><label for="stationLat">Latitude</label><input id="stationLat" type="number" min="-90" max="90" step="0.000001" placeholder="15.8801"></div><div class="form-group"><label for="stationLng">Longitude</label><input id="stationLng" type="number" min="-180" max="180" step="0.000001" placeholder="108.3380"></div></div>
+            <button class="btn-primary" type="button" onclick="registerStation()">Register Station</button>
+          </div>
+        </div>
+        <div id="stationCredentialNotice" class="one-time-key hidden" role="status" aria-live="polite"></div>
+        <table class="dash-table"><thead><tr><th>Station</th><th>Provider</th><th>Location</th><th>Last data</th><th>Credential</th><th>Actions</th></tr></thead><tbody id="stationsTable"></tbody></table>
+        <section id="stationDiagnostics" class="station-diagnostics hidden" aria-live="polite"></section>
+      </div>
+      </section>
     </div>
     <p class="dash-link"><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
   </main>
 
-  <footer class="senlay-unified-footer" aria-label="Senlay site footer">
+  <footer data-senlay-footer="shared" class="senlay-unified-footer" aria-label="Senlay site footer">
   <div class="senlay-footer-shell">
-    <div class="senlay-footer-lead">
-      <div>
-        <a class="senlay-footer-brand" href="/">SENLAY</a>
-        <p>A reciprocal verification network. Contribute a sensor and receive verified reasoning across the whole network; consume without contributing and pay.</p>
-      </div>
-      <div class="senlay-footer-cta">
-        <a href="https://smartsurf.cloud/">Explore SmartSurf</a>
-        <a href="/demo">Try Live Demo</a>
-        <a href="/docs.html">Read Docs</a>
-      </div>
-    </div>
-
+    <div class="senlay-footer-lead"><div><a class="senlay-footer-brand" href="/">SENLAY</a><p>Physical-world intelligence for autonomous systems and AI applications. Coverage and quality vary by place and source availability.</p></div><div class="senlay-footer-cta"><a href="/robotics/">Robotics overview</a><a href="/docs.html">Explore API docs</a><a href="/support.html?topic=robotics">Discuss an integration</a></div></div>
     <div class="senlay-footer-grid">
-      <div class="senlay-footer-col">
-        <h4>Senlay Product</h4>
-        <a href="/">Home</a>
-        <a href="/demo">Live verification demo</a>
-        <a href="/agents">For outdoor agents</a>
-        <a href="/pricing.html">Pricing</a>
-        <a href="/roadmap.html">Roadmap</a>
-        <a href="/live-agent.html">Live agent page</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Build</h4>
-        <a href="/docs.html">API docs</a>
-        <a href="/docs.html#verification-glossary">Verification glossary</a>
-        <a href="/openapi.json">OpenAPI JSON</a>
-        <a href="/openapi.yaml">OpenAPI YAML</a>
-        <a href="/llms.txt">llms.txt</a>
-        <a href="/llms-full.txt">llms-full.txt</a>
-        <a href="/agent-manifest.json">Agent manifest</a>
-        <a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a>        <a href="/dashboard.html">Developer dashboard</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Verification Terms</h4>
-        <a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a>
-        <a href="/docs.html#term-source-provenance">Source provenance</a>
-        <a href="/docs.html#term-freshness">Freshness</a>
-        <a href="/docs.html#term-confidence">Confidence</a>
-        <a href="/docs.html#term-uncertainty">Uncertainty</a>
-        <a href="/docs.html#term-model-vs-reality">Model-vs-reality check</a>
-        <a href="/docs.html#term-risk-event">risk_event</a>
-        <a href="/docs.html#term-decision-support">Decision-support boundary</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>SmartSurf</h4>
-        <a href="https://smartsurf.cloud/">SmartSurf landing</a>
-        <a href="https://smartsurf.cloud/#schools">School safety workflow</a>
-        <a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a>
-        <a href="https://smartsurf.cloud/#shop">Tracker hardware</a>
-        <a href="https://smartsurf.cloud/#pricing">SmartSurf pricing</a>
-        <a href="https://app.smartsurf.global/">Open rider app</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Company</h4>
-        <a href="/founder.html">Founder story</a>
-        <a href="/investors.html">Investor brief</a>
-        <a href="/investors/deck">Investor deck</a>
-        <a href="/support.html">Contact / pilots</a>
-        <a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a>
-        <a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-      </div>
-      <div class="senlay-footer-col senlay-footer-sources">
-        <h4>Source Networks</h4>
-        <p>Coverage depends on coordinate, freshness, and upstream availability.</p>
-        <a href="/sensor-catalog.json">Sensor catalog JSON</a>
-        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
-        <a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a>
-        <a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a>
-        <a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a>
-        <a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a>
-        <a href="https://dataspace.copernicus.eu/" target="_blank" rel="noopener noreferrer">Copernicus</a>
-        <a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a>
-      </div>
+      <div class="senlay-footer-col"><h4>Senlay</h4><a href="/">Overview</a><a href="/robotics/">Robotics &amp; autonomous systems</a><a href="/demo">Live demo</a><a href="/agents">For AI agents</a><a href="/pricing.html">Pricing</a><a href="/roadmap.html">Roadmap</a></div>
+      <div class="senlay-footer-col"><h4>Build</h4><a href="/docs.html">API docs</a><a href="/openapi.json">OpenAPI JSON</a><a href="/openapi.yaml">OpenAPI YAML</a><a href="/llms.txt">llms.txt</a><a href="/agent-manifest.json">Agent manifest</a><a href="/dashboard.html">Developer dashboard</a><a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+      <div class="senlay-footer-col"><h4>Evidence model</h4><a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a><a href="/docs.html#term-source-provenance">Source provenance</a><a href="/docs.html#term-freshness">Freshness</a><a href="/docs.html#term-confidence">Confidence</a><a href="/docs.html#term-uncertainty">Uncertainty</a><a href="/docs.html#term-model-vs-reality">Forecast and observation checks</a><a href="/docs.html#term-risk-event">risk_event</a></div>
+      <div class="senlay-footer-col"><h4>SmartSurf</h4><a href="https://smartsurf.cloud/">SmartSurf landing</a><a href="https://smartsurf.cloud/#schools">School workflows</a><a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a><a href="https://app.smartsurf.cloud/">Open rider app</a></div>
+      <div class="senlay-footer-col"><h4>Company</h4><a href="/founder.html">Founder story</a><a href="/investors.html">Investor brief</a><a href="/support.html">Contact / pilots</a><a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a><a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+      <div class="senlay-footer-col senlay-footer-sources"><h4>Source networks</h4><p>Coverage depends on coordinate, freshness, licensing, and upstream availability.</p><a href="/sensor-catalog.json">Sensor catalog JSON</a><a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a><a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a><a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a><a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a><a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a></div>
     </div>
-
-    <div class="senlay-footer-bottom">
-      <span>&copy; 2026 Senlay. Built in Vietnam. Decision support only, not final safety authority.</span>
-      <span><a href="/login.html">Sign in</a> <a href="/register.html">Create free API key</a> <a href="/support.html">Pilot contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span>
-    </div>
+    <div class="senlay-footer-bottom"><span>&copy; 2026 Senlay. Decision support only. Operators and onboard safety systems retain authority.</span><span><a href="/login.html">Sign in</a> <a href="/register.html">Create API key</a> <a href="/support.html">Contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span></div>
   </div>
 </footer>
 
@@ -373,6 +287,8 @@
     let currentUser = null;
     let sessionToken = '';
     let sandboxData = null;
+    let sandboxRequestId = 0;
+    let sandboxInFlight = false;
     let networkStationsCache = [];
 
     function showAlert(msg, type) {
@@ -797,7 +713,7 @@
         model.placeholder = provider === 'anthropic'
           ? 'claude-sonnet-4-20250514'
           : provider === 'openai'
-            ? 'gpt-4o'
+            ? 'gpt-6.1-sol'
             : provider === 'openrouter'
               ? 'openai/gpt-4o'
               : 'openrouter/auto or provider model id';
@@ -899,6 +815,7 @@
     }
 
     async function fetchSandbox() {
+      if (sandboxInFlight) return;
       const lat = Number(document.getElementById('sandboxLat').value);
       const lng = Number(document.getElementById('sandboxLng').value);
       if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
@@ -909,25 +826,36 @@
 
       const resultEl = document.getElementById('sandboxResult');
       const metaEl = document.getElementById('sandboxMeta');
+      const fetchButton = document.querySelector('[onclick="fetchSandbox()"]');
+      const field = document.getElementById('sandboxField').value;
       resultEl.classList.remove('hidden');
-      resultEl.textContent = 'Fetching Physical World Model...';
+      resultEl.textContent = 'Loading environmental evidence…';
       metaEl.classList.add('hidden');
+      sandboxData = null;
+      sandboxInFlight = true;
+      const requestId = ++sandboxRequestId;
+      if (fetchButton) { fetchButton.disabled = true; fetchButton.textContent = 'Loading…'; }
 
       const start = Date.now();
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
       try {
-        const params = new URLSearchParams({ lat: String(lat), lng: String(lng) });
-        const res = await fetch(`/api/v1/pwm?${params}`, { headers: { Authorization: `Bearer ${sessionToken}` } });
-        const data = await res.json();
+        const params = new URLSearchParams({ lat: String(lat), lng: String(lng), field });
+        if (field === 'drone') params.set('profile', 'wind');
+        const res = await fetch(`/api/v1/pwm?${params}`, { headers: { Authorization: `Bearer ${sessionToken}` }, signal: controller.signal });
+        const data = await res.json().catch(() => ({}));
+        if (requestId !== sandboxRequestId) return;
+        if (!res.ok || data.error) {
+          const retry = data.retry_after_seconds || Number(res.headers.get('retry-after')) || null;
+          throw new Error(`${data.error || `Request failed (HTTP ${res.status}).`}${retry ? ` Retry in about ${retry}s.` : ''}`);
+        }
         const elapsed = Date.now() - start;
         sandboxData = data;
+        const outcome = data.risk_assessment?.outcome || 'not provided';
+        resultEl.textContent = `${data.context_string ? `${data.context_string}\n\n` : ''}Structured response:\n${JSON.stringify(data, null, 2)}`;
 
-        if (data.context_string) {
-          resultEl.textContent = data.context_string;
-        } else {
-          resultEl.textContent = JSON.stringify(data, null, 2);
-        }
-
-        const metaItems = [`Latency: ${elapsed}ms`, `Sources: ${data.active_sources ?? '?'}`];
+        const profile = field === 'drone' ? 'drone wind profile' : 'general';
+        const metaItems = [`Request: ${lat}, ${lng} · ${profile}`, `Received: ${new Date().toLocaleString()}`, `Outcome: ${outcome}`, `Latency: ${elapsed}ms`, `Sources: ${data.active_sources ?? '?'}`];
         if (data.health) {
           const ok = data.health.filter(h => h.has_data).length;
           const total = data.health.length;
@@ -940,7 +868,16 @@
         }));
         metaEl.classList.remove('hidden');
       } catch (e) {
-        resultEl.textContent = 'Error: ' + e.message;
+        if (requestId === sandboxRequestId) {
+          sandboxData = null;
+          resultEl.textContent = `Evidence request failed: ${e.name === 'AbortError' ? 'timed out after 30 seconds' : e.message}`;
+        }
+      } finally {
+        clearTimeout(timeout);
+        if (requestId === sandboxRequestId) {
+          sandboxInFlight = false;
+          if (fetchButton) { fetchButton.disabled = false; fetchButton.textContent = 'Fetch PWM'; }
+        }
       }
     }
 
@@ -1025,5 +962,15 @@
     updateGoogleAuthUi();
   </script>
   <script src="/scripts/header-menu.js"></script>
+  <script src="/scripts/app-nav.js"></script>
+  <script src="/scripts/tabs.js"></script>
+  <script>
+    if (location.hash === '#account') {
+      window.addEventListener('load', () => {
+        const nav = document.querySelector('nav.tabs');
+        if (nav && window.SenlayTabs) window.SenlayTabs.activate(nav, 'account');
+      });
+    }
+  </script>
 </body>
 </html>

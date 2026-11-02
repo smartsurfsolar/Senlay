@@ -79,8 +79,7 @@ body::before {
   background:
     linear-gradient(180deg, rgba(7, 17, 31, 0.48), rgba(7, 17, 31, 0.94)),
     radial-gradient(ellipse 100% 50% at 15% 0%, rgba(24, 211, 154, 0.10), transparent 55%),
-    radial-gradient(ellipse 70% 45% at 85% 100%, rgba(85, 183, 255, 0.08), transparent 45%),
-    url("https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74192/world.200412.3x5400x2700.jpg");
+    radial-gradient(ellipse 70% 45% at 85% 100%, rgba(85, 183, 255, 0.08), transparent 45%);
   background-size: cover;
   background-position: center;
   filter: saturate(1.06) contrast(1.05);
@@ -977,7 +976,7 @@ select:focus {
   border-radius: 50%;
   background:
     linear-gradient(180deg, rgba(7, 17, 31, 0.05), rgba(7, 17, 31, 0.40)),
-    url("https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74192/world.200412.3x5400x2700.jpg");
+    radial-gradient(circle at 40% 35%, #28615e, #102433 65%);
   background-size: 210% 105%;
   background-position: 48% 50%;
   box-shadow:
@@ -3339,4 +3338,46 @@ textarea:focus {
   .section,.investor-section,.pricing-section,.roadmap-section,.support-section,.demo-section,.agents-section,.moltbook-section,.connect-section,.essay-section,.sensor-section,.cta-section,.proof-section,.source-section,.smart-section{padding-top:42px!important;padding-bottom:42px!important;}
   .card,.panel,.investor-card,.demo-card,.source-card,.feature-card,.proof-card,.api-card,.price-card,.plan-card,.dash-card,.moltbook-card,.ritual-card,.agent-rules,.agent-prompt,.live-pulse{padding:18px!important;}
   .spot-map-media{min-height:0!important;}
+}
+
+/* The header/nav "display: ... !important" rules above (e.g. ".header .nav
+   > a") defeat the standard [hidden] attribute that app-nav.js uses to
+   show/hide nav items by auth state: with !important on both sides, CSS
+   specificity decides, not source order, and ".header .nav > a" (2 classes
+   + 1 type) beats a plain "[hidden]" (1 attribute). Repeating the attribute
+   selector raises its specificity above any reasonable component rule
+   without needing to chase every current and future offender individually. */
+[hidden][hidden][hidden][hidden] { display: none !important; }
+
+/* Spell out the SENLAY name beneath the wordmark in the shared marketing header. */
+.logo-lockup { display: inline-flex !important; flex-direction: column !important; align-items: flex-start !important; gap: 1px !important; }
+.logo-lockup .logo-wordmark { line-height: .9 !important; }
+.logo-definition { display: block; color: var(--text); font-size: 1rem; font-weight: 800; line-height: 1.2; letter-spacing: .02em; white-space: nowrap; }
+
+/* Public beta readability and compact evidence demo. */
+.docs-main .docs-table { overflow-x: auto !important; overflow-y: hidden !important; }
+.city-search .btn-sm { width: auto; flex: 0 0 auto; }
+.layer-map-fallback { background-color: #102433; color: #c6d9e5; }
+.layer-map-fallback strong { color: #f1f7f4; }
+body[data-page="home"] .hero { padding-top: clamp(30px,5vw,66px) !important; }
+body[data-page="home"] .hero h1 { font-size: clamp(2.15rem,4.5vw,4rem) !important; line-height: 1.08 !important; max-width: 720px; }
+body[data-page="home"] .hero-copy { font-size: 1.05rem !important; }
+.evidence-example { padding: 22px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.evidence-example h2 { font-size: 1.25rem !important; margin: 10px 0; }
+.evidence-example dl { display: grid; grid-template-columns: 90px minmax(0,1fr); gap: 8px; font-size: .9rem; }
+.evidence-example dt { color: var(--text2); }
+.evidence-example dd { margin: 0; overflow-wrap: anywhere; }
+.evidence-example p { font-size: .86rem; color: var(--text2); }
+@media (max-width: 640px) {
+  body[data-page="home"] .hero { padding: 28px 16px 36px !important; }
+  body[data-page="home"] .hero .eyebrow { margin-bottom: 14px; font-size: .66rem; }
+  body[data-page="home"] .hero-copy { line-height: 1.5 !important; margin-bottom: 14px; }
+  body[data-page="home"] .hero-actions { margin-top: 16px !important; }
+  body[data-page="home"] .hero-grid { gap: 24px; }
+  .docs-main .docs-table { display: block; max-width: 100%; overflow-x: auto !important; overflow-y: hidden !important; white-space: normal; }
+  .docs-main .docs-table td { min-width: 140px; white-space: normal; }
+  .docs-main .docs-table td:last-child { min-width: 230px; }
+  .city-search input { min-width: 0; }
+  .city-search .btn-sm { width: auto; flex: 0 0 auto; }
+  .dash-table { display: block; overflow-x: auto !important; overflow-y: hidden !important; }
 }

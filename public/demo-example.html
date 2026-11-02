@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Senlay synthetic evidence walkthrough</title><meta name="description" content="A clearly labeled synthetic walkthrough of Senlay's spot-level environmental evidence workflow. No live data, robot commands or flight clearance."><link rel="canonical" href="https://senlay.cloud/demo-example.html"><link rel="stylesheet" href="/styles/public-rebuild.css"><link rel="stylesheet" href="/styles/robotics-positioning.css"><link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness"></head><body>
+<header class="header header--marketing" data-shared-header="marketing" data-senlay-header="marketing">
+  <div class="header-inner">
+    <div class="logo-area"><a href="/" class="logo-link" aria-label="SENLAY, short for Sensory Layer" title="SENLAY = Sensory Layer"><span class="logo-lockup"><span class="logo-wordmark">SENLAY</span><span class="logo-definition">Sensory Layer</span></span></a></div>
+    <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <details class="nav-menu"><summary>Product</summary><div class="nav-menu-panel"><a href="/">Senlay overview</a><a href="/#physical-world-model">Physical World Model</a><a href="/#verification">Environmental verification</a><a href="/agents">For AI agents</a><a href="https://smartsurf.cloud/">SmartSurf</a></div></details>
+      <a href="/robotics/">Robotics</a>
+      <a href="/demo">Live Demo</a>
+      <a href="/docs.html">Developers</a>
+      <a href="/network.html">Sensor Network</a>
+      <a href="/pricing.html">Pricing</a>
+      <details class="nav-menu"><summary>Company</summary><div class="nav-menu-panel"><a href="/founder.html">Founder</a><a href="/roadmap.html">Roadmap</a><a href="/investors.html">Company brief</a><a href="/support.html">Contact</a><a href="/login.html">Sign In</a></div></details>
+      <a href="/register.html" class="nav-cta">Create API Key</a>
+    </nav>
+  </div>
+</header>
+<main class="section"><div class="wrap narrow">
+  <span class="eyebrow">60-second synthetic walkthrough · no live data</span>
+  <h1 style="font-size:clamp(2rem,5vw,3.4rem);line-height:1.1">From a coordinate to inspectable environmental evidence.</h1>
+  <p>Every position, station, reading and model value on this page is synthetic. This static example demonstrates the workflow without calling a weather service or LLM. It does not describe a real flight or current conditions.</p>
+  <ol style="padding-left:24px;line-height:1.9"><li><strong>Input:</strong> a synthetic position from a robot or operator.</li><li><strong>Compare:</strong> the measured and model values, keeping their origins distinct.</li><li><strong>Inspect:</strong> source age, distance and disagreement.</li><li><strong>Review unknowns:</strong> use platform and mission checks outside this spot-level profile.</li></ol>
+  <section class="evidence-example" aria-label="Synthetic wind evidence example"><span class="tag">Synthetic position and environmental evidence</span><h2>Wind profile · no operating clearance</h2><dl><dt>Position</dt><dd>Example coordinate · not a real mission</dd><dt>Measured</dt><dd>Example station: wind 12 km/h, gust 18 km/h</dd><dt>Provenance</dt><dd>Synthetic observation · 0.8 km away · 4 minutes old at example capture</dd><dt>Model</dt><dd>Synthetic forecast wind 21 km/h</dd><dt>Difference</dt><dd>Measured wind is 9 km/h lower than model wind</dd><dt>Unknown</dt><dd>Aircraft limits, route, altitude, obstacles, airspace, local visibility and permission</dd><dt>Meaning</dt><dd>Inspect the disagreement and obtain missing inputs. No flight, route or mission approval.</dd></dl></section>
+  <h2 style="margin-top:32px">Next: try the real interfaces</h2><p>The live demo requests current available sources for a coordinate. It labels missing inputs and the capture time. The default explanation is a deterministic evidence summary; AI narrative is optional and requires explicit selection.</p><div class="actions"><a class="button primary" href="/demo?scenario=drone&amp;preset=san_francisco">Load the live demo</a><a class="button soft" href="/robotics/#robotics-adapters">Run the synthetic telemetry example</a><a class="button soft" href="/docs.html">Inspect the API</a></div>
+  <p class="robotics-boundary">Public evaluation beta. Commercial source rights and domain validation are still pending. Keep operators and onboard safety systems responsible for operating decisions.</p>
+</div></main>
+<footer data-senlay-footer="shared" class="senlay-unified-footer" aria-label="Senlay site footer">
+  <div class="senlay-footer-shell">
+    <div class="senlay-footer-lead"><div><a class="senlay-footer-brand" href="/">SENLAY</a><p>Physical-world intelligence for autonomous systems and AI applications. Coverage and quality vary by place and source availability.</p></div><div class="senlay-footer-cta"><a href="/robotics/">Robotics overview</a><a href="/docs.html">Explore API docs</a><a href="/support.html?topic=robotics">Discuss an integration</a></div></div>
+    <div class="senlay-footer-grid">
+      <div class="senlay-footer-col"><h4>Senlay</h4><a href="/">Overview</a><a href="/robotics/">Robotics &amp; autonomous systems</a><a href="/demo">Live demo</a><a href="/agents">For AI agents</a><a href="/pricing.html">Pricing</a><a href="/roadmap.html">Roadmap</a></div>
+      <div class="senlay-footer-col"><h4>Build</h4><a href="/docs.html">API docs</a><a href="/openapi.json">OpenAPI JSON</a><a href="/openapi.yaml">OpenAPI YAML</a><a href="/llms.txt">llms.txt</a><a href="/agent-manifest.json">Agent manifest</a><a href="/dashboard.html">Developer dashboard</a><a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+      <div class="senlay-footer-col"><h4>Evidence model</h4><a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a><a href="/docs.html#term-source-provenance">Source provenance</a><a href="/docs.html#term-freshness">Freshness</a><a href="/docs.html#term-confidence">Confidence</a><a href="/docs.html#term-uncertainty">Uncertainty</a><a href="/docs.html#term-model-vs-reality">Forecast and observation checks</a><a href="/docs.html#term-risk-event">risk_event</a></div>
+      <div class="senlay-footer-col"><h4>SmartSurf</h4><a href="https://smartsurf.cloud/">SmartSurf landing</a><a href="https://smartsurf.cloud/#schools">School workflows</a><a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a><a href="https://app.smartsurf.cloud/">Open rider app</a></div>
+      <div class="senlay-footer-col"><h4>Company</h4><a href="/founder.html">Founder story</a><a href="/investors.html">Investor brief</a><a href="/support.html">Contact / pilots</a><a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a><a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+      <div class="senlay-footer-col senlay-footer-sources"><h4>Source networks</h4><p>Coverage depends on coordinate, freshness, licensing, and upstream availability.</p><a href="/sensor-catalog.json">Sensor catalog JSON</a><a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a><a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a><a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a><a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a><a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a></div>
+    </div>
+    <div class="senlay-footer-bottom"><span>&copy; 2026 Senlay. Decision support only. Operators and onboard safety systems retain authority.</span><span><a href="/login.html">Sign in</a> <a href="/register.html">Create API key</a> <a href="/support.html">Contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span></div>
+  </div>
+</footer>
+<script src="/scripts/header-menu.js"></script></body></html>

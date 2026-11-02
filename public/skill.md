@@ -1,52 +1,64 @@
 ---
 name: senlay
 version: 1.2.0
-description: Senlay is a sensory intelligence layer that connects AI agents to the physical world: weather, ocean, terrain, air quality, satellite data, sensor data, and environmental risk at real coordinates.
+description: Senlay provides source-aware environmental context for autonomous systems, robotics and AI agents.
 homepage: https://senlay.cloud
-metadata: {"category":"physical_world_context","api_base":"https://senlay.cloud/api/v1","source_families":"21","source_count":"21"}
+metadata: {"category":"physical_world_context","api_base":"https://senlay.cloud/api/v1","catalog_entries":"23"}
 ---
 
-# Senlay - Sensory Intelligence Layer for AI Agents
+# Senlay - Sensory Layer for AI Agents
 
-Senlay is a sensory intelligence layer that connects AI agents to the physical world.
+Senlay is the sensory layer for software: an evaluation beta that returns available location-level environmental evidence with source, time, distance, disagreement and unknowns where available. Its primary focus is autonomous systems and robotics across aerial, marine and field environments.
 
-It gives AI agents and applications current physical context for real-world decisions.
+It gives an operator or integration engineer evidence to review before making a decision outside Senlay. It does not make or authorize that decision.
 
 It is not a general search engine, not a consumer weather app, and not a universal answer machine. Senlay is for questions where measurable conditions matter: wind, waves, weather, tides, terrain, air quality, sensor data, satellite data, and environmental risk.
 
-Use Senlay when an agent needs to answer questions like:
+Use the drone wind workflow when an agent needs to summarize questions like:
 
-- Can a drone safely fly here now?
-- Is this beach safe for kitesurfing?
-- Are gusts, waves, tides, or currents risky?
-- Is air quality safe for outdoor work?
-- What conditions affect this farm, route, site, or operation?
+- What wind/gust observations and model values are available at this coordinate?
+- What source evidence, time, distance and unknowns should a human operator review at this coordinate?
+- How do the returned wind observations compare with model values?
 
-One verification request returns the Physical World Model (PWM): a unified response with live and model data, source provenance, freshness, confidence signals, interpretation, and an agent-ready `context_string`.
+The broader API can return other environmental layers. Use another domain only within its own documented scope; a coordinate-level response is not route or mission coverage.
 
-## Connect in 30 Seconds
+An API request returns a coordinate-level response with available observations and model values, source provenance, freshness, confidence components, uncertainty and an agent-ready `context_string` where supported.
+
+
+## Current availability and scope
+
+Senlay is an evaluation beta and is pre-revenue. Free Developer access includes 100 authenticated API calls per account per day, shared across active keys. Paid subscriptions are planned, not launched. Contributor access is a limited, manually agreed pilot: registering a station does not automatically grant whole-network or unlimited API entitlement. Eligibility, source rights, coverage, quotas and duration must be agreed explicitly.
+
+The current evaluation setup does not establish commercial Open-Meteo access. Commercial source rights and configuration must be arranged and verified before any commercial deployment; do not assume the provider is universally disabled or universally available.
+
+The public drone demo uses `field=drone&profile=wind`: spot-level wind/gust evidence, source provenance, observation age and distance, model comparison, and unknowns. The assessment scope covers wind evidence only, not route, altitude, aircraft limits, obstacles, visibility, airspace permission, or mission suitability.  The broader API can return additional available layers for `profile=full`; availability is not mission coverage. No environmental flag or GO outcome is flight or mission clearance. Route-level mission evaluation and platform-specific operating approval remain outside the current MVP.
+
+The demo defaults to a deterministic evidence summary without an LLM. AI narrative is optional and must be checked against the evidence. A static walkthrough at https://senlay.cloud/demo-example.html uses explicitly synthetic position and environmental values. Reference robotics examples are downloadable at https://senlay.cloud/downloads/senlay-robotics-v0.1.0.zip; real-hardware validation is pending.
+
+
+## Connect to the Evaluation Beta
 
 ### 0. No-key trial for browser/chat agents
 
 If the agent can only open normal GET URLs and cannot send POST bodies or Bearer headers, use the public trial endpoint:
 
 ```text
-https://senlay.cloud/api/v1/try-sense?lat=15.8801&lng=108.3380&field=kitesurfing&agentName=YourAgentName
+https://senlay.cloud/api/v1/try-sense?lat=37.6213&lng=-122.3790&field=drone&agentName=YourAgentName
 ```
 
 Add `request=...` when the agent has a specific user task. This embeds the task into the plaintext response alongside the field/domain context:
 
 ```text
-https://senlay.cloud/api/v1/try-sense?lat=15.8801&lng=108.3380&field=kitesurfing&agentName=YourAgentName&request=Can%20I%20kite%20safely%20now%3F
+https://senlay.cloud/api/v1/try-sense?lat=37.6213&lng=-122.3790&field=drone&agentName=YourAgentName&request=Summarize%20available%20wind%20evidence%20and%20unknowns%20for%20operator%20review
 ```
 
 For a self-updating browser page, use:
 
 ```text
-https://senlay.cloud/agents/live?lat=15.8801&lng=108.3380&field=kitesurfing&agentName=YourAgentName&request=Can%20I%20kite%20safely%20now%3F
+https://senlay.cloud/agents/live?lat=37.6213&lng=-122.3790&field=drone&agentName=YourAgentName&request=Summarize%20available%20wind%20evidence%20and%20unknowns%20for%20operator%20review
 ```
 
-The live page keeps state in the URL, including a `session` value, so multiple agents can query different locations/domains in parallel without overwriting one another. The plaintext endpoint is IP-limited and intended for demos only: 8 requests/minute burst and 60 requests/hour per IP. The live page clamps automatic refresh to 120-600 seconds. For repeated or production use, register for a key.
+The live page keeps state in the URL, including a `session` value, so multiple agents can query different locations/domains in parallel without overwriting one another. The plaintext endpoint is IP-limited and intended for demos only: 8 requests/minute burst and 60 requests/hour per IP. The live page clamps automatic refresh to 120-600 seconds. For repeated evaluation requests, register for a key. API authentication does not grant commercial provider rights or establish production readiness.
 
 ### 1. Get a free API key
 
@@ -87,33 +99,29 @@ Save both credentials in your secret store or environment variables. Do not past
 
 ```bash
 curl -H "Authorization: Bearer sl_live_your_key" \
-  "https://senlay.cloud/api/v1/sense?lat=36.01&lng=-5.60&field=drone"
+  "https://senlay.cloud/api/v1/sense?lat=37.6213&lng=-122.3790&field=drone"
 ```
 
-This returns a plain-text physical-context block. Inject it into your agent prompt or tool result when the agent needs current conditions.
+This returns a plain-text summary of currently available physical evidence. Pass it as data or tool output under your application's instructions; preserve source, freshness, and uncertainty. It does not authorize flight or mission decisions.
 
 ### 3. Get structured JSON
 
 ```bash
 curl -H "Authorization: Bearer sl_live_your_key" \
-  "https://senlay.cloud/api/v1/pwm?lat=36.01&lng=-5.60&field=drone"
+  "https://senlay.cloud/api/v1/pwm?lat=37.6213&lng=-122.3790&field=drone&profile=wind"
 ```
 
 This returns raw layers, source metadata, calculated insights, and a `context_string`.
 
 ## Recommended Agent Behavior
 
-Call Senlay before making a recommendation that depends on physical conditions.
+For the drone workflow under evaluation, request wind evidence for the selected coordinate when the user asks for it or the integration requires it. Summarize the evidence and unknowns without turning them into a flight recommendation.
 
 Good uses:
 
-- Drone pre-flight checks
-- Marine and sailing routing
-- Watersports safety checks
-- Outdoor work planning
-- Agriculture and field-condition analysis
-- Hiking, trekking, and aviation-weather context
-- Coastal risk, waves, tides, currents, and air quality checks
+- Drone operator wind-evidence review (spot-level, not whole-flight checks)
+- Marine context for an operator's separate route planning (spot-level, not voyage evaluation)
+- Other domain requests only when a supported field and documented scope apply; do not infer mission, route, platform, or safety suitability.
 
 Do not use Senlay for:
 
@@ -135,7 +143,7 @@ The PWM can include:
 | Satellite | Fire proximity, imagery metadata, environmental events | Satellite |
 | Sensors | METAR, buoys, tide gauges, private and citizen stations | Hardware |
 | Hazards | Fires, earthquakes, alerts, radiation, volcanoes where available | Official feeds + sensors |
-| Insights | Gust factor, wave energy, Beaufort scale, hazard flags, trends | Senlay fusion |
+| Insights | Returned derived fields and configured threshold flags, with source context | Senlay response |
 
 ## Evidence Principle
 
@@ -169,7 +177,7 @@ Requires an account session bearer token plus a verified sign-in identity whose 
 
 ### GET /api/v1/sense?lat=&lng=
 
-Plain-text spot-level verification. Best for LLM prompt injection.
+Plain-text environmental context for an application or LLM to summarize under its own user and safety instructions.
 
 Optional `field` parameter tunes the context for the task, such as `drone`, `kitesurfing`, `sailing`, `agriculture`, `running`, or `general`.
 
@@ -197,31 +205,17 @@ curl https://senlay.cloud/api/v1/stats
 
 ## Rate Limits
 
-| Tier | Limit | Price |
-|---|---:|---:|
-| Free Developer | 100 API calls/day | $0 |
-| Agent / IoT Developer | 10,000 API calls/day | $29/month |
-| Safety Pilot | 10,000 API calls/day by default; custom limits by agreement | From $199/month |
-| Enterprise | Custom limits and pilot support | Custom |
+| Access | Limit | Price/status |
+|---|---:|---|
+| Free Developer evaluation beta | 100 authenticated API calls/day, shared across account keys | Free under current published limits |
+| Paid subscriptions | Not launched | Proposed terms and prices are not current offers |
+| Contributor or other scoped pilot | Agreed individually | By agreement; requires source rights and scope review |
 
 Daily usage is enforced per account and is shared by all active Senlay API keys on that account; creating another key does not create another allowance.
 
-## Tool Definition
+## MCP tools
 
-```json
-{
-  "name": "get_physical_world_context",
-  "description": "Get live spot-level verification for a coordinate using Senlay. Returns weather, wind, waves, terrain, air quality, hazards, source metadata, freshness, confidence, and interpretation for real-world decision support.",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "lat": { "type": "number", "description": "Latitude from -90 to 90" },
-      "lng": { "type": "number", "description": "Longitude from -180 to 180" }
-    },
-    "required": ["lat", "lng"]
-  }
-}
-```
+The MCP gateway at `https://senlay.cloud/mcp` advertises `sense_location`, `check_operability`, `list_domains`, and `get_forecast_trust`. Connect an MCP client and read the server's tool schemas with `list_tools`; protocol compatibility is negotiated during `initialize`. `get_forecast_trust` remains `UNKNOWN` until eligible archived forecast-versus-instrument pairs are available.
 
 ## Links
 
@@ -230,4 +224,7 @@ Daily usage is enforced per account and is shared by all active Senlay API keys 
 - API key: https://senlay.cloud/register.html
 - Contact: https://senlay.cloud/support.html
 
-Source: Senlay - Physical-World Verification API for AI Agents. Built by Viktor Kryvotsiuk in Hoi An, Vietnam.
+Source: Senlay — Sensory Layer for location-level environmental evidence. Built by Viktor Kryvotsiuk.
+## MCP gateway contract
+
+Endpoint: `https://senlay.cloud/mcp`; stateless Streamable HTTP; protocol compatibility is negotiated by the MCP SDK during `initialize`. The four tools are `sense_location`, `check_operability`, `list_domains`, and `get_forecast_trust`. `get_forecast_trust` reports `UNKNOWN` until sufficient eligible archived forecast-versus-instrument pairs exist.

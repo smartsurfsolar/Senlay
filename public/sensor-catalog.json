@@ -1,6 +1,7 @@
 {
   "catalog_version": "2026-05-13",
-  "standard_wording": "21 source families",
+  "standard_wording": "23 catalog entries; availability and returned sources vary by coordinate and configuration.",
+  "catalog_entry_count": 23,
   "licensing_note": "Availability varies by location, configured tier, provider terms, attribution requirements, and optional API keys. Do not assume all source families are active at every coordinate.",
   "layer_stack_version": "2026-06-22",
   "layer_catalog_endpoint": "/api/layers/catalog",
@@ -24,9 +25,9 @@
       "name": "Open-Meteo Atmosphere",
       "type": "model",
       "coverage": "global",
-      "status": "conditional: active only with a paid customer API key or a compliant configured host; otherwise disabled",
+      "status": "Evaluation availability depends on current deployment configuration; commercial use requires arranged and verified commercial access or compliant hosting.",
       "typical_variables": ["wind_speed", "wind_gusts", "temperature", "humidity", "pressure", "cloud_cover", "precipitation"],
-      "licensing_note": "The free hosted API is non-commercial. Commercial deployments require the paid customer endpoint/API key or compliant self-hosting; data is CC BY 4.0.",
+      "licensing_note": "Commercial use requires current provider terms and appropriate commercial configuration; verify before deployment.",
       "attribution_requirement": "Open-Meteo attribution is required; review current source-specific attribution requirements.",
       "best_use_cases": ["fallback weather", "global coverage", "trend context"],
       "limitations": ["model-derived", "local exposure can differ from model grid"]
@@ -35,9 +36,9 @@
       "name": "Open-Meteo Marine",
       "type": "model",
       "coverage": "global coastal and ocean grid",
-      "status": "conditional: active only with a paid customer API key or a compliant configured host; otherwise disabled",
+      "status": "Evaluation availability depends on current deployment configuration; commercial use requires arranged and verified commercial access or compliant hosting.",
       "typical_variables": ["wave_height", "wave_period", "wave_peak_period", "wind_wave_height", "swell_height", "secondary_swell_height", "sea_level_height_msl", "sea_surface_temperature", "ocean_current_velocity", "ocean_current_direction"],
-      "licensing_note": "The free hosted API is non-commercial. Commercial deployments require the paid customer endpoint/API key or compliant self-hosting; data is CC BY 4.0.",
+      "licensing_note": "Commercial use requires current provider terms and appropriate commercial configuration; verify before deployment.",
       "attribution_requirement": "Open-Meteo attribution is required; review current source-specific attribution requirements.",
       "best_use_cases": ["marine fallback", "watersports", "coastal context", "current and tide model context"],
       "limitations": ["model-derived", "does not provide bathymetry", "current/tide model is not a navigation authority"]
@@ -46,9 +47,9 @@
       "name": "Open-Meteo Elevation and Air Quality",
       "type": "model",
       "coverage": "global where available",
-      "status": "conditional: active only with a paid customer API key or a compliant configured host; otherwise disabled",
+      "status": "Evaluation availability depends on current deployment configuration; commercial use requires arranged and verified commercial access or compliant hosting.",
       "typical_variables": ["elevation", "pm2_5", "pm10", "uv_index", "air_quality_index"],
-      "licensing_note": "The free hosted API is non-commercial. Commercial deployments require the paid customer endpoint/API key or compliant self-hosting; data is CC BY 4.0.",
+      "licensing_note": "Commercial use requires current provider terms and appropriate commercial configuration; verify before deployment.",
       "attribution_requirement": "Open-Meteo attribution is required; review current source-specific attribution requirements.",
       "best_use_cases": ["terrain context", "air quality context"],
       "limitations": ["grid resolution and update cadence vary"]
@@ -74,6 +75,17 @@
       "attribution_requirement": "Preserve any required station-operator credit and display Windy's Add new station link together with presented station data.",
       "best_use_cases": ["watersports wind", "station comparison", "local observation"],
       "limitations": ["station quality and siting vary", "provider permission and redistribution restrictions apply", "coverage and freshness vary"]
+    },
+    {
+      "name": "Windguru Stations",
+      "type": "station_owner_authorized_hardware",
+      "coverage": "configured Windguru stations where the station owner authorizes access",
+      "status": "optional and fail-closed; active only with an official station API credential plus explicit authorization for Senlay's intended use",
+      "typical_variables": ["wind_speed", "wind_gust", "wind_minimum", "wind_direction", "temperature", "humidity", "pressure"],
+      "licensing_note": "The documented read API requires the station's API password or hash. Confirm display, processing, history, and redistribution permission with the station owner and Windguru before enabling.",
+      "attribution_requirement": "Attribute Windguru and the station/operator, preserve station ID and observation timestamp, and link to the Windguru station page.",
+      "best_use_cases": ["watersports wind", "spot-scale observation", "forecast-versus-reality history"],
+      "limitations": ["not an anonymous public redistribution API", "each station needs an owner credential", "station siting, coverage, and freshness vary"]
     },
     {
       "name": "Windy Webcams",

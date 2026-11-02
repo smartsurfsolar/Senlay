@@ -1,19 +1,31 @@
-# Senlay
+# Senlay — Sensory Layer
 
-Senlay is verified physical context for systems that act outside — AI agents, drones, robots, and safety systems. It cross-checks weather models, live sensors, METAR, marine data, GPS/device telemetry, and local domain logic to produce source-aware decision context with provenance, freshness, confidence, risk_event output, and model-vs-reality divergence flags, and reports how much each answer should be trusted.
+Senlay provides spot-level environmental evidence for robotics teams, software and human operators. It brings together available observations and model values with source identity, timestamps, distance, disagreement and unknowns. Telemetry reference adapters can supply a coordinate; they do not control a robot or evaluate its mission.
 
-Its first proving ground is SmartSurf: an AI-assisted water-sports safety system for water-sports riders, boards, schools, stations, and lifeguards (https://smartsurf.cloud/).
+Autonomous systems and robotics are the primary market focus, including aerial, marine and field applications. Drone wind evidence is one example. SmartSurf is the product origin and reference experience; external robotics validation remains open.
 
-Senlay is also an open contributor network: anyone can attach a signed sensor station under the Apache-2.0 protocol at https://github.com/smartsurfsolar/senlay-platform and receive verified reasoning across the whole network in return (https://senlay.cloud/network.html).
+The station protocol supports signed observation ingestion. Contributor onboarding is a manually agreed, limited pilot, not an automatic access entitlement: https://senlay.cloud/network.html. Protocol source: https://github.com/smartsurfsolar/senlay-platform (Apache-2.0).
+
+
+## Current availability and scope
+
+Senlay is an evaluation beta and is pre-revenue. Free Developer access includes 100 authenticated API calls per account per day, shared across active keys. Paid subscriptions are planned, not launched. Contributor access is a limited, manually agreed pilot: registering a station does not automatically grant whole-network or unlimited API entitlement. Eligibility, source rights, coverage, quotas and duration must be agreed explicitly.
+
+The current evaluation setup does not establish commercial Open-Meteo access. Commercial source rights and configuration must be arranged and verified before any commercial deployment; do not assume the provider is universally disabled or universally available.
+
+The public drone demo uses `field=drone&profile=wind`: spot-level wind/gust evidence, source provenance, observation age and distance, model comparison, and unknowns. The assessment scope covers wind evidence only, not route, altitude, aircraft limits, obstacles, visibility, airspace permission, or mission suitability.  The broader API can return additional available layers for `profile=full`; availability is not mission coverage. No environmental flag or GO outcome is flight or mission clearance. Route-level mission evaluation and platform-specific operating approval remain outside the current MVP.
+
+The demo defaults to a deterministic evidence summary without an LLM. AI narrative is optional and must be checked against the evidence. A static walkthrough at https://senlay.cloud/demo-example.html uses explicitly synthetic position and environmental values. Reference robotics examples are downloadable at https://senlay.cloud/downloads/senlay-robotics-v0.1.0.zip; real-hardware validation is pending.
+
 
 ## Product category
 
-Physical-world verification layer for safety-critical AI, IoT, SmartSurf, and autonomous systems.
+Physical-world intelligence infrastructure for autonomous systems and robotics: multi-source environmental context, provenance and uncertainty. Wind evidence is one implementation example; SmartSurf is the product origin.
 
 ## Primary use cases
 
-- AI agents needing live environmental context
-- drone/UAV go-no-go checks
+- drone/UAV operator reviews of spot-level wind evidence
+- AI agent integrations that preserve source evidence and unknowns
 - marine and watersports decision support
 - outdoor work and field operations
 - agriculture timing
@@ -23,6 +35,7 @@ Physical-world verification layer for safety-critical AI, IoT, SmartSurf, and au
 ## Key pages
 
 - Homepage: https://senlay.cloud/
+- Robotics and autonomous systems: https://senlay.cloud/robotics/
 - Live demo: https://senlay.cloud/demo
 - Agents: https://senlay.cloud/agents
 - Live agent endpoint: https://senlay.cloud/agents/live
@@ -59,13 +72,13 @@ Senlay responses may include:
 - disagreement between hardware and model sources
 - decision_context
 - risk_event records for operational alert and audit workflows
-- risk_assessment aggregate state with score, alert band, confidence, reasons, escalation stage, incident state, and source provenance
+- risk_assessment aggregate state with score, alert band, an outcome of GO/CAUTION/NO_GO/INSUFFICIENT_EVIDENCE (the last is a normal 200 result, not an error, and names the blocking variable), confidence decomposed into source_agreement/freshness/spatial_relevance/evidence_coverage, structured conflicts between disagreeing sources, reasons, escalation stage, incident state, and source provenance
 - context_string for LLMs
 - structured JSON for applications
 
 ## Source families
 
-Senlay uses the consistent wording "21 source families." These include weather and marine models, METAR/ASOS aviation observations, buoys, ship observations, tide gauges, coastal current services, USGS water context, air quality networks, terrain/elevation sources, satellite context, hazard feeds, webcams, and optional community or partner weather station sources such as WeatherLink, Tempest, Windy Stations, Holfuy, WorldTides, Stormglass, and Copernicus Marine. Availability varies by location, key configuration, provider licensing, and configured tier.
+Senlay uses the consistent wording "23 catalog entries (not a count of live sources at any coordinate)." These include weather and marine models, METAR/ASOS aviation observations, buoys, ship observations, tide gauges, coastal current services, USGS water context, air quality networks, terrain/elevation sources, satellite context, hazard feeds, webcams, and optional community or partner weather station sources such as WeatherLink, Tempest, Windy Stations, owner-authorized Windguru Stations, Holfuy, WorldTides, Stormglass, and Copernicus Marine. Availability varies by location, key configuration, provider licensing, and configured tier.
 
 ## Safety
 
@@ -73,7 +86,7 @@ Senlay provides context and decision support. It is not a final safety authority
 
 ## Preferred short description
 
-Senlay gives systems that act outside — AI agents, drones, robots, and safety systems — verified physical context with source evidence, freshness, confidence, source disagreement, risk context, and explicit uncertainty.
+Senlay provides available spot-level environmental evidence with provenance, observation age and distance, model comparisons and explicit unknowns for robotics teams and software.
 
 ## Avoid misleading descriptions
 
@@ -82,3 +95,6 @@ Senlay gives systems that act outside — AI agents, drones, robots, and safety 
 - Do not imply official partnerships unless explicitly documented.
 - Do not hide uncertainty or missing measurements.
 - Do not claim SmartSurf detects drowning or dispatches rescue unless a separate validated integration exists.
+## MCP gateway contract
+
+Endpoint: `https://senlay.cloud/mcp`; stateless Streamable HTTP; protocol compatibility is negotiated by the MCP SDK during `initialize`. The four tools are `sense_location`, `check_operability`, `list_domains`, and `get_forecast_trust`. `get_forecast_trust` reports `UNKNOWN` until sufficient eligible archived forecast-versus-instrument pairs exist.

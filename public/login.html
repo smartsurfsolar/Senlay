@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Senlay Sign In - Verification Dashboard</title>
-  <meta name="description" content="Sign in to the Senlay verification dashboard for API keys, sandbox testing, and outdoor safety workflow tools.">
-  <meta name="product-system" content="Senlay is the spot-level verification engine behind SmartSurf water-sports safety and outdoor/indie developer workflows.">
+  <meta name="description" content="Sign in to the Senlay environmental evidence dashboard for API keys, usage and sandbox testing.">
+  <meta name="product-system" content="Senlay is a physical-world intelligence infrastructure beta for autonomous systems, robotics and AI applications, providing available environmental context with source provenance and uncertainty.">
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
   <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
@@ -35,44 +35,28 @@
     .google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px 14px; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: #111827; text-decoration: none; font-weight: 700; font-size: 14px; }
     .google-mark { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #4285f4; font-weight: 900; font-family: Arial, sans-serif; }
     </style>
-<link rel="stylesheet" href="/styles/dark-map-override.css?v=20260516-0536"></head>
+<link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness"></head>
 <body>
-    <header class="header">
-    <div class="header-inner">
-      <div class="logo-area">
-        <a href="/" class="logo-link" aria-label="Senlay home"><span class="logo-wordmark">SENLAY</span></a>
-      </div>
-      <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
-      <nav class="nav">
-        <a href="/">Home</a>
-        <details class="nav-menu">
-          <summary>Product</summary>
-          <div class="nav-menu-panel">
-            <a href="/demo">Demo</a>
-            <a href="/agents">For Agents</a>
-            <a href="https://smartsurf.cloud/">SmartSurf</a>
-            <a href="/network.html">Network</a>
-            <a href="/docs.html">Docs</a>
-          </div>
-        </details>
-        <a href="/pricing.html">Pricing</a>
-        <details class="nav-menu">
-          <summary>Company</summary>
-          <div class="nav-menu-panel">
-            <a href="/founder.html">Founder</a>
-            <a href="/roadmap.html">Roadmap</a>
-            <a href="/support.html">Contact</a>
-          </div>
-        </details>
-        <a href="/login.html">Sign In</a>
-        <a href="/pricing.html" class="nav-cta">Start Free API</a>
-      </nav>
-    </div>
-  </header>
+    <header class="header header--marketing" data-shared-header="marketing" data-senlay-header="marketing">
+  <div class="header-inner">
+    <div class="logo-area"><a href="/" class="logo-link" aria-label="SENLAY, short for Sensory Layer" title="SENLAY = Sensory Layer"><span class="logo-lockup"><span class="logo-wordmark">SENLAY</span><span class="logo-definition">Sensory Layer</span></span></a></div>
+    <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <details class="nav-menu"><summary>Product</summary><div class="nav-menu-panel"><a href="/">Senlay overview</a><a href="/#physical-world-model">Physical World Model</a><a href="/#verification">Environmental verification</a><a href="/agents">For AI agents</a><a href="https://smartsurf.cloud/">SmartSurf</a></div></details>
+      <a href="/robotics/">Robotics</a>
+      <a href="/demo">Live Demo</a>
+      <a href="/docs.html">Developers</a>
+      <a href="/network.html">Sensor Network</a>
+      <a href="/pricing.html">Pricing</a>
+      <details class="nav-menu"><summary>Company</summary><div class="nav-menu-panel"><a href="/founder.html">Founder</a><a href="/roadmap.html">Roadmap</a><a href="/investors.html">Company brief</a><a href="/support.html">Contact</a><a href="/login.html">Sign In</a></div></details>
+      <a href="/register.html" class="nav-cta">Create API Key</a>
+    </nav>
+  </div>
+</header>
 
   <main class="reg-container">
     <h1 class="reg-title">Sign In</h1>
-    <p class="reg-sub">Access verification API keys, dashboard tools, and evidence-backed agent workflows.</p>
+    <p class="reg-sub">Manage environmental API keys, inspect source evidence, and test robotics and software integrations.</p>
 
     <div id="alertBox" role="status" aria-live="polite"></div>
 
@@ -115,93 +99,30 @@
     <p class="reg-link"><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
   </main>
 
-  <footer class="senlay-unified-footer" aria-label="Senlay site footer">
+  <footer data-senlay-footer="shared" class="senlay-unified-footer" aria-label="Senlay site footer">
   <div class="senlay-footer-shell">
-    <div class="senlay-footer-lead">
-      <div>
-        <a class="senlay-footer-brand" href="/">SENLAY</a>
-        <p>A reciprocal verification network. Contribute a sensor and receive verified reasoning across the whole network; consume without contributing and pay.</p>
-      </div>
-      <div class="senlay-footer-cta">
-        <a href="https://smartsurf.cloud/">Explore SmartSurf</a>
-        <a href="/demo">Try Live Demo</a>
-        <a href="/docs.html">Read Docs</a>
-      </div>
-    </div>
-
+    <div class="senlay-footer-lead"><div><a class="senlay-footer-brand" href="/">SENLAY</a><p>Physical-world intelligence for autonomous systems and AI applications. Coverage and quality vary by place and source availability.</p></div><div class="senlay-footer-cta"><a href="/robotics/">Robotics overview</a><a href="/docs.html">Explore API docs</a><a href="/support.html?topic=robotics">Discuss an integration</a></div></div>
     <div class="senlay-footer-grid">
-      <div class="senlay-footer-col">
-        <h4>Senlay Product</h4>
-        <a href="/">Home</a>
-        <a href="/demo">Live verification demo</a>
-        <a href="/agents">For outdoor agents</a>
-        <a href="/pricing.html">Pricing</a>
-        <a href="/roadmap.html">Roadmap</a>
-        <a href="/live-agent.html">Live agent page</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Build</h4>
-        <a href="/docs.html">API docs</a>
-        <a href="/docs.html#verification-glossary">Verification glossary</a>
-        <a href="/openapi.json">OpenAPI JSON</a>
-        <a href="/openapi.yaml">OpenAPI YAML</a>
-        <a href="/llms.txt">llms.txt</a>
-        <a href="/llms-full.txt">llms-full.txt</a>
-        <a href="/agent-manifest.json">Agent manifest</a>
-        <a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a>        <a href="/dashboard.html">Developer dashboard</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Verification Terms</h4>
-        <a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a>
-        <a href="/docs.html#term-source-provenance">Source provenance</a>
-        <a href="/docs.html#term-freshness">Freshness</a>
-        <a href="/docs.html#term-confidence">Confidence</a>
-        <a href="/docs.html#term-uncertainty">Uncertainty</a>
-        <a href="/docs.html#term-model-vs-reality">Model-vs-reality check</a>
-        <a href="/docs.html#term-risk-event">risk_event</a>
-        <a href="/docs.html#term-decision-support">Decision-support boundary</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>SmartSurf</h4>
-        <a href="https://smartsurf.cloud/">SmartSurf landing</a>
-        <a href="https://smartsurf.cloud/#schools">School safety workflow</a>
-        <a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a>
-        <a href="https://smartsurf.cloud/#shop">Tracker hardware</a>
-        <a href="https://smartsurf.cloud/#pricing">SmartSurf pricing</a>
-        <a href="https://app.smartsurf.global/">Open rider app</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Company</h4>
-        <a href="/founder.html">Founder story</a>
-        <a href="/investors.html">Investor brief</a>
-        <a href="/investors/deck">Investor deck</a>
-        <a href="/support.html">Contact / pilots</a>
-        <a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a>
-        <a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-      </div>
-      <div class="senlay-footer-col senlay-footer-sources">
-        <h4>Source Networks</h4>
-        <p>Coverage depends on coordinate, freshness, and upstream availability.</p>
-        <a href="/sensor-catalog.json">Sensor catalog JSON</a>
-        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
-        <a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a>
-        <a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a>
-        <a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a>
-        <a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a>
-        <a href="https://dataspace.copernicus.eu/" target="_blank" rel="noopener noreferrer">Copernicus</a>
-        <a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a>
-      </div>
+      <div class="senlay-footer-col"><h4>Senlay</h4><a href="/">Overview</a><a href="/robotics/">Robotics &amp; autonomous systems</a><a href="/demo">Live demo</a><a href="/agents">For AI agents</a><a href="/pricing.html">Pricing</a><a href="/roadmap.html">Roadmap</a></div>
+      <div class="senlay-footer-col"><h4>Build</h4><a href="/docs.html">API docs</a><a href="/openapi.json">OpenAPI JSON</a><a href="/openapi.yaml">OpenAPI YAML</a><a href="/llms.txt">llms.txt</a><a href="/agent-manifest.json">Agent manifest</a><a href="/dashboard.html">Developer dashboard</a><a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+      <div class="senlay-footer-col"><h4>Evidence model</h4><a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a><a href="/docs.html#term-source-provenance">Source provenance</a><a href="/docs.html#term-freshness">Freshness</a><a href="/docs.html#term-confidence">Confidence</a><a href="/docs.html#term-uncertainty">Uncertainty</a><a href="/docs.html#term-model-vs-reality">Forecast and observation checks</a><a href="/docs.html#term-risk-event">risk_event</a></div>
+      <div class="senlay-footer-col"><h4>SmartSurf</h4><a href="https://smartsurf.cloud/">SmartSurf landing</a><a href="https://smartsurf.cloud/#schools">School workflows</a><a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a><a href="https://app.smartsurf.cloud/">Open rider app</a></div>
+      <div class="senlay-footer-col"><h4>Company</h4><a href="/founder.html">Founder story</a><a href="/investors.html">Investor brief</a><a href="/support.html">Contact / pilots</a><a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a><a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+      <div class="senlay-footer-col senlay-footer-sources"><h4>Source networks</h4><p>Coverage depends on coordinate, freshness, licensing, and upstream availability.</p><a href="/sensor-catalog.json">Sensor catalog JSON</a><a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a><a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a><a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a><a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a><a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a></div>
     </div>
-
-    <div class="senlay-footer-bottom">
-      <span>&copy; 2026 Senlay. Built in Vietnam. Decision support only, not final safety authority.</span>
-      <span><a href="/login.html">Sign in</a> <a href="/register.html">Create free API key</a> <a href="/support.html">Pilot contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span>
-    </div>
+    <div class="senlay-footer-bottom"><span>&copy; 2026 Senlay. Decision support only. Operators and onboard safety systems retain authority.</span><span><a href="/login.html">Sign in</a> <a href="/register.html">Create API key</a> <a href="/support.html">Contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span></div>
   </div>
 </footer>
 
   <script>
     let sessionToken = '';
+
+    function getNextUrl() {
+      const next = new URLSearchParams(location.search).get('next');
+      // Only allow same-site relative paths, never an absolute/external URL.
+      if (next && /^\/[^/\\]/.test(next)) return next;
+      return '';
+    }
 
     async function updateGoogleAuthUi() {
       try {
@@ -251,6 +172,11 @@
     }
 
     function showSignedIn(data) {
+      const next = getNextUrl();
+      if (next) {
+        window.location.replace(next);
+        return;
+      }
       document.getElementById('userEmail').textContent = data.email || '';
       renderKeys(data.apiKeys || []);
       document.getElementById('loginForm').classList.add('hidden');

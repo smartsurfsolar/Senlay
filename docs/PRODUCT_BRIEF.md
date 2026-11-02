@@ -2,7 +2,7 @@
 
 ## Senlay in One Sentence
 
-Senlay provides verified physical context for systems that act outside, using available weather, ocean, terrain, air-quality, seismic and environmental sources.
+Senlay provides physical-world intelligence for autonomous systems and AI applications, using available environmental observations and model context with provenance and uncertainty. The current product is an MVP for evaluation.
 
 ## The Problem
 
@@ -20,10 +20,11 @@ Senlay converts live physical signals into AI-ready context:
 - terrain and coastal modifiers
 - concise context strings for LLMs and agents
 - public pages for developers and AI agent onboarding
+- location-aware observation and archived-forecast charts, with explicit gaps and coverage limitations
 
 ## Why It Is Different
 
-Senlay is built from a hardware-first outdoor background, not just from a weather API wrapper. The product logic is shaped by real field use: kitesurfing, hydrofoiling, paragliding, rope access, coastal safety, and hardware prototyping.
+Senlay is built from a hardware-first outdoor background, not just from a weather API wrapper. Its product direction draws on the founder’s experience in kitesurfing, hydrofoiling, paragliding, rope access and hardware prototyping; this does not establish deployed robot field trials.
 
 The result is a product that treats physical reality as a first-class input for AI.
 

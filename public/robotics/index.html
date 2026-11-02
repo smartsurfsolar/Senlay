@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Senlay Robotics — Environmental Intelligence for Autonomous Systems</title>
+  <meta name="description" content="Environmental context for aerial, marine and field robotics, with source provenance, uncertainty, API and read-only reference adapters.">
+  <meta name="theme-color" content="#07111f">
+  <link rel="canonical" href="https://senlay.cloud/robotics/">
+  <meta property="og:title" content="Senlay Robotics — Environmental Intelligence for Autonomous Systems">
+  <meta property="og:description" content="Source-aware environmental context for aerial, marine and field robotics.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://senlay.cloud/robotics/">
+  <meta property="og:image" content="https://senlay.cloud/assets/brand/SenlayLogo-header.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Senlay Robotics — Environmental Intelligence for Autonomous Systems">
+  <meta name="twitter:description" content="Source-aware environmental context for aerial, marine and field robotics.">
+  <link rel="stylesheet" href="/styles/public-rebuild.css">
+  <link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness">
+  <link rel="stylesheet" href="/styles/robotics-positioning.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Senlay for Robotics & Autonomous Systems",
+    "description": "Source-aware environmental context for robotics, with available evidence at a coordinate and a planned mission-aware direction.",
+    "url": "https://senlay.cloud/robotics/",
+    "isPartOf": { "@type": "WebSite", "name": "Senlay", "url": "https://senlay.cloud/" }
+  }
+  </script>
+</head>
+<body data-page="robotics">
+<header class="header header--marketing" data-shared-header="marketing" data-senlay-header="marketing">
+  <div class="header-inner">
+    <div class="logo-area"><a href="/" class="logo-link" aria-label="SENLAY, short for Sensory Layer" title="SENLAY = Sensory Layer"><span class="logo-lockup"><span class="logo-wordmark">SENLAY</span><span class="logo-definition">Sensory Layer</span></span></a></div>
+    <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <details class="nav-menu"><summary>Product</summary><div class="nav-menu-panel"><a href="/">Senlay overview</a><a href="/#physical-world-model">Physical World Model</a><a href="/#verification">Environmental verification</a><a href="/agents">For AI agents</a><a href="https://smartsurf.cloud/">SmartSurf</a></div></details>
+      <a href="/robotics/">Robotics</a>
+      <a href="/demo">Live Demo</a>
+      <a href="/docs.html">Developers</a>
+      <a href="/network.html">Sensor Network</a>
+      <a href="/pricing.html">Pricing</a>
+      <details class="nav-menu"><summary>Company</summary><div class="nav-menu-panel"><a href="/founder.html">Founder</a><a href="/roadmap.html">Roadmap</a><a href="/investors.html">Company brief</a><a href="/support.html">Contact</a><a href="/login.html">Sign In</a></div></details>
+      <a href="/register.html" class="nav-cta">Create API Key</a>
+    </nav>
+  </div>
+</header>
+  <main>
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Autonomous systems &amp; robotics</span>
+          <h1>Environmental intelligence for robotics and autonomous systems.</h1>
+          <p class="hero-copy">Senlay gives robot software available environmental observations, forecasts and sensor context for a coordinate, with provenance, freshness, disagreements and gaps visible.</p>
+          <p class="hero-copy">Aerial, marine and field systems can use external context alongside onboard sensing. The drone wind profile is one focused example; coverage differs by source and location.</p>
+          <div class="hero-actions"><a class="button primary" href="/demo?scenario=drone&amp;preset=san_francisco">Try the drone wind demo</a><a class="button blue" href="/robotics/#robotics-adapters">Download reference adapters</a><a class="button soft" href="/docs.html">Read API and MCP docs</a></div>
+          <p class="robotics-boundary">Evaluation beta · Spot-level evidence only. No flight authorization, mission assessment, or robot control.</p>
+        </div>
+        <aside class="panel console" aria-label="Senlay environmental context flow"><div class="console-row"><b>Sources</b><span>Available forecasts, observations, sensors, and environmental data</span></div><div class="console-row"><b>Verification</b><span>Source, timestamp, freshness, and differences remain visible</span></div><div class="console-row"><b>Limits</b><span>Missing, stale, conflicting, and insufficient evidence is surfaced</span></div><div class="console-row"><b>Output</b><span>Structured spot-level context for software and operators</span></div><p class="console-note">Coverage and data quality depend on place and upstream availability.</p></aside>
+      </div>
+    </section>
+
+    <section class="section" id="aerial"><div class="wrap"><div class="section-head"><span class="eyebrow">Aerial systems</span><h2>Drone and UAV operations.</h2><p>Bring current environmental context into mission preparation and human-supervised operational reviews. The demo uses a wind-only profile: available wind and gust evidence, source age, distance and model comparison. Visibility, precipitation, obstacles, airspace, aircraft limits, route and altitude are not assessed by that profile. Available data varies by place.</p></div><div class="grid-3"><article class="card"><h3>Review wind evidence</h3><p>Compare available measured and model values while keeping source location, time, freshness, and disagreement visible.</p></article><article class="card"><h3>See what is unknown</h3><p>Missing or weak evidence should remain visible for the pilot or operator to assess.</p></article><article class="card"><h3>Keep the operator in control</h3><p>Use Senlay as one input to planning. It does not command a flight or certify a launch decision.</p></article></div></div></section>
+
+    <section class="section proof-band" id="marine"><div class="wrap"><div class="section-head"><span class="eyebrow">Marine robotics</span><h2>Environmental context for unmanned surface vessels.</h2><p>Applications can request available wind, wave, tide, and marine observations for a coordinate. Marine coverage depends on location and source proximity. Senlay does not currently evaluate a vessel's route, maneuver limits, or a complete voyage.</p></div><div class="actions"><a class="button soft" href="https://smartsurf.cloud/">See SmartSurf, an existing maritime application</a></div></div></section>
+
+    <section class="section" id="field"><div class="wrap"><div class="section-head"><span class="eyebrow">Outdoor and field robotics</span><h2>Context for agricultural and inspection platforms.</h2><p>Use available weather and environmental evidence to support workflows for field robots, remote infrastructure inspection, agriculture, and outdoor industrial systems. Domain-specific evaluations must be scoped and validated for each application.</p></div><div class="grid-3"><article class="card"><h3>Agricultural operations</h3><p>Consider available wind, temperature, humidity, and precipitation context when planning outdoor work windows.</p></article><article class="card"><h3>Remote inspection</h3><p>Review current source coverage and freshness for the area around an inspection site.</p></article><article class="card"><h3>Industrial field work</h3><p>Pass structured context to operator dashboards or application logic that already applies platform and site rules.</p></article></div></div></section>
+
+    <section class="section proof-band" id="integration"><div class="wrap"><div class="section-head"><span class="eyebrow">Integration architecture</span><h2>A small, reviewable path from telemetry to environmental context.</h2><p>Robotics software provides the current location. An integration calls Senlay's existing spot-level endpoint, then presents the returned evidence to the robot application or operator. The application retains control of platform-specific checks.</p></div><div class="robotics-sequence" aria-label="A robotics application requests coordinate-level environmental evidence and presents it for operator review"><span>Physical data sources</span><b aria-hidden="true">→</b><span>Senlay intelligence</span><b aria-hidden="true">→</b><span>REST / MCP</span><b aria-hidden="true">→</b><span>Robot software / operator</span></div>
+      <div class="panel robotics-code"><p><strong>Existing structured endpoint</strong> · authenticated spot-level context</p><pre><code>curl --get 'https://senlay.cloud/api/v1/pwm' \
+  --header "Authorization: Bearer $SENLAY_API_KEY" \
+  --data-urlencode 'lat=37.775' \
+  --data-urlencode 'lng=-122.419' \
+  --data-urlencode 'field=drone' \
+  --data-urlencode 'profile=wind'</code></pre><p>Use current coordinates from your own telemetry source. Check the returned evidence and source freshness in your application. A coordinate request is not route or mission verification.</p>
+        <h3 id="robotics-adapters">Download and run a read-only example</h3>
+        <p><a class="button primary" href="/downloads/senlay-robotics-v0.1.0.zip" download>Download robotics examples v0.1.0 (ZIP)</a> <a href="/downloads/senlay-robotics-v0.1.0.sha256">SHA-256</a> · <a href="/downloads/senlay-robotics-v0.1.0.manifest.json">Bundle manifest</a></p>
+        <p>Requires Node.js 22. No npm install is needed. The bundle includes its README, scoped license, SDK, fixtures, tests and manifest. Start with the explicitly synthetic replay: it uses synthetic position and environmental evidence, without an API key, network access, hardware, or robot commands.</p>
+        <pre><code>unzip senlay-robotics-v0.1.0.zip
+cd senlay-robotics-v0.1.0
+node examples/robotics/robotics-context.mjs --transport replay</code></pre>
+        <p><strong>Live mode is separate.</strong> The adapters support CRC-checked MAVLink 1/2 <code>GPS_RAW_INT</code> and <code>GLOBAL_POSITION_INT</code> position frames over UDP, and ROS 2 <code>sensor_msgs/msg/NavSatFix</code> through a separately installed rosbridge WebSocket. Set <code>SENLAY_API_KEY</code> in your environment before a live request. The listener passes current coordinates to Senlay; it does not issue navigation, mission or actuator commands.</p>
+        <pre><code># After setting SENLAY_API_KEY in your shell environment:
+node examples/robotics/robotics-context.mjs \
+  --transport mavlink-udp --port 14550 --field drone
+
+node examples/robotics/robotics-context.mjs \
+  --transport rosbridge --rosbridge-url ws://127.0.0.1:9090 \
+  --topic /gps/fix --field agriculture</code></pre>
+        <p>Live environmental requests default to one every 120 seconds (30/hour). The free account allowance is shared across keys and is 100 calls/day: roughly 3 hours 20 minutes at that interval if no other calls are made. This is environmental context, not a robot control loop.</p>
+        <p>ROS 2 local-coordinate messages are not converted. Remote rosbridge requires <code>wss://</code>. MAVLink CRC does not authenticate senders: use a trusted robot network. Receipt-time freshness cannot establish that an upstream sensor is current. Native ArduPilot, PX4 and BlueOS APIs and real-hardware validation are not claimed.</p>
+        <p>Current Open-Meteo access is not licensed for paid production use. Evaluation, source rights, coverage, reliability and domain-specific validation must be confirmed before commercial deployment. Mission evaluation and flight clearance are not provided.</p></div>
+    </div></section>
+
+    <section class="section" id="mission"><div class="wrap"><div class="section-head"><span class="eyebrow">Mission Environmental Verification · Planned</span><h2>Evaluate context across the operation.</h2><p>The longer-term direction is to evaluate environmental conditions against a system's actual mission: route and location, planned operating time, altitude or marine environment, platform-specific limits, evidence freshness, uncertainty, and changing conditions.</p></div><div class="grid-3"><article class="card"><span class="tag">Available now</span><h3>Spot-level context</h3><p>The existing API can return available environmental and evidence context for a coordinate and selected domain.</p></article><article class="card"><span class="tag coral">Planned direction</span><h3>Mission-aware evaluation</h3><p>Combining a complete route, schedule, platform constraints, and changing conditions is future work.</p></article><article class="card"><span class="tag amber">Boundary</span><h3>No simulated mission result</h3><p>This page describes a product direction, not an available mission endpoint, route simulation, or completed flight-control integration.</p></article></div></div></section>
+
+    <section class="section tight"><div class="wrap panel"><div class="section-head"><span class="eyebrow">For robotics software teams</span><h2>Discuss an integration for your platform.</h2><p>Share your robotics domain, telemetry source, operating environment, and evidence needs. Pilot scope and platform compatibility are confirmed case by case.</p></div><div class="actions"><a class="button primary" href="/support.html?topic=robotics">Contact Senlay</a><a class="button blue" href="/docs.html">Read API and MCP docs</a><a class="button soft" href="/roadmap.html">See the roadmap</a></div></div></section>
+  </main>
+<footer data-senlay-footer="shared" class="senlay-unified-footer" aria-label="Senlay site footer">
+  <div class="senlay-footer-shell">
+    <div class="senlay-footer-lead"><div><a class="senlay-footer-brand" href="/">SENLAY</a><p>Physical-world intelligence for autonomous systems and AI applications. Coverage and quality vary by place and source availability.</p></div><div class="senlay-footer-cta"><a href="/robotics/">Robotics overview</a><a href="/docs.html">Explore API docs</a><a href="/support.html?topic=robotics">Discuss an integration</a></div></div>
+    <div class="senlay-footer-grid">
+      <div class="senlay-footer-col"><h4>Senlay</h4><a href="/">Overview</a><a href="/robotics/">Robotics &amp; autonomous systems</a><a href="/demo">Live demo</a><a href="/agents">For AI agents</a><a href="/pricing.html">Pricing</a><a href="/roadmap.html">Roadmap</a></div>
+      <div class="senlay-footer-col"><h4>Build</h4><a href="/docs.html">API docs</a><a href="/openapi.json">OpenAPI JSON</a><a href="/openapi.yaml">OpenAPI YAML</a><a href="/llms.txt">llms.txt</a><a href="/agent-manifest.json">Agent manifest</a><a href="/dashboard.html">Developer dashboard</a><a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+      <div class="senlay-footer-col"><h4>Evidence model</h4><a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a><a href="/docs.html#term-source-provenance">Source provenance</a><a href="/docs.html#term-freshness">Freshness</a><a href="/docs.html#term-confidence">Confidence</a><a href="/docs.html#term-uncertainty">Uncertainty</a><a href="/docs.html#term-model-vs-reality">Forecast and observation checks</a><a href="/docs.html#term-risk-event">risk_event</a></div>
+      <div class="senlay-footer-col"><h4>SmartSurf</h4><a href="https://smartsurf.cloud/">SmartSurf landing</a><a href="https://smartsurf.cloud/#schools">School workflows</a><a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a><a href="https://app.smartsurf.cloud/">Open rider app</a></div>
+      <div class="senlay-footer-col"><h4>Company</h4><a href="/founder.html">Founder story</a><a href="/investors.html">Investor brief</a><a href="/support.html">Contact / pilots</a><a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a><a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+      <div class="senlay-footer-col senlay-footer-sources"><h4>Source networks</h4><p>Coverage depends on coordinate, freshness, licensing, and upstream availability.</p><a href="/sensor-catalog.json">Sensor catalog JSON</a><a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a><a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a><a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a><a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a><a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a></div>
+    </div>
+    <div class="senlay-footer-bottom"><span>&copy; 2026 Senlay. Decision support only. Operators and onboard safety systems retain authority.</span><span><a href="/login.html">Sign in</a> <a href="/register.html">Create API key</a> <a href="/support.html">Contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span></div>
+  </div>
+</footer>
+  <script src="/scripts/header-menu.js"></script>
+</body>
+</html>

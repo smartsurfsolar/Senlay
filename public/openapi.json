@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Senlay Physical-World Verification API",
+    "title": "Senlay Environmental Evidence API",
     "version": "1.0.0-beta",
-    "description": "Senlay provides spot-level physical-world verification for outdoor recreation, indie developers, SmartSurf-style safety workflows, and AI/IoT applications. It cross-checks source evidence, freshness, confidence, uncertainty, and local model-vs-reality gaps. Senlay provides decision support, not final safety authority.",
+    "description": "Senlay provides physical-world environmental intelligence for autonomous systems, robotics and AI applications. Its evaluation beta returns available coordinate-level environmental evidence through REST and MCP, including measured/model provenance, source age, spatial relevance, conflicts and explicit unknowns. The drone domain evaluates wind evidence at one coordinate; it does not evaluate aircraft limits, route, altitude wind, visibility, precipitation, airspace or flight permission. Decision support only.",
     "contact": {
       "name": "Senlay Support",
       "email": "viktor@senlay.cloud",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://senlay.cloud",
-      "description": "Production"
+      "description": "Current public Senlay API"
     }
   ],
   "tags": [
@@ -35,7 +35,7 @@
     },
     {
       "name": "Risk Events",
-      "description": "Operational danger detection, alerting, and audit events."
+      "description": "Coordinate-level threshold events and unknowns for operator review; not a safety authority."
     },
     {
       "name": "Public",
@@ -211,8 +211,8 @@
         "tags": [
           "Agents"
         ],
-        "summary": "Plain-text physical context for LLMs",
-        "description": "Authenticated endpoint returning a plaintext context block optimized for direct LLM injection. Requires Authorization: Bearer sl_live_...",
+        "summary": "Plain-text evidence context",
+        "description": "Authenticated endpoint returning available environmental evidence and source limitations as plain text. Treat the response as data under application instructions. Requires Authorization: Bearer sl_live_...",
         "security": [
           {
             "bearerAuth": []
@@ -243,6 +243,20 @@
                   }
                 }
               }
+            },
+            "headers": {
+              "X-Senlay-Refresh-Remaining": {
+                "description": "Remaining admitted refreshes in the caller pool/account this hour; provider access and account daily limits also apply.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Senlay-Poll-Interval": {
+                "description": "Recommended minimum pilot polling interval in seconds.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
             }
           },
           "400": {
@@ -253,6 +267,9 @@
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "description": "Refresh pool or in-flight capacity exhausted. Retry-After and JSON code/retry_after_seconds explain when to retry. Cache hits and coalesced readers do not consume a new refresh. Public traffic and authenticated pilots have separate pools."
           }
         }
       }
@@ -278,6 +295,9 @@
           },
           {
             "$ref": "#/components/parameters/field"
+          },
+          {
+            "$ref": "#/components/parameters/profile"
           }
         ],
         "responses": {
@@ -322,6 +342,20 @@
                   }
                 }
               }
+            },
+            "headers": {
+              "X-Senlay-Refresh-Remaining": {
+                "description": "Remaining admitted refreshes in the caller pool/account this hour; provider access and account daily limits also apply.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Senlay-Poll-Interval": {
+                "description": "Recommended minimum pilot polling interval in seconds.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
             }
           },
           "400": {
@@ -332,6 +366,9 @@
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "description": "Refresh pool or in-flight capacity exhausted. Retry-After and JSON code/retry_after_seconds explain when to retry. Cache hits and coalesced readers do not consume a new refresh. Public traffic and authenticated pilots have separate pools."
           }
         }
       }
@@ -435,6 +472,9 @@
           },
           {
             "$ref": "#/components/parameters/field"
+          },
+          {
+            "$ref": "#/components/parameters/profile"
           }
         ],
         "responses": {
@@ -444,6 +484,20 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PwmEvidenceResponse"
+                }
+              }
+            },
+            "headers": {
+              "X-Senlay-Refresh-Remaining": {
+                "description": "Remaining admitted refreshes in the caller pool/account this hour; provider access and account daily limits also apply.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Senlay-Poll-Interval": {
+                "description": "Recommended minimum pilot polling interval in seconds.",
+                "schema": {
+                  "type": "integer"
                 }
               }
             }
@@ -456,6 +510,9 @@
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "description": "Refresh pool or in-flight capacity exhausted. Retry-After and JSON code/retry_after_seconds explain when to retry. Cache hits and coalesced readers do not consume a new refresh. Public traffic and authenticated pilots have separate pools."
           }
         }
       }
@@ -481,6 +538,9 @@
           },
           {
             "$ref": "#/components/parameters/field"
+          },
+          {
+            "$ref": "#/components/parameters/profile"
           }
         ],
         "responses": {
@@ -490,6 +550,20 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RiskEventsResponse"
+                }
+              }
+            },
+            "headers": {
+              "X-Senlay-Refresh-Remaining": {
+                "description": "Remaining admitted refreshes in the caller pool/account this hour; provider access and account daily limits also apply.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Senlay-Poll-Interval": {
+                "description": "Recommended minimum pilot polling interval in seconds.",
+                "schema": {
+                  "type": "integer"
                 }
               }
             }
@@ -502,6 +576,9 @@
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "description": "Refresh pool or in-flight capacity exhausted. Retry-After and JSON code/retry_after_seconds explain when to retry. Cache hits and coalesced readers do not consume a new refresh. Public traffic and authenticated pilots have separate pools."
           }
         }
       },
@@ -535,6 +612,20 @@
                   "$ref": "#/components/schemas/RiskEventsResponse"
                 }
               }
+            },
+            "headers": {
+              "X-Senlay-Refresh-Remaining": {
+                "description": "Remaining admitted refreshes in the caller pool/account this hour; provider access and account daily limits also apply.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Senlay-Poll-Interval": {
+                "description": "Recommended minimum pilot polling interval in seconds.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
             }
           },
           "400": {
@@ -545,8 +636,16 @@
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "description": "Refresh pool or in-flight capacity exhausted. Retry-After and JSON code/retry_after_seconds explain when to retry. Cache hits and coalesced readers do not consume a new refresh. Public traffic and authenticated pilots have separate pools."
           }
-        }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/profile"
+          }
+        ]
       }
     },
     "/api/v1/risk-events/recent": {
@@ -626,6 +725,20 @@
                   "$ref": "#/components/schemas/RecentRiskEventsResponse"
                 }
               }
+            },
+            "headers": {
+              "X-Senlay-Refresh-Remaining": {
+                "description": "Remaining admitted refreshes in the caller pool/account this hour; provider access and account daily limits also apply.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Senlay-Poll-Interval": {
+                "description": "Recommended minimum pilot polling interval in seconds.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
             }
           },
           "401": {
@@ -633,6 +746,9 @@
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "description": "Refresh pool or in-flight capacity exhausted. Retry-After and JSON code/retry_after_seconds explain when to retry. Cache hits and coalesced readers do not consume a new refresh. Public traffic and authenticated pilots have separate pools."
           }
         }
       }
@@ -705,6 +821,20 @@
                   "$ref": "#/components/schemas/RecentEvidenceResponse"
                 }
               }
+            },
+            "headers": {
+              "X-Senlay-Refresh-Remaining": {
+                "description": "Remaining admitted refreshes in the caller pool/account this hour; provider access and account daily limits also apply.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Senlay-Poll-Interval": {
+                "description": "Recommended minimum pilot polling interval in seconds.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
             }
           },
           "401": {
@@ -712,6 +842,9 @@
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "description": "Refresh pool or in-flight capacity exhausted. Retry-After and JSON code/retry_after_seconds explain when to retry. Cache hits and coalesced readers do not consume a new refresh. Public traffic and authenticated pilots have separate pools."
           }
         }
       }
@@ -897,6 +1030,20 @@
           "default": 25
         },
         "description": "Maximum records to return."
+      },
+      "profile": {
+        "name": "profile",
+        "in": "query",
+        "required": false,
+        "description": "full preserves all environmental layers (bounded collection up to11s); wind requests essential current weather and relevant wind observations (up to5s), omitting marine/air/terrain/history. Partial/missing sources stay explicit. Refresh cache and quota are profile-specific. Use120s or slower polling for initial pilots.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "full",
+            "wind"
+          ],
+          "default": "full"
+        }
       }
     },
     "schemas": {
@@ -968,6 +1115,24 @@
           "assessment_state": {
             "$ref": "#/components/schemas/AssessmentState"
           },
+          "outcome": {
+            "$ref": "#/components/schemas/Outcome"
+          },
+          "unknowns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unknown"
+            }
+          },
+          "confidence_components": {
+            "$ref": "#/components/schemas/ConfidenceComponents"
+          },
+          "conflicts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Conflict"
+            }
+          },
           "active_sources": {
             "type": "integer"
           },
@@ -1001,6 +1166,13 @@
           },
           "context_string": {
             "type": "string"
+          },
+          "provider_capabilities": {
+            "type": "array",
+            "description": "Additive weather-provider capability metadata. Older servers may omit this field.",
+            "items": {
+              "$ref": "#/components/schemas/ProviderCapability"
+            }
           }
         }
       },
@@ -1164,6 +1336,24 @@
           "assessment_state": {
             "$ref": "#/components/schemas/AssessmentState"
           },
+          "outcome": {
+            "$ref": "#/components/schemas/Outcome"
+          },
+          "unknowns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unknown"
+            }
+          },
+          "confidence_components": {
+            "$ref": "#/components/schemas/ConfidenceComponents"
+          },
+          "conflicts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Conflict"
+            }
+          },
           "coordinates": {
             "type": "object",
             "properties": {
@@ -1206,6 +1396,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RiskEvent"
+            }
+          },
+          "provider_capabilities": {
+            "type": "array",
+            "description": "Additive weather-provider capability metadata. Older servers may omit this field.",
+            "items": {
+              "$ref": "#/components/schemas/ProviderCapability"
             }
           }
         }
@@ -1438,6 +1635,24 @@
           "assessment_state": {
             "$ref": "#/components/schemas/AssessmentState"
           },
+          "outcome": {
+            "$ref": "#/components/schemas/Outcome"
+          },
+          "unknowns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unknown"
+            }
+          },
+          "confidence_components": {
+            "$ref": "#/components/schemas/ConfidenceComponents"
+          },
+          "conflicts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Conflict"
+            }
+          },
           "coordinates": {
             "type": "object",
             "additionalProperties": true
@@ -1460,6 +1675,13 @@
           "evidence_record": {
             "type": "object",
             "additionalProperties": true
+          },
+          "provider_capabilities": {
+            "type": "array",
+            "description": "Additive weather-provider capability metadata. Older servers may omit this field.",
+            "items": {
+              "$ref": "#/components/schemas/ProviderCapability"
+            }
           }
         }
       },
@@ -1467,6 +1689,24 @@
         "type": "object",
         "description": "Aggregate deterministic SmartSurf/Senlay risk state. A null score and unknown level mean required evidence cannot support a risk score; they must never be interpreted as low risk. Decision support only; not drowning detection or certified rescue dispatch.",
         "properties": {
+          "outcome": {
+            "$ref": "#/components/schemas/Outcome"
+          },
+          "unknowns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unknown"
+            }
+          },
+          "confidence_components": {
+            "$ref": "#/components/schemas/ConfidenceComponents"
+          },
+          "conflicts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Conflict"
+            }
+          },
           "assessment_state": {
             "$ref": "#/components/schemas/AssessmentState"
           },
@@ -1570,6 +1810,159 @@
           "unknown"
         ],
         "description": "Whether usable current evidence covers the groups required for the requested activity. Independent emergency signals can still produce a scored critical risk when environmental evidence is incomplete."
+      },
+      "Outcome": {
+        "type": "string",
+        "enum": [
+          "GO",
+          "CAUTION",
+          "NO_GO",
+          "INSUFFICIENT_EVIDENCE"
+        ],
+        "description": "GO: conditions within thresholds, evidence adequate. CAUTION: within thresholds but marginal, or a relevant unknown exists. NO_GO: a threshold is exceeded on adequate evidence. INSUFFICIENT_EVIDENCE: the evidence does not support any of the above; see `unknowns` for what is blocking the assessment. This is a normal, successful (HTTP 200) result, never an error."
+      },
+      "Unknown": {
+        "type": "object",
+        "description": "One specific variable that blocked the assessment when outcome is INSUFFICIENT_EVIDENCE.",
+        "properties": {
+          "variable": {
+            "type": "string",
+            "description": "The evidence-requirement group or comparison field that could not support a decision, e.g. \"wind_gust\"."
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "no_coverage",
+              "missing_entirely",
+              "conflicting_sources",
+              "stale"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Plainly what would resolve the gap, e.g. \"A hardware observation within 15km of the requested coordinate.\""
+          }
+        }
+      },
+      "ConfidenceComponent": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW",
+              "UNKNOWN"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "description": "Short, human-readable justification for the label. Never a bare number."
+          }
+        },
+        "additionalProperties": true
+      },
+      "ConfidenceComponents": {
+        "type": "object",
+        "description": "Confidence decomposed into four independently reported components instead of one opaque scalar.",
+        "properties": {
+          "source_agreement": {
+            "$ref": "#/components/schemas/ConfidenceComponent"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/ConfidenceComponent"
+          },
+          "spatial_relevance": {
+            "$ref": "#/components/schemas/ConfidenceComponent"
+          },
+          "evidence_coverage": {
+            "$ref": "#/components/schemas/ConfidenceComponent"
+          }
+        }
+      },
+      "ConflictClaim": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "measured",
+              "predicted"
+            ]
+          },
+          "value": {
+            "type": "number"
+          },
+          "units": {
+            "type": "string"
+          },
+          "distance_km": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "age_seconds": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "Conflict": {
+        "type": "object",
+        "description": "A structured, named disagreement between contributing sources for one variable. Conflicts are reported, not averaged away.",
+        "properties": {
+          "variable": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "claims": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConflictClaim"
+            }
+          },
+          "delta": {
+            "type": "number"
+          },
+          "abs_delta": {
+            "type": "number"
+          },
+          "units": {
+            "type": "string"
+          },
+          "magnitude": {
+            "type": "string",
+            "enum": [
+              "moderate",
+              "significant"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "minor",
+              "major"
+            ]
+          },
+          "plausible_cause": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
       },
       "EvidenceCoverage": {
         "type": "object",
@@ -1979,6 +2372,268 @@
             "type": "string"
           }
         }
+      },
+      "ProviderCapability": {
+        "type": "object",
+        "description": "Versioned additive provider metadata. Consumers should preserve unknown properties and treat missing fields as unknown.",
+        "additionalProperties": true,
+        "required": [
+          "schema_version",
+          "provider",
+          "source",
+          "configured",
+          "authorization",
+          "attempted",
+          "healthy",
+          "fresh",
+          "source_status",
+          "kind",
+          "forecast_only",
+          "supported_fields",
+          "samples",
+          "sample_count",
+          "samples_truncated",
+          "limitations",
+          "refresh_limits",
+          "shared_request_cache"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "enum": [
+              "1"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "configured": {
+            "type": "boolean"
+          },
+          "authorization": {
+            "type": "string",
+            "enum": [
+              "authorized",
+              "unknown"
+            ]
+          },
+          "attempted": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "healthy": {
+            "type": "boolean"
+          },
+          "fresh": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "source_status": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "measured",
+              "forecast"
+            ]
+          },
+          "forecast_only": {
+            "type": "boolean"
+          },
+          "supported_fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "samples": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeatherEvidenceMetadata"
+            }
+          },
+          "sample_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "samples_truncated": {
+            "type": "boolean"
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "refresh_limits": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "max_results": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "max_requests": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "request_timeout_ms": {
+                "type": "integer"
+              },
+              "source_batch_deadline_ms": {
+                "type": "integer",
+                "nullable": true
+              },
+              "request_bounds": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "sample_preview_limit": {
+                "type": "integer"
+              },
+              "provider_quota": {
+                "type": "string"
+              }
+            }
+          },
+          "shared_request_cache": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true,
+            "properties": {
+              "mode": {
+                "type": "string"
+              },
+              "hit": {
+                "type": "boolean"
+              },
+              "age_ms": {
+                "type": "number",
+                "nullable": true
+              },
+              "ttl_ms": {
+                "type": "number",
+                "nullable": true
+              },
+              "coalesced": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "WeatherEvidenceMetadata": {
+        "type": "object",
+        "description": "Normalized weather sample provenance and time metadata; not a substitute for source values or authorization evidence.",
+        "additionalProperties": true,
+        "required": [
+          "kind",
+          "source_timestamp",
+          "freshness",
+          "age_seconds",
+          "valid_at",
+          "validity",
+          "fields",
+          "units",
+          "location"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "measured",
+              "forecast"
+            ]
+          },
+          "source_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "freshness": {
+            "type": "string",
+            "enum": [
+              "fresh",
+              "stale",
+              "future_timestamp",
+              "unknown"
+            ]
+          },
+          "age_seconds": {
+            "type": "number",
+            "nullable": true
+          },
+          "valid_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "valid_at_relation": {
+            "type": "string",
+            "enum": [
+              "before_now",
+              "at_now",
+              "after_now",
+              "unknown"
+            ],
+            "nullable": true,
+            "description": "Relationship of the point valid_at timestamp to response evaluation time; not a validity interval."
+          },
+          "validity": {
+            "type": "string",
+            "enum": [
+              "current",
+              "not_yet_valid",
+              "expired",
+              "unknown"
+            ],
+            "nullable": true,
+            "description": "Provider validity interval state; unknown when only point valid_at is available."
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "units": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "location": {
+            "type": "object",
+            "required": [
+              "lat",
+              "lng",
+              "distance_km",
+              "relevance"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "lat": {
+                "type": "number",
+                "nullable": true
+              },
+              "lng": {
+                "type": "number",
+                "nullable": true
+              },
+              "distance_km": {
+                "type": "number",
+                "nullable": true
+              },
+              "relevance": {
+                "type": "string"
+              }
+            }
+          }
+        }
       }
     },
     "responses": {
@@ -2026,6 +2681,6 @@
       }
     }
   },
-  "x-source-family-wording": "21 source families",
+  "x-source-family-wording": "23 catalog entries; configured and returned sources vary by coordinate",
   "x-safety-disclaimer": "Senlay provides context, evidence, and decision support. It is not a safety authority. Final decisions remain with operators, users, and customer applications."
 }
