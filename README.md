@@ -30,7 +30,7 @@ public/
 
 ## Preview Locally
 
-`main` holds stable website releases; `develop` holds public website development. The historical repository name is retained; the website and API domain is `senlay.cloud`.
+`main` holds stable website releases; `develop` holds public website development. The public repository is [smartsurfsolar/Senlay](https://github.com/smartsurfsolar/Senlay), formerly `senlay-world`; the website and API domain is `senlay.cloud`.
 
 The backend, authentication, admin services, provider secrets and memory corpus live in the separate private `senlay-platform-core` repository. This repository's license applies to website content; the separate Open Network SDK uses Apache-2.0. Never merge private backend history into this public repository.
 
