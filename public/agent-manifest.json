@@ -1,8 +1,8 @@
 {
   "name": "Senlay",
-  "description": "Verified physical context for systems that act outside — AI agents, drones, robots, and safety systems. Cross-checks weather models, live sensors, METAR, marine data, GPS/device telemetry, and terrain, and reports how much each answer should be trusted.",
+  "description": "Senlay provides source-aware environmental context for autonomous systems, robotics and AI applications, including available observations, forecasts, provenance and unknowns.",
   "base_url": "https://senlay.cloud",
-  "status": "open beta",
+  "status": "evaluation beta",
   "docs_url": "https://senlay.cloud/docs.html",
   "llms_txt": "https://senlay.cloud/llms.txt",
   "llms_full_txt": "https://senlay.cloud/llms-full.txt",
@@ -14,25 +14,20 @@
   "register_url": "https://senlay.cloud/register.html",
   "sensor_catalog_url": "https://senlay.cloud/sensor-catalog.json",
   "primary_use_cases": [
-    "SmartSurf rider, board, school, and water-sports safety workflows",
-    "kitesurf, wing, surf, SUP, foil, sailing, windsurf, and downwind spot intelligence",
-    "indie outdoor AI apps and hobbyist agent builders",
-    "drone hobbyist and outdoor go/no-go decision support",
-    "source-aware local risk checks with freshness, confidence, and model-vs-reality signals"
+    "Aerial, marine and field robotics applications using coordinate-level environmental context",
+    "AI agents and operators reviewing available evidence, source freshness and uncertainty",
+    "Drone environmental evidence review as a specialized workflow"
   ],
   "core_capabilities": [
-    "source-neutral physical-world verification",
-    "source provenance and freshness metadata",
-    "confidence and model-vs-reality checks",
-    "marine source fusion: buoys, ships, tides, currents, hydrology, webcams, and model fallbacks where available",
-    "domain and sport-specific interpretation",
-    "risk_event records for operational alert and audit workflows",
-    "structured JSON Physical World Model",
-    "SmartSurf-style rider, board, school, and outdoor safety workflows"
+    "Coordinate-level environmental API with source-aware observations and model values where available",
+    "Timestamps, source distance, freshness/confidence components, conflicts, and unknowns",
+    "Deterministic environmental evidence with a separate AI explanation in the Live Demo",
+    "Public MCP gateway with four tools: sense_location, check_operability, list_domains, get_forecast_trust",
+    "Reference robotics adapters and offline synthetic replay"
   ],
   "authentication": {
     "trial": "GET /api/v1/try-sense is available without an API key and is rate-limited.",
-    "production": "Use Authorization: Bearer sl_live_... for /api/v1/sense, /api/v1/pwm, and /api/v1/risk-events.",
+    "production": "Authenticated evaluation requests use Authorization: Bearer sl_live_... for /api/v1/sense, /api/v1/pwm, and /api/v1/risk-events. This does not establish commercial source rights or production readiness.",
     "registration": "POST /api/v1/agent-register with ownerEmail and agentName to create an agent key."
   },
   "rate_limits": {
@@ -41,8 +36,27 @@
   },
   "safety_disclaimer": "Senlay provides context, evidence, and decision support. It is not a safety authority. Final decisions remain with operators, users, and customer applications.",
   "positioning": {
-    "commercial_product": "SmartSurf is the first commercial product powered by Senlay.",
-    "engine": "Senlay is the spot-level verification engine behind SmartSurf and similar outdoor AI apps.",
-    "boundary": "Decision support only; not final safety authority or rescue replacement."
+    "commercial_product": "Physical-world intelligence infrastructure beta for autonomous systems and robotics; SmartSurf is the origin and reference application.",
+    "engine": "The Physical World Model assembles available environmental context at a coordinate. For drones, Senlay presents wind observations and available model indications of rain and thunderstorms. Local rainfall and lightning are not directly measured by this assessment. Aircraft limits, route, altitude, visibility and operational permission remain outside its scope.",
+    "boundary": "Operator review only; no launch authorization or robot control."
+  },
+  "robotics_example": {
+    "url": "https://senlay.cloud/downloads/senlay-robotics-v0.1.0.zip",
+    "version": "0.1.0",
+    "hardware_validation": "reference fixtures only; real hardware validation pending",
+    "replay": "Fully synthetic position and environmental evidence; no network or key required"
+  },
+  "commercial_availability": "Evaluation beta. Commercial Open-Meteo access has not been arranged; commercial source rights and configuration require owner action.",
+  "mcp": {
+    "endpoint": "https://senlay.cloud/mcp",
+    "transport": "stateless Streamable HTTP",
+    "protocol_version_policy": "Negotiated by the MCP SDK during initialize; no fixed version is advertised in health metadata.",
+    "tools": [
+      "sense_location",
+      "check_operability",
+      "list_domains",
+      "get_forecast_trust"
+    ],
+    "forecast_trust_default": "UNKNOWN until sufficient eligible archived forecast-versus-instrument pairs"
   }
 }

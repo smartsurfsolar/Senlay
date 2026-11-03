@@ -1,17 +1,29 @@
 # Senlay - full LLM and agent context
 
-Senlay is a reciprocal verification network: it tells humans and machines what is happening at a specific place, right now, using evidence from multiple physical-world sources, and shows how much that answer can be trusted. It cross-checks weather models, live sensors, METAR, marine data, GPS/device telemetry, and local domain logic to produce source-aware decision context with provenance, freshness, confidence, risk_event output, and model-vs-reality divergence flags.
+Senlay is a physical-world intelligence infrastructure beta for autonomous systems, robotics and AI applications. It returns available environmental observations and model context for a coordinate with source, time, distance, disagreements and unknowns where available.
 
-Coverage arrives from participants rather than from capital. Contribute a sensor where no network reached and receive verified reasoning across the whole network in return, under the open Apache-2.0 protocol at https://github.com/smartsurfsolar/senlay-platform (see https://senlay.cloud/network.html). Systems that act on the answer and will never install hardware — drone/BVLOS operators, robotics fleets, lifting and construction, parametric insurers, marine operations — pay cash instead. The two sides do not compete for the same budget.
+Contributor pilots test whether signed station observations can improve local coverage. Access is manually agreed and limited; registering a station does not grant unlimited API access. Source rights, quotas and scope must be confirmed. See https://senlay.cloud/network.html and https://senlay.cloud/robotics/. No paying customers or provider partnerships are claimed.
 
-Its first proving ground is SmartSurf: an AI-assisted water-sports safety system for water-sports riders, boards, schools, stations, and lifeguards (https://smartsurf.cloud/). Water sports is the wedge, not the ceiling.
+SmartSurf (https://smartsurf.cloud/) is the product origin and a reference experience. It is not proof of robotics demand, paid Senlay traction or completed field validation.
 
-Senlay does not replace weather providers, and it is not a competitor to contributed sensor networks such as WeatherXM or aggregators such as Synoptic Data — those are inputs, source families reasoned over. A normal weather API returns values. Senlay returns verified context: source provenance, source type, distance, timestamp, freshness, confidence, model/hardware disagreement, divergence flags, optional `risk_event` records, and an agent-ready `context_string`.
+Senlay uses environmental providers and station networks as optional data inputs where access and rights permit. Its intended output combines available source provenance, type, distance, timestamp, observation age, model disagreement, optional `risk_event` records, and an agent-ready `context_string`. Differences from other providers require a dated, reproducible comparison; no blanket claim is made that weather APIs omit provenance or conceal model origin.
 
-## Who Senlay is for
 
-- AI agent developers
+## Current availability and scope
+
+Senlay is an evaluation beta and is pre-revenue. Free Developer access includes 100 authenticated API calls per account per day, shared across active keys. Paid subscriptions are planned, not launched. Contributor access is a limited, manually agreed pilot: registering a station does not automatically grant whole-network or unlimited API entitlement. Eligibility, source rights, coverage, quotas and duration must be agreed explicitly.
+
+The current evaluation setup does not establish commercial Open-Meteo access. Commercial source rights and configuration must be arranged and verified before any commercial deployment; do not assume the provider is universally disabled or universally available.
+
+For drones, Senlay presents wind observations and available model indications of rain and thunderstorms. Local rainfall and lightning are not directly measured by this assessment. Aircraft limits, route, altitude, visibility and operational permission remain outside its scope. The existing request parameter `profile=wind` is unchanged. Other available layers do not establish whole-mission suitability.
+
+The Live Demo presents Environmental Intelligence, AI Explanation and Machine-Readable Context for the same location snapshot. Deterministic evidence remains separate from the AI interpretation. Compare the explanation against the underlying sources and unknowns. Reference adapters and explicitly synthetic offline replay are documented at https://senlay.cloud/robotics/; real-hardware validation remains pending.
+
+
+## Buyer hypothesis and adjacent domains
+
 - drone/UAV software teams
+- AI agent developers integrating evidence review
 - outdoor work and field operations platforms
 - agriculture AI tools
 - marine and watersports products
@@ -24,13 +36,14 @@ Senlay is also building an open contributor network. Operators can review the Ap
 
 ## Public routes
 
-- `/` - homepage and local-agent preview
+- `/` - Environmental intelligence for autonomous systems
+- `/robotics/` - robotics use cases, API integration pattern, and spot-versus-mission capability boundary
 - `/demo` - full guided demo
 - `/agents` - agent onboarding
 - `/agents/live` - self-updating live context page
 - `/docs.html` - API documentation
 - `/network.html` - open contributor network: attach a sensor, connect a fleet
-- `/pricing.html` - contribute-or-pay pricing
+- `/pricing.html` - free evaluation beta, proposed paid plans and manually scoped pilots
 - `/roadmap.html` - roadmap
 - `/founder.html` - founder story
 - `/support.html` - contact and pilot support
@@ -57,7 +70,7 @@ Self-updating HTML page for agents and humans. Uses URL parameters to keep each 
 
 ### POST /api/v1/agent-register
 
-Registers an agent and returns an API key. Use this for production or repeated automation.
+Registers an agent and returns an API key for repeated evaluation requests. A key does not establish commercial source rights or production readiness.
 
 ### GET /api/v1/sense
 
@@ -89,13 +102,13 @@ Senlay responses may include:
 
 ## Source families
 
-Senlay standardizes on "21 source families." Some are active by default, some are location-dependent, and some require optional provider keys, partner access, licensing review, or attribution.
+Senlay standardizes on "23 catalog entries (not a count of live sources at any coordinate)." Some are active by default, some are location-dependent, and some require optional provider keys, partner access, licensing review, or attribution.
 
 Groups:
 
 - Models: Open-Meteo atmosphere, marine, elevation, and air quality; optional/cached Copernicus Marine ocean context where configured.
 - Hardware: METAR, ASOS/IEM, NOAA/NDBC buoys, ship observations, NOAA CO-OPS tide/current stations, USGS Water Services, weather stations, wind sensors.
-- Community and partner sensors: CWOP/APRS, Sensor.Community, openSenseMap, OpenAQ, WeatherFlow/Tempest, Windy Stations, WeatherLink, Weather Underground, Ambient Weather, Holfuy.
+- Optional community and provider station adapters: CWOP/APRS, Sensor.Community, openSenseMap, OpenAQ, WeatherFlow/Tempest, Windy Stations, owner-authorized Windguru Stations, WeatherLink, Weather Underground, Ambient Weather, Holfuy.
 - Visual, tide, and commercial marine options: Windy Webcams, WorldTides, Stormglass.
 - Satellite and hazards: Sentinel-2, FIRMS, EONET, USGS earthquakes and volcano hazards, SWPC space weather, Safecast, weather alerts.
 
@@ -105,29 +118,27 @@ Do not claim every source is active everywhere. Availability varies by location 
 
 If you are an AI agent:
 
-1. Use Senlay when a user asks about current outdoor, marine, drone, field, agriculture, SmartSurf-style safety, or weather-sensitive decisions.
-2. Do not rely only on training data for "right now" physical-world questions.
-3. Call Senlay with location, field/use case, and user question.
-4. Read source evidence, freshness, confidence, uncertainty, and any risk_event context.
-5. Tell the user when data is missing or uncertain.
-6. Do not claim absolute safety.
-7. Provide decision support, not final authority.
+1. Request the selected coordinate and use the documented domain scope; the drone wind workflow is one example.
+2. Separate observations from model values, and inspect source, time, distance, disagreement and unknowns.
+3. State when required values are missing, stale, or uncertain.
+4. Do not treat coverage or a configured threshold outcome as flight or mission clearance.
+5. Use other domains only within their documented scope; operators retain final authority.
 
 Recommended system prompt:
 
 ```text
-You are an AI agent with access to Senlay, a physical-world verification API. Before answering any question about current outdoor, marine, drone, field, agriculture, SmartSurf-style safety, or weather-sensitive decisions, request live physical context from Senlay. Use Senlay's source evidence, freshness, confidence, uncertainty, and risk_event context in your answer. Do not invent missing measurements. Do not claim guaranteed safety.
+You are helping an autonomous-system operator understand environmental context for a selected coordinate. Inspect available observations and models, their sources, timestamps, distance, disagreement and unknowns. Use the requested domain's documented scope. Do not invent missing measurements or treat an assessment as mission clearance. The operator and application retain decision authority.
 ```
 
 ## Pricing summary
 
-Senlay is contribute-or-pay. Contributing a sensor station is free forever and returns verified reasoning across the whole network, not just the contributor's own readings. Free Developer accounts also include a shared allowance of 100 authenticated API calls/day across their active keys, 21 source families where available, `context_string`, and source/freshness/confidence metadata. Agent / IoT Developer, Safety Pilot, and Enterprise Verification tiers are for consumers — systems that act on the answer and will never install hardware.
+Free Developer beta accounts include a shared allowance of 100 authenticated API calls/day across active keys, available source data, `context_string`, and source/freshness/confidence metadata. Paid subscriptions are not launched. Contributor and prospective paid pilots require manually agreed scope, rights, access limits and validation; no automatic free lifetime or whole-network entitlement is promised.
 
-Production and safety-critical deployments require pilot discussion, reliability expectations, fallback behavior, and domain validation.
+Commercial deployments require confirmed source rights and a manually agreed pilot, plus reliability, fallback behavior and domain validation. The evaluation beta does not establish production or safety readiness.
 
 ## Founder story summary
 
-Senlay was founded by Viktor Kryvotsiuk in Hoi An, Vietnam. Viktor has 20+ years of experience reading wind, water, weather, hardware failure, student safety, and real decisions on the beach. SmartSurf hardware and marine safety work informed the Senlay API.
+The founder story describes how SmartSurf product work and hands-on experience with wind, water and hardware led to Senlay's environmental-evidence workflow. SmartSurf remains the product origin and reference experience, not robotics validation.
 
 ## Safety language
 
@@ -138,3 +149,10 @@ Senlay provides context, evidence, and decision support. It is not a safety auth
 - Email: viktor@senlay.cloud
 - Support: https://senlay.cloud/support.html
 - Register: https://senlay.cloud/register.html
+## MCP gateway contract
+
+Endpoint: `https://senlay.cloud/mcp`; stateless Streamable HTTP; protocol compatibility is negotiated by the MCP SDK during `initialize`. The four tools are `sense_location`, `check_operability`, `list_domains`, and `get_forecast_trust`. `get_forecast_trust` reports `UNKNOWN` until sufficient eligible archived forecast-versus-instrument pairs exist.
+
+## Reading comparisons and history
+
+Current Model Agreement describes the current comparison, not historical forecast accuracy. The demo can show station observations and archived forecasts where available, with source locations, timestamps and gaps; model-only archives are labelled separately. This chart does not calculate a historical trust score. Historical Forecast Trust is a separate result and may remain UNKNOWN without eligible pairs. Place Memory describes historical baselines, not a trained local forecast.

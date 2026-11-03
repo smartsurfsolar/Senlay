@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch My Spot — Senlay</title>
+  <meta name="description" content="Tell Senlay where and how you ride. It watches forecasts, real observations, and local spot patterns, then notifies you when something meaningful changes.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
+  <link rel="stylesheet" href="/styles/landing.css?v=4">
+  <style>
+    .reg-container { max-width: 640px; margin: 0 auto; padding: 48px 24px 96px; }
+    .reg-title { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-align: center; }
+    .reg-sub { color: var(--text2); font-size: 15px; margin-bottom: 28px; text-align: center; }
+    .reg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px; margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+    .form-group input, .form-group select { width: 100%; padding: 12px 14px; background: #0F172A; border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 15px; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+    .alert { padding: 12px 16px; border-radius: 6px; font-size: 14px; margin-bottom: 16px; }
+    .alert-ok { background: rgba(16,185,129,0.1); color: var(--primary); }
+    .alert-err { background: rgba(239,68,68,0.1); color: var(--danger); }
+    .hidden { display: none !important; }
+    .watch-item { border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .watch-item h4 { margin: 0 0 6px; font-size: 15px; color: var(--text); }
+    .watch-meta { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+    .watch-actions { display: flex; gap: 8px; }
+    .watch-actions button { padding: 6px 12px; font-size: 12px; border-radius: 5px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; }
+    .watch-actions button:hover { border-color: var(--primary); color: var(--primary); }
+    .event-item { padding: 8px 0; border-top: 1px solid var(--border); font-size: 13px; }
+    .event-item b { color: var(--text); }
+    .event-item span { color: var(--text2); display: block; margin-top: 2px; }
+    .event-share { display: inline-block; margin-top: 6px; font-size: 12px; color: var(--primary); text-decoration: none; }
+    .event-share:hover { text-decoration: underline; }
+    .spot-suggestions { max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; margin-top: 4px; }
+    .spot-suggestion { padding: 8px 12px; font-size: 13px; cursor: pointer; color: var(--text); }
+    .spot-suggestion:hover { background: rgba(16,185,129,0.08); }
+    .watches-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .watches-title { font-size: 18px; font-weight: 700; color: var(--text); margin: 0; }
+    .watch-empty { color: var(--text2); font-size: 14px; text-align: center; padding: 24px 0; }
+    .form-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+    .form-head h3 { margin: 0; font-size: 16px; color: var(--text); }
+    .form-cancel { background: transparent; border: none; color: var(--text2); font-size: 13px; cursor: pointer; padding: 4px 8px; }
+    .form-cancel:hover { color: var(--text); }
+  </style>
+  <link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness">
+</head>
+<body>
+  <!-- SENLAY_HEADER:app -->
+
+  <main class="reg-container">
+    <h1 class="reg-title">Watch my spot</h1>
+    <p class="reg-sub">Choose your sport, your spot, and the conditions that work for you. Senlay watches continuously and notifies you when it matters.</p>
+
+    <div id="alertBox" role="status" aria-live="polite"></div>
+
+    <div id="signedOut" class="reg-card hidden">
+      <p style="color:var(--text2);margin-bottom:16px">Sign in or create a free account to start a watch.</p>
+      <a class="btn-primary" style="display:block;text-align:center;text-decoration:none;padding:12px" href="/login.html?next=/watches/mine">Sign in</a>
+      <p style="text-align:center;margin-top:12px"><a href="/register.html?next=/watches/mine" style="color:var(--primary)">Create a free account</a></p>
+    </div>
+
+    <div id="watchesSection" class="hidden">
+      <div class="watches-head">
+        <h2 class="watches-title">Your Watches</h2>
+        <button class="btn-primary" type="button" id="newWatchButton">+ New watch</button>
+      </div>
+      <div id="watchList"></div>
+      <p id="watchEmpty" class="watch-empty hidden">No watches yet. Click "+ New watch" to have Senlay monitor a spot for you.</p>
+    </div>
+
+    <div id="watchForm" class="reg-card hidden">
+      <div class="form-head">
+        <h3>New watch</h3>
+        <button class="form-cancel" type="button" id="cancelWatchButton">Cancel</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sport">Sport</label>
+          <select id="sport">
+            <option value="kite">Kite</option>
+            <option value="wing">Wing</option>
+            <option value="windsurf">Windsurf</option>
+            <option value="surf">Surf</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="spotQuery">Spot</label>
+        <input type="text" id="spotQuery" placeholder="Search a spot, e.g. An Bang" autocomplete="off">
+        <div id="spotSuggestions" class="spot-suggestions hidden"></div>
+        <div id="spotSelected" class="watch-meta hidden"></div>
+      </div>
+      <div class="form-row" id="windFields">
+        <div class="form-group"><label for="minWind">Min wind (km/h)</label><input type="number" id="minWind" value="7"></div>
+        <div class="form-group"><label for="maxWind">Max wind (km/h)</label><input type="number" id="maxWind" value="25"></div>
+      </div>
+      <div class="form-row hidden" id="waveFields">
+        <div class="form-group"><label for="minWave">Min wave (m)</label><input type="number" id="minWave" value="0.5" step="0.1"></div>
+        <div class="form-group"><label for="maxWave">Max wave (m)</label><input type="number" id="maxWave" value="2.5" step="0.1"></div>
+      </div>
+      <div class="form-group">
+        <label><input type="checkbox" id="avoidOffshore" style="width:auto;display:inline-block;margin-right:8px">Avoid offshore wind (kite/wing/windsurf)</label>
+      </div>
+      <button class="btn-primary" type="button" style="width:100%" onclick="createWatch()">Watch this spot</button>
+    </div>
+  </main>
+
+  <script>
+    let sessionToken = '';
+    let selectedSpot = null;
+
+    function showAlert(msg, kind) {
+      const box = document.getElementById('alertBox');
+      const alert = document.createElement('div');
+      alert.className = `alert ${kind === 'error' ? 'alert-err' : 'alert-ok'}`;
+      alert.textContent = String(msg || '');
+      box.replaceChildren(alert);
+      setTimeout(() => { box.replaceChildren(); }, 6000);
+    }
+
+    function authHeaders() {
+      return { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionToken}` };
+    }
+
+    function toggleConditionFields() {
+      const sport = document.getElementById('sport').value;
+      const isWave = sport === 'surf';
+      document.getElementById('windFields').classList.toggle('hidden', isWave);
+      document.getElementById('waveFields').classList.toggle('hidden', !isWave);
+    }
+    document.getElementById('sport').addEventListener('change', toggleConditionFields);
+
+    let spotSearchTimer = null;
+    document.getElementById('spotQuery').addEventListener('input', () => {
+      selectedSpot = null;
+      document.getElementById('spotSelected').classList.add('hidden');
+      clearTimeout(spotSearchTimer);
+      const q = document.getElementById('spotQuery').value.trim().toLowerCase();
+      if (!q) { document.getElementById('spotSuggestions').classList.add('hidden'); return; }
+      spotSearchTimer = setTimeout(async () => {
+        try {
+          const sport = document.getElementById('sport').value;
+          const res = await fetch(`/api/v1/spots?sport=${encodeURIComponent(sport)}`);
+          const data = await res.json();
+          const matches = (data.spots || []).filter(s => s.name.toLowerCase().includes(q)).slice(0, 8);
+          const box = document.getElementById('spotSuggestions');
+          if (!matches.length) { box.classList.add('hidden'); box.replaceChildren(); return; }
+          box.replaceChildren();
+          for (const spot of matches) {
+            const option = document.createElement('button');
+            option.type = 'button'; option.className = 'spot-suggestion';
+            option.textContent = `${spot.name}${spot.region ? `, ${spot.region}` : ''}`;
+            option.addEventListener('click', () => {
+              selectedSpot = spot;
+              document.getElementById('spotQuery').value = spot.name;
+              box.classList.add('hidden');
+              document.getElementById('spotSelected').textContent = `${spot.lat.toFixed(4)}, ${spot.lng.toFixed(4)}`;
+              document.getElementById('spotSelected').classList.remove('hidden');
+            });
+            box.append(option);
+          }
+          box.classList.remove('hidden');
+        } catch (_) { /* best-effort search */ }
+      }, 250);
+    });
+
+    async function createWatch() {
+      if (!selectedSpot) return showAlert('Search for and select a spot from the list first.', 'error');
+      const sport = document.getElementById('sport').value;
+      const isWave = sport === 'surf';
+      const conditions = isWave
+        ? { min_wave_m: parseFloat(document.getElementById('minWave').value), max_wave_m: parseFloat(document.getElementById('maxWave').value) }
+        : {
+            min_wind_kmh: parseFloat(document.getElementById('minWind').value),
+            max_wind_kmh: parseFloat(document.getElementById('maxWind').value),
+            avoid_offshore: document.getElementById('avoidOffshore').checked
+          };
+      try {
+        const res = await fetch('/api/v1/watches', {
+          method: 'POST', headers: authHeaders(),
+          body: JSON.stringify({ sport, spot_id: selectedSpot.id, spot_name: selectedSpot.name, lat: selectedSpot.lat, lng: selectedSpot.lng, conditions })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Could not create watch.');
+        showAlert(`Senlay is now watching ${selectedSpot.name}.`, 'ok');
+        document.getElementById('spotQuery').value = '';
+        selectedSpot = null;
+        document.getElementById('watchForm').classList.add('hidden');
+        await loadWatches();
+      } catch (err) { showAlert(err.message, 'error'); }
+    }
+
+    async function evaluateNow(id) {
+      try {
+        const res = await fetch(`/api/v1/watches/${id}/evaluate`, { method: 'POST', headers: authHeaders() });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Evaluation failed.');
+        showAlert(data.events.length ? `${data.events.length} new event(s).` : 'No change since last check.', 'ok');
+        await loadWatches();
+      } catch (err) { showAlert(err.message, 'error'); }
+    }
+
+    async function setStatus(id, status) {
+      await fetch(`/api/v1/watches/${id}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify({ status }) });
+      await loadWatches();
+    }
+
+    async function deleteWatch(id) {
+      if (!confirm('Stop watching this spot?')) return;
+      await fetch(`/api/v1/watches/${id}`, { method: 'DELETE', headers: authHeaders() });
+      await loadWatches();
+    }
+
+    async function loadWatches() {
+      const res = await fetch('/api/v1/watches', { headers: authHeaders() });
+      if (!res.ok) return;
+      const data = await res.json();
+      const list = document.getElementById('watchList');
+      const empty = document.getElementById('watchEmpty');
+      if (!data.watches.length) { list.replaceChildren(); empty.classList.remove('hidden'); return; }
+      empty.classList.add('hidden');
+      const withEvents = await Promise.all(data.watches.map(async w => {
+        const evRes = await fetch(`/api/v1/watches/${w.id}/events?limit=3`, { headers: authHeaders() });
+        const evData = evRes.ok ? await evRes.json() : { events: [] };
+        return { watch: w, events: evData.events || [] };
+      }));
+      list.replaceChildren();
+      for (const { watch, events } of withEvents) {
+        const item = document.createElement('div'); item.className = 'watch-item';
+        const title = document.createElement('h4'); title.textContent = `${watch.spot_name || `${Number(watch.lat).toFixed(2)}, ${Number(watch.lng).toFixed(2)}`} · ${watch.sport}`; item.append(title);
+        const meta = document.createElement('div'); meta.className = 'watch-meta'; meta.textContent = `Status: ${watch.status}${watch.last_evaluated_at ? ` · last checked ${watch.last_evaluated_at}` : ' · not yet checked'}`; item.append(meta);
+        const actions = document.createElement('div'); actions.className = 'watch-actions';
+        const action = (label, fn) => { const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.addEventListener('click', fn); actions.append(button); };
+        action('Check now', () => evaluateNow(watch.id));
+        action(watch.status === 'active' ? 'Pause' : 'Resume', () => setStatus(watch.id, watch.status === 'active' ? 'paused' : 'active'));
+        action('Delete', () => deleteWatch(watch.id)); item.append(actions);
+        if (events.length) {
+          const eventList = document.createElement('div'); eventList.style.marginTop = '10px';
+          for (const event of events) {
+            const eventItem = document.createElement('div'); eventItem.className = 'event-item';
+            const eventTitle = document.createElement('b'); eventTitle.textContent = event.title || 'Watch update';
+            const summary = document.createElement('span'); summary.textContent = event.summary || '';
+            eventItem.append(eventTitle, summary);
+            if (event.public_safe) { const link = document.createElement('a'); link.className = 'event-share'; link.href = `/e/${encodeURIComponent(event.id)}`; link.target = '_blank'; link.rel = 'noopener'; link.textContent = 'Share this'; eventItem.append(link); }
+            eventList.append(eventItem);
+          }
+          item.append(eventList);
+        }
+        list.append(item);
+      }
+    }
+
+    document.getElementById('newWatchButton').addEventListener('click', () => {
+      document.getElementById('watchForm').classList.remove('hidden');
+      document.getElementById('watchForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    document.getElementById('cancelWatchButton').addEventListener('click', () => {
+      document.getElementById('watchForm').classList.add('hidden');
+    });
+
+    (function init() {
+      try {
+        sessionToken = sessionStorage.getItem('senlay_session_token') || localStorage.getItem('senlay_session_token') || '';
+      } catch (_) { sessionToken = ''; }
+      if (!sessionToken) {
+        document.getElementById('signedOut').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('watchesSection').classList.remove('hidden');
+      toggleConditionFields();
+      loadWatches();
+    })();
+  </script>
+  <script src="/scripts/header-menu.js"></script>
+  <script src="/scripts/app-nav.js"></script>
+</body>
+</html>

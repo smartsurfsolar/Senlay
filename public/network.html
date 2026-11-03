@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Senlay Open Network - Connect a Station</title>
-  <meta name="description" content="Attach a sensor to the Senlay Open Network and receive verified reasoning across the whole network. Open protocol, signed ingestion, and an honest account of what stays closed.">
-  <meta name="product-system" content="Senlay is the spot-level verification engine behind SmartSurf water-sports safety and outdoor/indie developer workflows.">
-  <meta property="og:title" content="Senlay Open Network - Connect a Station">
-  <meta property="og:description" content="Attach a sensor to the Senlay Open Network and receive verified reasoning across the whole network. Open protocol, signed ingestion, and an honest account of what stays closed.">
+  <title>Senlay Open Network | Physical-World Sensor Observations</title>
+  <meta name="description" content="Connect distributed sensors to source-aware environmental intelligence through signed observation ingestion and scoped contributor pilots.">
+  <meta name="product-system" content="Senlay is a physical-world intelligence infrastructure beta for autonomous systems, robotics and AI applications, providing available environmental context with source provenance and uncertainty.">
+  <meta property="og:title" content="Senlay Open Network | Physical-World Sensor Observations">
+  <meta property="og:description" content="Connect distributed sensors to source-aware environmental intelligence through signed observation ingestion and scoped contributor pilots.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://senlay.cloud/network.html">
   <meta property="og:image" content="https://senlay.cloud/assets/brand/SenlayLogo-header.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Senlay Open Network - Connect a Station">
-  <meta name="twitter:description" content="Attach a sensor to the Senlay Open Network and receive verified reasoning across the whole network. Open protocol, signed ingestion, and an honest account of what stays closed.">
+  <meta name="twitter:title" content="Senlay Open Network | Physical-World Sensor Observations">
+  <meta name="twitter:description" content="Connect distributed sensors to source-aware environmental intelligence through signed observation ingestion and scoped contributor pilots.">
   <meta name="twitter:image" content="https://senlay.cloud/assets/brand/SenlayLogo-header.png">
   <link rel="canonical" href="https://senlay.cloud/network.html">
   <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
@@ -72,56 +72,39 @@
       .boundary-grid { grid-template-columns: 1fr; }
     }
   </style>
-<link rel="stylesheet" href="/styles/dark-map-override.css?v=20260516-0536"></head>
+<link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness"></head>
 <body>
-    <header class="header">
-    <div class="header-inner">
-      <div class="logo-area">
-        <a href="/" class="logo-link" aria-label="Senlay home"><span class="logo-wordmark">SENLAY</span></a>
-      </div>
-      <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
-      <nav class="nav">
-        <a href="/">Home</a>
-        <details class="nav-menu">
-          <summary>Product</summary>
-          <div class="nav-menu-panel">
-            <a href="/demo">Demo</a>
-            <a href="/agents">For Agents</a>
-            <a href="https://smartsurf.cloud/">SmartSurf</a>
-            <a href="/network.html">Network</a>
-            <a href="/docs.html">Docs</a>
-          </div>
-        </details>
-        <a href="/pricing.html">Pricing</a>
-        <details class="nav-menu">
-          <summary>Company</summary>
-          <div class="nav-menu-panel">
-            <a href="/founder.html">Founder</a>
-            <a href="/roadmap.html">Roadmap</a>
-            <a href="/support.html">Contact</a>
-          </div>
-        </details>
-        <a href="/login.html">Sign In</a>
-        <a href="/pricing.html" class="nav-cta">Start Free API</a>
-      </nav>
-    </div>
-  </header>
+    <header class="header header--marketing" data-shared-header="marketing" data-senlay-header="marketing">
+  <div class="header-inner">
+    <div class="logo-area"><a href="/" class="logo-link" aria-label="SENLAY, short for Sensory Layer" title="SENLAY = Sensory Layer"><span class="logo-lockup"><span class="logo-wordmark">SENLAY</span><span class="logo-definition">Sensory Layer</span></span></a></div>
+    <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <details class="nav-menu"><summary>Product</summary><div class="nav-menu-panel"><a href="/">Senlay overview</a><a href="/#physical-world-model">Physical World Model</a><a href="/#verification">Environmental verification</a><a href="/agents">For AI agents</a><a href="https://smartsurf.cloud/">SmartSurf</a></div></details>
+      <a href="/robotics/">Robotics</a>
+      <a href="/demo">Live Demo</a>
+      <a href="/docs.html">Developers</a>
+      <a href="/network.html">Sensor Network</a>
+      <a href="/pricing.html">Pricing</a>
+      <details class="nav-menu"><summary>Company</summary><div class="nav-menu-panel"><a href="/founder.html">Founder</a><a href="/roadmap.html">Roadmap</a><a href="/investors.html">Company brief</a><a href="/support.html">Contact</a><a href="/login.html">Sign In</a></div></details>
+      <a href="/register.html" class="nav-cta">Create API Key</a>
+    </nav>
+  </div>
+</header>
 
-  <div class="network-container">
-    <h1 class="network-title">Senlay Open Network</h1>
-    <p class="network-sub">Attach a sensor, publish signed observations, and read verified evidence back &mdash; from every station on the network, not just your own.</p>
+  <main class="network-container">
+    <h1 class="network-title">A distributed sensor network for physical-world intelligence.</h1>
+    <p class="network-sub">Independently operated sensors can contribute signed observations to Senlay’s physical-world context. Discuss a limited contributor pilot; coverage, source rights, API limits and access are confirmed manually.</p>
 
     <section class="network-section" id="what-you-get">
-      <h2>Attach a sensor. Get the whole network.</h2>
-      <p>Senlay is reciprocal. Contribute an instrument and you receive verified reasoning across the entire network &mdash; not just your own readings. A single station buys access to everything around it.</p>
-      <p>Your station's accepted observations appear in later verification responses as explicitly labelled direct station evidence, alongside the sources already covering that coordinate.</p>
-      <p><strong>Pilot access:</strong> contributor access is arranged with Senlay during onboarding. Registering a station does not automatically remove your account's API limits.</p>
+      <h2>Contribute observations through a scoped pilot.</h2>
+      <p>Registering a station does not automatically grant unlimited API access. Contributor eligibility, source rights, available coverage, quotas and pilot duration are agreed with Senlay before deployment.</p>
+      <p>Accepted observations can appear as labelled station evidence alongside other available sources. Senlay preserves station identity and checks freshness and basic data quality. Robotic platforms as moving contributors are a future direction, not a current network entitlement.</p>
     </section>
 
     <section class="network-section" id="quality">
-      <h2>Bad sensors do not break this.</h2>
-      <p>Volunteer sensor networks normally drown in noise. Instruments end up beside air-conditioning units, in direct sun, or uncalibrated, and the platforms hosting them spend years fighting the resulting quality problem.</p>
-      <p>Senlay reports source distance, freshness and available model disagreement. Community stations also have reporting-health checks. Calibration-document review and continuous comparison of community stations against neighbouring instruments are still in development.</p>
+      <h2>Inspect station quality and its limits.</h2>
+      <p>Station placement, exposure, calibration and maintenance can affect a reading. Distance alone does not establish that a measurement represents the requested coordinate.</p>
+      <p>Senlay exposes source distance, freshness, basic plausibility checks and available model disagreement. Calibration and neighbouring-station validation remain pilot work. A station observation should be treated as evidence with uncertainty, not assumed ground truth.</p>
     </section>
 
     <div class="network-divider"></div>
@@ -146,7 +129,7 @@
 
       <div class="secret-callout">
         <span class="icon">&#9888;</span>
-        <p><strong>Save the station secret when it is returned.</strong> The server retains only a non-recoverable hash and cannot show it again. If you lose it, rotate the secret in the dashboard and update the device configuration.</p>
+        <p><strong>Save the station secret when it is returned.</strong> The original secret is shown once. The server stores a derived signing key that remains sensitive and can authenticate station submissions. If the original secret is lost, rotate it in the dashboard and update the station software; an in-person visit is not inherently required.</p>
       </div>
 
       <p>Before publishing live data, use the dashboard's <em>Send signed test</em> action to verify the station secret and payload shape without storing a fake observation. Then publish signed observations:</p>
@@ -195,90 +178,19 @@
     </section>
   </div>
 
-  <footer class="senlay-unified-footer" aria-label="Senlay site footer">
+  </main>
+  <footer data-senlay-footer="shared" class="senlay-unified-footer" aria-label="Senlay site footer">
   <div class="senlay-footer-shell">
-    <div class="senlay-footer-lead">
-      <div>
-        <a class="senlay-footer-brand" href="/">SENLAY</a>
-        <p>A reciprocal verification network in pilot onboarding. Contribute a sensor and help test verified context around it; consume without contributing and use the public beta while coverage is still limited.</p>
-      </div>
-      <div class="senlay-footer-cta">
-        <a href="https://smartsurf.cloud/">Explore SmartSurf</a>
-        <a href="/demo">Try Live Demo</a>
-        <a href="/docs.html">Read Docs</a>
-      </div>
-    </div>
-
+    <div class="senlay-footer-lead"><div><a class="senlay-footer-brand" href="/">SENLAY</a><p>Physical-world intelligence for autonomous systems and AI applications. Coverage and quality vary by place and source availability.</p></div><div class="senlay-footer-cta"><a href="/robotics/">Robotics overview</a><a href="/docs.html">Explore API docs</a><a href="/support.html?topic=robotics">Discuss an integration</a></div></div>
     <div class="senlay-footer-grid">
-      <div class="senlay-footer-col">
-        <h4>Senlay Product</h4>
-        <a href="/">Home</a>
-        <a href="/demo">Live verification demo</a>
-        <a href="/agents">For outdoor agents</a>
-        <a href="/network.html">Open network</a>
-        <a href="/pricing.html">Pricing</a>
-        <a href="/roadmap.html">Roadmap</a>
-        <a href="/live-agent.html">Live agent page</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Build</h4>
-        <a href="/docs.html">API docs</a>
-        <a href="/docs.html#verification-glossary">Verification glossary</a>
-        <a href="/openapi.json">OpenAPI JSON</a>
-        <a href="/openapi.yaml">OpenAPI YAML</a>
-        <a href="/llms.txt">llms.txt</a>
-        <a href="/llms-full.txt">llms-full.txt</a>
-        <a href="/agent-manifest.json">Agent manifest</a>
-        <a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="/dashboard.html">Developer dashboard</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Verification Terms</h4>
-        <a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a>
-        <a href="/docs.html#term-source-provenance">Source provenance</a>
-        <a href="/docs.html#term-freshness">Freshness</a>
-        <a href="/docs.html#term-confidence">Confidence</a>
-        <a href="/docs.html#term-uncertainty">Uncertainty</a>
-        <a href="/docs.html#term-model-vs-reality">Model-vs-reality check</a>
-        <a href="/docs.html#term-risk-event">risk_event</a>
-        <a href="/docs.html#term-decision-support">Decision-support boundary</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>SmartSurf</h4>
-        <a href="https://smartsurf.cloud/">SmartSurf landing</a>
-        <a href="https://smartsurf.cloud/#schools">School safety workflow</a>
-        <a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a>
-        <a href="https://smartsurf.cloud/#shop">Tracker hardware</a>
-        <a href="https://smartsurf.cloud/#pricing">SmartSurf pricing</a>
-        <a href="https://app.smartsurf.global/">Open rider app</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Company</h4>
-        <a href="/founder.html">Founder story</a>
-        <a href="/investors.html">Investor brief</a>
-        <a href="/investors/deck">Investor deck</a>
-        <a href="/support.html">Contact / pilots</a>
-        <a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a>
-        <a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-      </div>
-      <div class="senlay-footer-col senlay-footer-sources">
-        <h4>Source Networks</h4>
-        <p>Coverage depends on coordinate, freshness, and upstream availability.</p>
-        <a href="/sensor-catalog.json">Sensor catalog JSON</a>
-        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
-        <a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a>
-        <a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a>
-        <a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a>
-        <a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a>
-        <a href="https://dataspace.copernicus.eu/" target="_blank" rel="noopener noreferrer">Copernicus</a>
-        <a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a>
-      </div>
+      <div class="senlay-footer-col"><h4>Senlay</h4><a href="/">Overview</a><a href="/robotics/">Robotics &amp; autonomous systems</a><a href="/demo">Live demo</a><a href="/agents">For AI agents</a><a href="/pricing.html">Pricing</a><a href="/roadmap.html">Roadmap</a></div>
+      <div class="senlay-footer-col"><h4>Build</h4><a href="/docs.html">API docs</a><a href="/openapi.json">OpenAPI JSON</a><a href="/openapi.yaml">OpenAPI YAML</a><a href="/llms.txt">llms.txt</a><a href="/agent-manifest.json">Agent manifest</a><a href="/dashboard.html">Developer dashboard</a><a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+      <div class="senlay-footer-col"><h4>Evidence model</h4><a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a><a href="/docs.html#term-source-provenance">Source provenance</a><a href="/docs.html#term-freshness">Freshness</a><a href="/docs.html#term-confidence">Confidence</a><a href="/docs.html#term-uncertainty">Uncertainty</a><a href="/docs.html#term-model-vs-reality">Forecast and observation checks</a><a href="/docs.html#term-risk-event">risk_event</a></div>
+      <div class="senlay-footer-col"><h4>SmartSurf</h4><a href="https://smartsurf.cloud/">SmartSurf landing</a><a href="https://smartsurf.cloud/#schools">School workflows</a><a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a><a href="https://app.smartsurf.cloud/">Open rider app</a></div>
+      <div class="senlay-footer-col"><h4>Company</h4><a href="/founder.html">Founder story</a><a href="/investors.html">Investor brief</a><a href="/support.html">Contact / pilots</a><a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a><a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+      <div class="senlay-footer-col senlay-footer-sources"><h4>Source networks</h4><p>Coverage depends on coordinate, freshness, licensing, and upstream availability.</p><a href="/sensor-catalog.json">Sensor catalog JSON</a><a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a><a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a><a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a><a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a><a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a></div>
     </div>
-
-    <div class="senlay-footer-bottom">
-      <span>&copy; 2026 Senlay. Built in Vietnam. Decision support only, not final safety authority.</span>
-      <span><a href="/login.html">Sign in</a> <a href="/register.html">Create free API key</a> <a href="/support.html">Pilot contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span>
-    </div>
+    <div class="senlay-footer-bottom"><span>&copy; 2026 Senlay. Decision support only. Operators and onboard safety systems retain authority.</span><span><a href="/login.html">Sign in</a> <a href="/register.html">Create API key</a> <a href="/support.html">Contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span></div>
   </div>
 </footer>
 

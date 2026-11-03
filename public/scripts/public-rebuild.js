@@ -53,35 +53,3 @@ document.querySelectorAll('[data-sport]').forEach((button) => {
     document.querySelector('[data-decision]').textContent = data.decision;
   });
 });
-
-function addHomeLayerStackSection() {
-  if (document.body?.dataset.page !== 'home') return;
-  const main = document.querySelector('main');
-  if (!main || document.querySelector('[data-layer-stack-home]')) return;
-
-  const section = document.createElement('section');
-  section.className = 'section';
-  section.dataset.layerStackHome = 'true';
-  section.innerHTML = `
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Layer stack</span>
-        <h2>A physical-world layer catalog for outdoor AI.</h2>
-        <p>The main Senlay app exposes a versioned layer stack for live sensors, forecast models, terrain elevation, satellite visual context, hazards, and risk operations. Datum-qualified bathymetry, land cover, obstacles, coastline/access, and telemetry remain explicit planned or customer-supplied layers. Static geodata stays precomputed and cached.</p>
-      </div>
-      <div class="grid-3">
-        <article class="card"><span class="tag">Available now</span><h3>Sensors, models, terrain elevation, hazards, risk.</h3><p>Demo responses include the current layer context beside deterministic risk events so agents can explain what is known, what is inferred, and what remains unavailable.</p></article>
-        <article class="card"><span class="tag blue">Provider catalog</span><h3>Active and planned sources stay distinct.</h3><p>NOAA, correctly licensed Open-Meteo endpoints, AviationWeather, keyed OpenAQ, NASA, USGS, and configured sensor networks are active where covered. GEBCO, WorldCover, buildings, Overture, and Natural Earth are cataloged as future static layers until actually ingested. GEBCO is coarse regional depth context, not a chart or a detector for spot-scale reefs, sandbars, or obstructions.</p></article>
-        <article class="card"><span class="tag amber">Next layers</span><h3>Roughness, buildings, access, and telemetry.</h3><p>The roadmap adds cached roughness sectors, building/obstacle density, rescue/access vectors, and SmartSurf or customer device telemetry without blocking live public routes.</p></article>
-      </div>
-      <div class="actions">
-        <a class="button blue" href="/demo">Try layer-aware demo</a>
-        <a class="button soft" href="/api/layers/catalog">View layer catalog JSON</a>
-        <a class="button soft" href="/docs.html">Read API docs</a>
-      </div>
-    </div>
-  `;
-  main.appendChild(section);
-}
-
-addHomeLayerStackSection();

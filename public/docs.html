@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Senlay Docs - Spot-Level Verification API</title>
-  <meta name="description" content="Senlay API docs for the reciprocal verification network: spot-level verification, source freshness, confidence, risk events, the open contributor protocol, and SmartSurf-style safety workflows.">
-  <meta name="product-system" content="Senlay is the spot-level verification engine behind SmartSurf water-sports safety and outdoor/indie developer workflows.">
-  <meta property="og:title" content="Senlay Docs - Spot-Level Verification API">
-  <meta property="og:description" content="Senlay API docs for the reciprocal verification network: spot-level verification, source freshness, confidence, risk events, the open contributor protocol, and SmartSurf-style safety workflows.">
+  <title>Senlay API and MCP Documentation | Physical-World Intelligence</title>
+  <meta name="description" content="Build with source-aware environmental context, the Physical World Model, REST, MCP and sensor ingestion.">
+  <meta name="product-system" content="Senlay is a physical-world intelligence infrastructure beta for autonomous systems, robotics and AI applications, providing available environmental context with source provenance and uncertainty.">
+  <meta property="og:title" content="Senlay API and MCP Documentation | Physical-World Intelligence">
+  <meta property="og:description" content="Build with source-aware environmental context, the Physical World Model, REST, MCP and sensor ingestion.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://senlay.cloud/docs.html">
   <meta property="og:image" content="https://senlay.cloud/assets/brand/SenlayLogo-header.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Senlay Docs - Spot-Level Verification API">
-  <meta name="twitter:description" content="Senlay API docs for the reciprocal verification network: spot-level verification, source freshness, confidence, risk events, the open contributor protocol, and SmartSurf-style safety workflows.">
+  <meta name="twitter:title" content="Senlay API and MCP Documentation | Physical-World Intelligence">
+  <meta name="twitter:description" content="Build with source-aware environmental context, the Physical World Model, REST, MCP and sensor ingestion.">
   <meta name="twitter:image" content="https://senlay.cloud/assets/brand/SenlayLogo-header.png">
   <link rel="canonical" href="https://senlay.cloud/docs.html">
   <script type="application/ld+json">
@@ -23,7 +23,7 @@
       {
         "@type": "TechArticle",
         "headline": "Senlay API Documentation",
-        "description": "Documentation for the Senlay physical-world verification API for AI agents and safety workflows.",
+        "description": "Documentation for Senlay environmental evidence API and MCP integrations for operator review.",
         "url": "https://senlay.cloud/docs.html"
       },
       {
@@ -83,40 +83,24 @@
       .docs-table td, .docs-table th { padding: 6px 8px; }
     }
   </style>
-<link rel="stylesheet" href="/styles/dark-map-override.css?v=20260516-0536"></head>
+<link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness"></head>
 <body>
-    <header class="header">
-    <div class="header-inner">
-      <div class="logo-area">
-        <a href="/" class="logo-link" aria-label="Senlay home"><span class="logo-wordmark">SENLAY</span></a>
-      </div>
-      <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
-      <nav class="nav">
-        <a href="/">Home</a>
-        <details class="nav-menu">
-          <summary>Product</summary>
-          <div class="nav-menu-panel">
-            <a href="/demo">Demo</a>
-            <a href="/agents">For Agents</a>
-            <a href="https://smartsurf.cloud/">SmartSurf</a>
-            <a href="/network.html">Network</a>
-            <a href="/docs.html">Docs</a>
-          </div>
-        </details>
-        <a href="/pricing.html">Pricing</a>
-        <details class="nav-menu">
-          <summary>Company</summary>
-          <div class="nav-menu-panel">
-            <a href="/founder.html">Founder</a>
-            <a href="/roadmap.html">Roadmap</a>
-            <a href="/support.html">Contact</a>
-          </div>
-        </details>
-        <a href="/login.html">Sign In</a>
-        <a href="/pricing.html" class="nav-cta">Start Free API</a>
-      </nav>
-    </div>
-  </header>
+    <header class="header header--marketing" data-shared-header="marketing" data-senlay-header="marketing">
+  <div class="header-inner">
+    <div class="logo-area"><a href="/" class="logo-link" aria-label="SENLAY, short for Sensory Layer" title="SENLAY = Sensory Layer"><span class="logo-lockup"><span class="logo-wordmark">SENLAY</span><span class="logo-definition">Sensory Layer</span></span></a></div>
+    <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <details class="nav-menu"><summary>Product</summary><div class="nav-menu-panel"><a href="/">Senlay overview</a><a href="/#physical-world-model">Physical World Model</a><a href="/#verification">Environmental verification</a><a href="/agents">For AI agents</a><a href="https://smartsurf.cloud/">SmartSurf</a></div></details>
+      <a href="/robotics/">Robotics</a>
+      <a href="/demo">Live Demo</a>
+      <a href="/docs.html">Developers</a>
+      <a href="/network.html">Sensor Network</a>
+      <a href="/pricing.html">Pricing</a>
+      <details class="nav-menu"><summary>Company</summary><div class="nav-menu-panel"><a href="/founder.html">Founder</a><a href="/roadmap.html">Roadmap</a><a href="/investors.html">Company brief</a><a href="/support.html">Contact</a><a href="/login.html">Sign In</a></div></details>
+      <a href="/register.html" class="nav-cta">Create API Key</a>
+    </nav>
+  </div>
+</header>
 
   <button class="sidebar-toggle" onclick="document.querySelector('.docs-sidebar').classList.toggle('open')">Documentation Menu</button>
 
@@ -124,6 +108,7 @@
     <nav class="docs-sidebar">
       <div class="sidebar-section">Getting Started</div>
       <a href="#overview">Overview</a>
+      <a href="#robotics-adapters">Robotics telemetry examples</a>
       <a href="#provenance">Provenance &amp; Evidence</a>
       <a href="#auth">Authentication</a>
       <a href="#quickstart">Quick Start</a>
@@ -150,13 +135,20 @@
     </nav>
 
     <main class="docs-main">
+      <h1>Senlay API and MCP documentation</h1>
 
       <h2 id="overview">Overview</h2>
-      <p>Senlay is a spot-level verification API for SmartSurf, outdoor AI apps, IoT products, and safety applications &mdash; verified physical context for systems that act outside: AI agents, drones, robots, and safety systems. It is not a weather API wrapper: each response is built to explain what is happening at a coordinate, which sources support it, how fresh they are, whether they disagree, and what the decision context means.</p>
-      <p>The <strong style="color:var(--text)">Physical World Model (PWM)</strong> is a real-time, multi-layered representation of physical conditions at a coordinate. One verification request can combine available data from <strong style="color:var(--text)">21 source families</strong> &mdash; including hardware weather stations, ocean buoys, tide gauges, seismometers, models, and satellites &mdash; into a unified response your AI can immediately use.</p>
+      <p class="demo-boundary"><strong>Evaluation beta.</strong> Commercial Open-Meteo access has not been arranged. Confirm commercial source rights and configuration before commercial deployment; actual availability depends on current deployment settings. The API is not flight or mission clearance.</p>
+      <p>Senlay is a physical-world intelligence infrastructure beta for autonomous systems, robotics and AI applications. It returns available environmental observations, model values and contextual evidence for a coordinate, including provenance, timestamps, distance, disagreement and uncertainty where available. SmartSurf is the product origin and reference application. Begin with the <a href="/robotics/">robotics integration overview</a> for current capability boundaries. Each request depends on the sources available at its coordinate.</p>
+      <p>The <strong style="color:var(--text)">Physical World Model (PWM)</strong> returns available environmental evidence for a coordinate. The catalog lists 23 source-family entries; entries are adapters or provider families, not a count of live sources at a coordinate. Actual configured, returned, and unavailable sources are reported separately.</p>
       <p>The <strong style="color:var(--text)">Senlay layer stack</strong> adds a versioned catalog for live sensors, forecast models, terrain elevation, satellite visual context, hazards, and risk operations, plus planned bathymetry, land cover/roughness, buildings/obstacles, coastline/access, and telemetry layers. Runtime status explicitly distinguishes active data from layers that are not loaded. Heavy static layers require background preprocessing and compact cached spot summaries.</p>
-      <p>For developer workflows, the response can include a pre-formatted <code>context_string</code> ready to inject into an LLM context. For safety workflows such as SmartSurf, Senlay can also produce <code>risk_event</code> records that turn physical evidence into alertable and auditable operational context.</p>
-      <p><strong style="color:var(--text)">Measured observations vs. predictions.</strong> METAR stations, ocean buoys, and tide gauges produce <em>measured</em> readings. Weather models produce <em>predicted</em> values. When they disagree, Senlay gives hardware a higher evidence weight &mdash; while still exposing freshness, distance to the source, data quality, and uncertainty so your agent can reason about how much to trust any single value.</p>
+      <p>For developer workflows, the response can include a pre-formatted <code>context_string</code> with available evidence and limits. Pass it to an LLM as data/tool output under your application's instructions. For workflows such as SmartSurf, Senlay can also produce <code>risk_event</code> records for alertable and auditable operational context.</p>
+      <p><strong style="color:var(--text)">Measured observations vs. predictions.</strong> METAR stations, ocean buoys, and tide gauges produce <em>measured</em> readings. Weather models produce <em>predicted</em> values. When they disagree, Senlay reports the available values and relevant freshness, distance, data quality, and uncertainty; an instrument reading is not automatically ground truth.</p>
+      <p id="robotics-adapters"><strong style="color:var(--text)">Robotics telemetry examples.</strong> The project includes read only reference adapters for CRC-checked MAVLink 1/2 position frames over UDP and ROS 2 <code>sensor_msgs/msg/NavSatFix</code> through rosbridge. They use the existing authenticated <code>GET /api/v1/pwm</code> endpoint and do not issue robot commands. ROS 2 and rosbridge are separate prerequisites; the examples do not convert local-coordinate messages, authenticate MAVLink senders, evaluate routes, or provide safety clearance. See the <a href="/robotics/#robotics-adapters">adapter details and limits</a>.</p>
+
+      <section aria-label="Run the robotics example"><h3>Run the synthetic robotics example</h3><p>Node.js 22; no npm install. Download <a href="/downloads/senlay-robotics-v0.1.0.zip" download>senlay-robotics-v0.1.0.zip</a>, then run:</p><pre class="code-block">unzip senlay-robotics-v0.1.0.zip
+cd senlay-robotics-v0.1.0
+node examples/robotics/robotics-context.mjs --transport replay</pre><p>The replay position and environmental values are synthetic, with no key, network, hardware or robot commands. For live MAVLink UDP or ROS 2 rosbridge, follow the bundled README and <a href="/robotics/#robotics-adapters">transport requirements, shared API limits and capability boundaries</a>.</p></section>
 
       <h3>Direct answers for agents and developers</h3>
       <table class="docs-table">
@@ -167,71 +159,90 @@
           <tr><td><strong>How do safety apps consume alerts?</strong></td><td>Use <code>/api/v1/risk-events</code> and <code>/api/v1/risk-events/recent</code> for operational risk records suitable for SmartSurf-style station, lifeguard, and audit workflows.</td></tr>
           <tr><td><strong>How do agents inspect the layer stack?</strong></td><td>Use <code>/api/v1/layers/catalog</code> for provider/layer metadata and <code>/api/v1/layers/context</code> for a coordinate-specific layer context.</td></tr>
           <tr><td><strong>What happens when data is missing?</strong></td><td>Senlay returns the available context and should expose uncertainty. Agents should not invent missing measurements.</td></tr>
-          <tr><td><strong>How should an LLM use <code>context_string</code>?</strong></td><td>Inject it before answering, cite source/freshness/confidence, and present decision support rather than guaranteed safety.</td></tr>
+          <tr><td><strong>How should an LLM use <code>context_string</code>?</strong></td><td>Pass it as data/tool output under the application's instructions. Preserve source, time, distance, disagreement, and unknowns. It is decision support, not flight or mission clearance.</td></tr>
         </tbody>
       </table>
 
       <h3 id="provenance">Provenance &amp; Evidence</h3>
-      <p>Every PWM response carries source-and-freshness metadata so your agent knows <em>how</em> it knows. The platform is moving toward a fully structured <strong style="color:var(--text)">Senlay Evidence Object</strong> per claim &mdash; this is the shape to expect:</p>
+      <p>Current PWM responses expose provenance across fields such as <code>current_source</code>, <code>source_use</code>, per-layer source labels, timestamps, modifiers, and decision context. The example below is a synthetic concept sketch, not a current response schema or a promise that every field is returned.</p>
       <div class="code-block-wrap">
-        <div class="code-header">JSON &mdash; Evidence Object (target shape) <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-header">Synthetic evidence concept (not an API contract) <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
         <pre class="code-block">{
-  "claim": "Wave height is 0.7 m",
-  "value": 0.7,
-  "unit": "m",
-  "evidence_type": "measured_telemetry",
+  "claim": "Wind speed observations differ from the model",
+  "value": 18,
+  "unit": "km/h",
+  "evidence_type": "synthetic_observation",
   "source": {
-    "type": "buoy",
-    "id": "KLIH1",
-    "distance_km": 18,
-    "timestamp": "2026-04-18T11:48:00Z"
+    "type": "sample_station",
+    "id": "SYNTHETIC-01",
+    "distance_km": 4.2,
+    "timestamp": "2026-01-15T12:00:00Z"
   },
-  "freshness": "recent",
-  "confidence": "medium_high",
+  "model_value": 12,
+  "model_timestamp": "2026-01-15T12:00:00Z",
+  "difference_kmh": 6,
   "model_disagreement": {
-    "forecast_value": 0.5,
-    "difference": 0.2
+    "status": "values_differ"
   },
-  "interpretation": "Small but measurable swell; suitable for low-risk coastal activity.",
-  "uncertainty": "Nearest buoy is 18 km away; local break conditions may vary."
+  "interpretation": "Synthetic example only; inspect source quality and representativeness.",
+  "uncertainty": "Distance, calibration, and local conditions may limit relevance."
 }</pre>
       </div>
-      <p>Today this metadata is exposed across <code>current_source</code>, <code>source_use</code>, per-layer source labels, interaction/domain modifiers, decision context, and the <code>context_string</code>. Confidence scoring, freshness decay, and explicit disagreement flags are landing as part of <a href="roadmap.html" style="color:var(--primary)">Evidence Object v1</a>.</p>
+      <p>The proposed, versioned Evidence Object is a roadmap item; check the <a href="roadmap.html" style="color:var(--primary)">roadmap</a> for its status. Use the current API response and <a href="/openapi.json">OpenAPI contract</a> for integration.</p>
 
       <h4>Evidence-shaped context_string</h4>
-      <p>The pre-formatted <code>context_string</code> reads like provenance-aware prose, ready to inject into any LLM:</p>
+      <p>The pre-formatted <code>context_string</code> summarizes available evidence. This synthetic wind illustration is not live data and does not establish a trend:</p>
       <div class="code-block-wrap">
         <div class="code-header">Example context_string <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre class="code-block">Current Maui ocean state: 0.7 m waves measured by NDBC buoy KLIH1
-18 km away, updated 12 minutes ago. Confidence medium-high.
-Forecast underestimates the live measurement by 0.2 m &mdash; treat
-conditions as building. Local break conditions may vary by exposure.</pre>
+        <pre class="code-block">SYNTHETIC EXAMPLE — NOT CURRENT DATA
+At 2026-01-15 12:00 UTC, a sample station 4.2 km away reports
+wind at 18 km/h; a model value for the same valid time is 12 km/h.
+The values differ by 6 km/h. Check timestamps, calibration, and
+representativeness. A single comparison does not establish a trend.</pre>
       </div>
 
       <h2 id="auth">Authentication</h2>
-      <p>Production endpoints require a Bearer token. The public <code>/api/v1/try-sense</code> endpoint is a limited no-key trial for browser-based chat agents.</p>
+      <p>Authenticated API endpoints require a Bearer token. The public <code>/api/v1/try-sense</code> endpoint is a limited no-key trial for browser-based chat agents.</p>
       <div class="code-block-wrap">
         <div class="code-header">HTTP Header <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
         <pre class="code-block">Authorization: Bearer sl_live_your_key_here</pre>
       </div>
-      <p>Start with pricing: <a href="pricing.html" style="color:var(--primary)">senlay.cloud/pricing</a> - then create a free key, no credit card.</p>
+      <p>See <a href="pricing.html" style="color:var(--primary)">current beta access and limits</a>, then create an account and API key for authenticated requests. A key does not grant commercial source rights.</p>
 
       <h2 id="quickstart">Quick Start</h2>
-      <p>For a chat model that can browse but cannot send POST bodies or Bearer headers, use the no-key trial URL:</p>
+      <p>For drones, Senlay presents wind observations and available model indications of rain and thunderstorms. Local rainfall and lightning are not directly measured by this assessment. Aircraft limits, route, altitude, visibility and operational permission remain outside its scope. The example below requests the existing wind collection profile. This example reports the HTTP status before interpreting a response; a non-2xx response is an API error, not evidence.</p>
+      <div class="code-block-wrap"><div class="code-header">Python requests <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre class="code-block">import os
+import requests
+
+url = "https://senlay.cloud/api/v1/pwm"
+params = {"lat": 37.6213, "lng": -122.3790, "field": "drone", "profile": "wind"}
+response = requests.get(url, params=params, headers={"Authorization": f"Bearer {os.environ['SENLAY_API_KEY']}"}, timeout=20)
+print("HTTP", response.status_code)
+if not response.ok:
+    raise RuntimeError(f"Senlay API error {response.status_code}: {response.text}")
+data = response.json()
+assessment = data.get("risk_assessment", {})
+print("outcome:", assessment.get("outcome", data.get("outcome")))
+print("evaluation_scope:", assessment.get("evaluation_scope", data.get("evaluation_scope")))
+print("unknowns:", assessment.get("unknowns", data.get("unknowns", [])))
+for layer_name, layer in data.get("pwm", {}).get("layers", {}).items():
+    source = layer.get("current_source") or {}
+    print(layer_name, source.get("source"), source.get("timestamp"), source.get("distance_km"))</pre></div>
+      <p>For a chat model that can browse but cannot send POST bodies or Bearer headers, use the rate-limited no-key evaluation URL:</p>
       <div class="code-block-wrap">
         <div class="code-header">Plain URL <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre class="code-block">https://senlay.cloud/api/v1/try-sense?lat=15.8801&amp;lng=108.3380&amp;field=kitesurfing&amp;agentName=ChatGPT_Test_Agent</pre>
+        <pre class="code-block">https://senlay.cloud/api/v1/try-sense?lat=37.6213&amp;lng=-122.3790&amp;field=drone&amp;agentName=ExampleAgent</pre>
       </div>
       <p>For a self-updating browser view of the same request, open the live page URL:</p>
       <div class="code-block-wrap">
         <div class="code-header">Live Page <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre class="code-block">https://senlay.cloud/agents/live?lat=15.8801&amp;lng=108.3380&amp;field=kitesurfing&amp;agentName=ChatGPT_Test_Agent&amp;request=Can%20I%20kite%20safely%20now%3F</pre>
+        <pre class="code-block">https://senlay.cloud/agents/live?lat=37.6213&amp;lng=-122.3790&amp;field=drone&amp;agentName=ExampleAgent&amp;request=Summarize%20available%20wind%20evidence%20and%20unknowns%20for%20operator%20review</pre>
       </div>
-      <p>For production agents, create a free key and call the authenticated API:</p>
+      <p>For repeated beta evaluation requests, create a free key and call the authenticated API. A key does not grant commercial source rights or establish production readiness.</p>
       <div class="code-block-wrap">
         <div class="code-header">curl <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
         <pre class="code-block">curl -H "Authorization: Bearer sl_live_your_key" \
-  "https://senlay.cloud/api/v1/pwm?lat=36.01&lng=-5.60&field=drone"</pre>
+  "https://senlay.cloud/api/v1/pwm?lat=36.01&lng=-5.60&field=drone&profile=wind"</pre>
       </div>
       <p>For plain text output (no JSON parsing needed):</p>
       <div class="code-block-wrap">
@@ -241,7 +252,7 @@ conditions as building. Local break conditions may vary by exposure.</pre>
       </div>
 
       <h2 id="mcp">MCP Server</h2>
-      <p>Connect an MCP-capable agent directly to <code>https://senlay.cloud/mcp</code>. Anonymous trial access needs no installation, account, or OAuth flow. Add an optional Senlay API key as a Bearer header to use the key owner's account tier.</p>
+      <p>Connect an MCP-capable agent directly to <code>https://senlay.cloud/mcp</code>. Anonymous evaluation access needs no installation, account, or OAuth flow. Add an optional Senlay API key as a Bearer header to use the key owner's published beta allowance. The four tools are <code>sense_location</code>, <code>check_operability</code>, <code>list_domains</code>, and <code>get_forecast_trust</code>.</p>
       <div class="code-block-wrap">
         <div class="code-header">MCP client configuration <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
         <pre class="code-block">{
@@ -252,19 +263,20 @@ conditions as building. Local break conditions may vary by exposure.</pre>
   }
 }</pre>
       </div>
-      <p>The server uses stateless Streamable HTTP and MCP protocol <code>2026-07-28</code>, with stateless fallback for compatible 2025-era clients. It exposes exactly three tools:</p>
+      <p>The server uses stateless Streamable HTTP. The MCP SDK negotiates a compatible protocol version during <code>initialize</code>; clients should not rely on a fixed version in health metadata. It exposes four tools:</p>
       <table class="docs-table">
         <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
         <tbody>
           <tr><td><code>sense_location</code></td><td>Evidence and provenance for current physical conditions, including source distance, age, measured/predicted status, confidence, divergence, and unavailable evidence.</td></tr>
           <tr><td><code>check_operability</code></td><td>Domain-specific deterministic risk events, thresholds, exceeded conditions, unknowns, and assessment uncertainty. Decision support only; humans remain the final authority.</td></tr>
           <tr><td><code>list_domains</code></td><td>Static list of supported operational domains and a brief of their evidence/threshold logic.</td></tr>
+          <tr><td><code>get_forecast_trust</code></td><td>Historical forecast reliability by wind speed and direction; returns UNKNOWN until eligible archived forecast and instrument pairs are sufficient.</td></tr>
         </tbody>
       </table>
-      <p>For authenticated use, configure the same URL with <code>Authorization: Bearer sl_live_your_key</code>. Anonymous limits return a direct link to <code>POST /api/v1/agent-register</code>. The optional <code>time</code> input currently accepts only present-time requests; historical and future requests fail explicitly rather than being silently treated as current.</p>
+      <p>For authenticated use, configure the same URL with <code>Authorization: Bearer sl_live_your_key</code>. Treat historical forecast trust as UNKNOWN unless the response establishes it. Anonymous limits return a direct link to <code>POST /api/v1/agent-register</code>. The optional <code>time</code> input currently accepts only present-time requests; historical and future requests fail explicitly rather than being silently treated as current.</p>
 
       <h2 id="try-sense"><span class="method-badge method-get">GET</span> /api/v1/try-sense</h2>
-      <p>Public, no-key trial endpoint for chat agents with browsing. It returns plain text, includes instructions for the model, and is rate-limited. Use this when a user wants to paste one URL into ChatGPT, Claude, Gemini, or another agent and immediately ground the conversation in live physical context.</p>
+      <p>Public, no-key evaluation endpoint for chat agents with browsing. It returns plain text, includes usage guidance, and is rate-limited. Use it to inspect currently available source context; coverage and freshness vary, and a response may contain gaps or no usable observation.</p>
       <div class="code-block-wrap">
         <div class="code-header">GET URL <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
         <pre class="code-block">https://senlay.cloud/api/v1/try-sense?lat=36.01&amp;lng=-5.60&amp;field=drone&amp;agentName=MyChatAgent</pre>
@@ -294,6 +306,7 @@ conditions as building. Local break conditions may vary by exposure.</pre>
           <tr><td><code>lat</code></td><td>Yes</td><td>Latitude (-90 to 90)</td></tr>
           <tr><td><code>lng</code></td><td>Yes</td><td>Longitude (-180 to 180)</td></tr>
           <tr><td><code>field</code></td><td>No</td><td>Optional reasoning mode used when building <code>context_string</code></td></tr>
+          <tr><td><code>profile</code></td><td>No</td><td>Use <code>profile=wind</code> for the wind collection profile; the drone assessment also reports available model rain and thunderstorm indications. It does not add route, aircraft, obstacle, weather-clearance, or mission evaluation.</td></tr>
         </tbody>
       </table>
 
@@ -380,9 +393,10 @@ conditions as building. Local break conditions may vary by exposure.</pre>
           <tr><td><code>satellite</code></td><td>object</td><td>Sentinel-2 imagery metadata</td></tr>
           <tr><td><code>pwm.health</code></td><td>array</td><td>Per-source latency, availability, and status report. It is nested inside <code>pwm</code> on this authenticated endpoint.</td></tr>
           <tr><td><code>layer_context</code></td><td>object</td><td>Versioned layer-stack status, terrain/marine/wind/risk context, missing next layers, and cache/precompute actions</td></tr>
-          <tr><td><code>context_string</code></td><td>string</td><td>Pre-formatted text for LLM injection — the most important field</td></tr>
+          <tr><td><code>context_string</code></td><td>string</td><td>Pre-formatted summary of available context; provide as data/tool output and preserve its source limits</td></tr>
         </tbody>
       </table>
+      <p><code>?view=evidence</code>, <code>?view=risk_events</code>, and <code>?view=full</code> on this endpoint (and <code>/api/v1/evidence</code>, <code>/api/v1/risk-events</code>) all carry the same <code>risk_assessment.outcome</code>/<code>unknowns</code>/<code>confidence_components</code>/<code>conflicts</code> fields described under <a href="#risk-events">GET /api/v1/risk-events</a>.</p>
 
       <h2 id="layers"><span class="method-badge method-get">GET</span> /api/v1/layers/catalog and /api/v1/layers/context</h2>
       <p>The layer endpoints expose the product-level stack that Senlay uses to explain current and planned physical-world context. Public demo equivalents are available at <code>/api/layers/catalog</code> and <code>/api/layers/context</code>; authenticated API clients should use the <code>/api/v1</code> paths with a Bearer key.</p>
@@ -407,19 +421,20 @@ conditions as building. Local break conditions may vary by exposure.</pre>
       <p>Simplified endpoint — returns <strong style="color:var(--text)">only the context_string as plain text</strong>. Content-Type: <code>text/plain</code>. Ideal for agents that don't want to parse JSON.</p>
 
       <h4>Parameters</h4>
-      <p>Same as <code>/api/v1/pwm</code>: <code>lat</code> (required), <code>lng</code> (required), and optional <code>field</code> for the reasoning mode.</p>
+      <p>Requires <code>lat</code> and <code>lng</code>; optional <code>field</code> selects the reasoning mode. <code>profile</code> is supported by <code>/api/v1/pwm</code>, not this plain-text endpoint.</p>
 
       <div class="code-block-wrap">
         <div class="code-header">curl <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
         <pre class="code-block">curl -H "Authorization: Bearer sl_live_your_key" \
   "https://senlay.cloud/api/v1/sense?lat=36.01&lng=-5.60&field=drone"</pre>
       </div>
-      <p>Returns the full Physical World Model as a plain text block. No parsing needed &mdash; inject it into your agent so it can reason from current physical context.</p>
+      <p>Returns the Physical World Model as a plain text block. No parsing is required. Pass it as data/tool output under your application's instructions, preserve source and uncertainty, and do not treat it as clearance for physical action.</p>
 
       <h2 id="risk-events"><span class="method-badge method-get">GET</span> /api/v1/risk-events</h2>
       <p>Authenticated endpoint for operational risk events. Use it when an application needs more than context text: a station dashboard, lifeguard workflow, fleet monitor, school safety view, or IoT alert pipeline can read structured events that summarize the detected risk, severity, coordinates, sources, and recommended review path.</p>
       <p>SmartSurf is the first proving ground: Traccar GPS movement and local triggers identify a possible rider or board problem, then Senlay adds environmental evidence before the system escalates or stays quiet. The endpoint is decision support, not a certified rescue authority.</p>
       <p>Risk responses can also include <code>risk_assessment</code>: an aggregate deterministic state with score, alert band, confidence, reasons, recommended action, escalation stage, incident state, source provenance, session phase, and field-validation metadata. This is the SmartSurf early-warning contract: it is meant to show recoverability risk and coordination needs, not to diagnose drowning or claim rescue dispatch.</p>
+      <p><code>risk_assessment.outcome</code> is one of <code>GO</code>, <code>CAUTION</code>, <code>NO_GO</code>, or <code>INSUFFICIENT_EVIDENCE</code>. The last one is a normal, successful result (HTTP 200), not an error: it means the evidence does not support a verdict, and <code>risk_assessment.unknowns</code> names the specific blocking variable(s), why (no coverage, sources conflict, stale, or missing entirely), and what would resolve it. Confidence is also decomposed into <code>risk_assessment.confidence_components</code> &mdash; <code>source_agreement</code>, <code>freshness</code>, <code>spatial_relevance</code>, and <code>evidence_coverage</code> &mdash; each with its own label and reason string, rather than one blended score. When hardware and model sources disagree, the disagreement is reported as a structured <code>risk_assessment.conflicts</code> entry (each contributing source's value, distance, and age, plus the delta and magnitude) instead of being averaged away.</p>
 
       <h4>Related endpoints</h4>
       <table class="docs-table">
@@ -594,9 +609,10 @@ conditions as building. Local break conditions may vary by exposure.</pre>
       <p>Response: JSON array with <code>name</code>, <code>wind_speed</code>, <code>wind_direction</code>, <code>wind_gusts</code>, <code>temperature</code>, <code>wave_height</code>, <code>wave_period</code>, <code>swell_height</code>.</p>
 
       <h2 id="sources">Data Sources</h2>
-      <p>Senlay can aggregate data from 21 source families where available. Not all sources have data at every location — coastal areas have the most hardware sensors. The API returns the available context and marks gaps or uncertainty where needed.</p>
+      <p>The sensor catalog contains 23 source-family entries. This is not a claim that all sources are configured or available at a coordinate. The API returns the available context and marks gaps or uncertainty where needed.</p>
       <p><strong style="color:var(--text)">Open-Meteo deployment note:</strong> its free hosted API is for non-commercial use. Commercial deployments must use the paid <code>customer-api.open-meteo.com</code> endpoint with an API key, or a compliant self-hosted service. Open-Meteo data attribution is required. Review the current <a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">terms</a> and <a href="https://open-meteo.com/en/pricing" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">commercial configuration</a> before deployment.</p>
       <p><strong style="color:var(--text)">Windy deployment note:</strong> Stations and Webcams are separate products with separate credentials. Open-station access is governed by the current <a href="https://account.windy.com/agreements/windy-stations-terms-of-use" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Windy Stations terms</a> and <a href="https://account.windy.com/agreements/aggregator-open-data-licence" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Aggregator Open Data Licence</a>. Confirm that the configured agreement permits the intended use; preserve required operator credits and show Windy's <a href="https://stations.windy.com/" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Add new station</a> link with presented station data.</p>
+      <p><strong style="color:var(--text)">Windguru deployment note:</strong> Senlay uses Windguru's documented <a href="https://stations.windguru.cz/json_api_stations.html" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Station JSON API</a>, which requires the station ID/UID and that station's API password or hash. Public station pages are not treated as an anonymous redistribution API. The adapter remains disabled until the owner credential and permission for Senlay's intended use are recorded; secrets stay server-side.</p>
 
       <table class="docs-table">
         <thead><tr><th>Source</th><th>Type</th><th>Data</th><th>Key</th><th>Update</th></tr></thead>
@@ -614,6 +630,7 @@ conditions as building. Local break conditions may vary by exposure.</pre>
           <tr><td>Stormglass Marine</td><td><span class="badge badge-blue">OPTIONAL</span></td><td>Paid/optional marine cross-check: waves, swell, currents, water temp, wind</td><td>Yes</td><td>Provider cadence</td></tr>
           <tr><td>Copernicus Marine</td><td><span class="badge badge-blue">OPTIONAL</span></td><td>Async/cached ocean background: currents, waves, SST, in-situ, HF radar where available</td><td>Signup</td><td>Dataset cadence</td></tr>
           <tr><td>Windy Stations</td><td><span class="badge badge-green">HARDWARE</span></td><td>Open-station wind, gust, direction, temperature, pressure, precipitation</td><td>Yes</td><td>Station cadence</td></tr>
+          <tr><td>Windguru Stations</td><td><span class="badge badge-green">HARDWARE</span></td><td>Owner-authorized measured wind, gust, minimum, direction, temperature, humidity, pressure, and bounded history</td><td>Station credential</td><td>Station cadence</td></tr>
           <tr><td>Windy Webcams</td><td><span class="badge badge-yellow">VISUAL</span></td><td>Visual spot confirmation for whitecaps, shorebreak, squalls, crowding, launch state</td><td>Yes</td><td>Camera/provider cadence</td></tr>
           <tr><td>CWOP/APRS</td><td><span class="badge badge-green">HARDWARE</span></td><td>Citizen weather stations</td><td>No</td><td>Varies</td></tr>
           <tr><td>OpenAQ</td><td><span class="badge badge-green">HARDWARE</span></td><td>Air quality monitors</td><td>Yes</td><td>Varies</td></tr>
@@ -636,7 +653,7 @@ conditions as building. Local break conditions may vary by exposure.</pre>
       <p><span class="badge badge-green">HARDWARE</span> identifies physical-instrument observations. <span class="badge badge-blue">MODEL</span> identifies forecasts or estimates. <span class="badge badge-yellow">SATELLITE</span> identifies orbital observation products. <span class="badge badge-official">OFFICIAL FEED</span> identifies published alerts, products, or event catalogs rather than a direct local sensor reading. Fresh, quality-controlled, relevant hardware usually carries more evidence weight than a model, but distance, calibration, representativeness, and timestamps still matter.</p>
 
       <h2 id="agentic">Agentic Tooling</h2>
-      <p>Use Senlay as a function/tool in AI agent frameworks. Let the AI decide when it needs physical world data.</p>
+      <p>The examples below show client-defined wrappers around the Senlay REST API; they are not Senlay-hosted tools. Senlay's hosted MCP server exposes the four tools listed in the <a href="#mcp">MCP section</a>. These examples scope the request to available drone wind evidence for operator review.</p>
 
       <h3>OpenAI Function Definition</h3>
       <div class="code-block-wrap">
@@ -644,8 +661,8 @@ conditions as building. Local break conditions may vary by exposure.</pre>
         <pre class="code-block">{
   "type": "function",
   "function": {
-    "name": "sense_physical_world",
-    "description": "Get real-time physical world data for a coordinate. Returns available atmosphere, ocean, terrain, air quality, live hardware sensors, earthquakes, fires, and satellite context from 21 source families where available.",
+    "name": "fetch_drone_wind_evidence",
+    "description": "Fetch available wind evidence for a coordinate for drone operator review. This is not flight or mission clearance.",
     "parameters": {
       "type": "object",
       "properties": {
@@ -662,8 +679,8 @@ conditions as building. Local break conditions may vary by exposure.</pre>
       <div class="code-block-wrap">
         <div class="code-header">JSON <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
         <pre class="code-block">{
-  "name": "sense_physical_world",
-  "description": "Perceive available real-time physical conditions at a coordinate from 21 source families including hardware weather stations, ocean buoys, tide gauges, seismometers, and satellites.",
+  "name": "fetch_drone_wind_evidence",
+  "description": "Fetch available wind evidence for a coordinate for drone operator review. This is not flight or mission clearance.",
   "input_schema": {
     "type": "object",
     "properties": {
@@ -675,23 +692,28 @@ conditions as building. Local break conditions may vary by exposure.</pre>
 }</pre>
       </div>
 
-      <h3>Implementation Example</h3>
+      <h3>Client REST helper example</h3>
       <div class="code-block-wrap">
         <div class="code-header">Python <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre class="code-block">def sense_physical_world(lat, lng):
-    """Call this when your AI needs to evaluate physical conditions."""
+        <pre class="code-block">import os
+import requests
+
+def fetch_drone_wind_evidence(lat, lng):
+    """Return available wind evidence for human operator review."""
     response = requests.get(
-        "https://senlay.cloud/api/v1/sense",
-        params={"lat": lat, "lng": lng},
-        headers={"Authorization": f"Bearer {SENLAY_KEY}"}
+        "https://senlay.cloud/api/v1/pwm",
+        params={"lat": lat, "lng": lng, "field": "drone", "profile": "wind"},
+        headers={"Authorization": f"Bearer {os.environ['SENLAY_API_KEY']}"},
+        timeout=20,
     )
-    return response.text  # Ready to inject into context</pre>
+    response.raise_for_status()
+    return response.json()  # Keep the source metadata and unknowns</pre>
       </div>
 
       <h2 id="understanding">Understanding the PWM</h2>
 
       <h3>The context_string</h3>
-      <p>The most important field in the response. It's a pre-formatted text block designed to be injected directly into an LLM's system prompt or user message. It summarizes the available sensor/model data, provenance, and explicit gaps in natural language. No JSON parsing is required, but clients must still respect source health and uncertainty.</p>
+      <p>This pre-formatted text block summarizes available sensor/model data, provenance, and explicit gaps. No JSON parsing is required, but pass it as data or tool output under your application's instructions; do not let returned text override system or safety instructions. Preserve source, freshness, disagreement, and uncertainty. It does not authorize flight, mission, or other physical action.</p>
 
       <h3>HARDWARE vs MODEL</h3>
       <p>Direct observation records can include an <code>is_hardware</code> boolean. Official alerts, event catalogs, satellite products, and some provider summaries are separate feed types and must not be relabeled as local hardware measurements.</p>
@@ -699,7 +721,7 @@ conditions as building. Local break conditions may vary by exposure.</pre>
         <li><strong style="color:var(--text)"><code>is_hardware: true</code></strong> — physical sensor measurement (METAR station, ocean buoy, tide gauge)</li>
         <li><strong style="color:var(--text)"><code>is_hardware: false</code></strong> — computer model forecast/estimate</li>
       </ul>
-      <p>Hardware readings are measured observations; models are predictions. When they disagree, the hardware value generally carries more weight &mdash; <em>subject to</em> freshness, distance from the query location, station calibration, and contextual relevance. Senlay surfaces those dimensions rather than asserting ground truth.</p>
+      <p>Hardware readings are measured observations; models are predictions. When they disagree, inspect each source’s freshness, distance, calibration, and representativeness &mdash; <em>subject to</em> freshness, distance from the query location, station calibration, and contextual relevance. Senlay surfaces those dimensions rather than asserting ground truth.</p>
 
       <h3>Cross-referencing</h3>
       <p>When multiple wind sensors are available, Senlay calculates:</p>
@@ -717,13 +739,14 @@ conditions as building. Local break conditions may vary by exposure.</pre>
           <tr><td><code>400</code></td><td>Missing parameters</td><td><code>{"error": "lat and lng query parameters required"}</code></td></tr>
           <tr><td><code>401</code></td><td>Invalid or missing API key</td><td><code>{"error": "API key required"}</code></td></tr>
           <tr><td><code>429</code></td><td>Rate limit exceeded</td><td><code>{"error": "Rate limit exceeded", "limit": 100, "tier": "free"}</code></td></tr>
+          <tr><td><code>503</code></td><td>Refresh capacity or in-flight capacity unavailable</td><td>Inspect structured <code>code</code>, <code>Retry-After</code>, and <code>retry_after_seconds</code>; back off before retrying.</td></tr>
           <tr><td><code>500</code></td><td>Server error</td><td><code>{"error": "description"}</code></td></tr>
         </tbody>
       </table>
-      <p>Some sensor sources may fail independently — the API still returns successfully with whatever data is available. Check <code>active_sources</code> to see how many sources responded.</p>
+      <p>Some sensor sources may fail independently. A non-2xx response such as 503 is an error, not evidence; successful responses may still contain partial evidence and explicit unavailable-source metadata.</p>
 
       <h2 id="limits">Rate Limits</h2>
-      <p>Senlay is currently in <strong style="color:var(--primary)">open beta</strong>. Each free account has a shared allowance of 100 authenticated API calls per day across all of its active keys. Every authenticated request presented for processing counts against that account allowance, including cache hits; creating another key does not create another allowance. Caching reduces upstream work and latency, not customer usage. Invalid requests or upstream failures may also consume quota after authentication, so validate inputs and handle errors.</p>
+      <p>Senlay is currently in <strong style="color:var(--primary)">open beta</strong>. Each free account has a shared allowance of 100 authenticated API calls per day across all of its active keys. The daily allowance is shared across keys. Request allowance and source refresh capacity are separate: cache hits can count as authenticated requests without requiring a new source refresh. Some rejected pre-fetch requests are refunded; attempted upstream failures are not generally refundable. Adapters should use the documented default 120-second cadence unless a scoped agreement sets another interval.</p>
       <p>For details on future plans and pricing, see the <a href="pricing.html" style="color:var(--primary)">Pricing page</a>.</p>
 
       <h3>What a verification request attempts</h3>
@@ -731,79 +754,29 @@ conditions as building. Local break conditions may vary by exposure.</pre>
         <li>Configured model layers for atmosphere, hydrosphere, terrain, and air quality; any layer may be unavailable, disabled, outside coverage, or fail independently</li>
         <li>Extended hardware, hazard, satellite, and community source checks where coverage and provider terms allow</li>
         <li>Early Modifier Engine &mdash; working demos of physics-based calculators (terrain-wind hints, wave modifiers, gust-factor analysis, ET0, orographic effects). Deeper validated models under development.</li>
-        <li>Pre-formatted <code>context_string</code> ready for LLM injection</li>
+        <li>Pre-formatted <code>context_string</code> for optional model explanation under application instructions</li>
         <li>Per-source health reporting so clients can distinguish returned data from unavailable, disabled, no-data, or failed sources</li>
       </ul>
 
       <h2 id="examples">Code Examples</h2>
 
-      <h3>Python + Claude</h3>
-      <div class="code-block-wrap">
-        <div class="code-header">Python <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre class="code-block">import anthropic, requests
-
-pwm = requests.get(
-    "https://senlay.cloud/api/v1/pwm",
-    params={"lat": 36.01, "lng": -5.60},
-    headers={"Authorization": "Bearer sl_live_your_key"}
-).json()
-
-client = anthropic.Anthropic()
-response = client.messages.create(
-    model="claude-sonnet-4-20250514",
-    system=f"Use this current spot-level verification:\n\n{pwm['context_string']}",
-    messages=[{"role": "user", "content": "Is it safe to fly a drone here?"}]
-)</pre>
-      </div>
-
-      <h3>Python + OpenAI</h3>
-      <div class="code-block-wrap">
-        <div class="code-header">Python <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre class="code-block">from openai import OpenAI
-import requests
-
-pwm = requests.get(
-    "https://senlay.cloud/api/v1/pwm",
-    params={"lat": 36.01, "lng": -5.60},
-    headers={"Authorization": "Bearer sl_live_your_key"}
-).json()
-
-client = OpenAI()
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[
-        {"role": "system", "content": pwm["context_string"]},
-        {"role": "user", "content": "Should I irrigate today?"}
-    ]
-)</pre>
-      </div>
-
-      <h3>JavaScript</h3>
-      <div class="code-block-wrap">
-        <div class="code-header">JavaScript <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre class="code-block">const res = await fetch(
-  "https://senlay.cloud/api/v1/pwm?lat=36.01&lng=-5.60",
-  { headers: { Authorization: "Bearer sl_live_your_key" } }
-);
-const pwm = await res.json();
-
-// Inject into ANY LLM system prompt:
-const systemPrompt = `Physical World Model:\n\n${pwm.context_string}`;
-
-// Works with Claude, GPT, Gemini, Llama, Mistral, Cohere...</pre>
-      </div>
+      <p>Senlay’s deterministic summary and evidence fields are useful without an LLM. If you add a model, pass the returned facts and unknowns for explanation only; keep operator decisions outside the model.</p>
 
       <h3>Plain text with /sense</h3>
       <div class="code-block-wrap">
         <div class="code-header">Python <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre class="code-block"># Simplest possible integration — no JSON parsing
-context = requests.get(
+        <pre class="code-block"># Plain-text drone wind evidence; no JSON parsing
+response = requests.get(
     "https://senlay.cloud/api/v1/sense",
-    params={"lat": 36.01, "lng": -5.60},
-    headers={"Authorization": f"Bearer {SENLAY_KEY}"}
-).text
+    params={"lat": 37.6213, "lng": -122.3790, "field": "drone"},
+    headers={"Authorization": f"Bearer {SENLAY_KEY}"},
+    timeout=20,
+)
+response.raise_for_status()  # An HTTP error is not evidence.
+context = response.text
 
-# context is ready to inject directly into any LLM</pre>
+# Pass as data/tool output under your application's instructions.
+# Preserve source provenance, freshness, uncertainty, and unknowns.</pre>
       </div>
 
       <div style="text-align:center;margin:48px 0">
@@ -823,94 +796,25 @@ context = requests.get(
     <article id="term-risk-event"><h3>risk_event</h3><p>A structured safety workflow record. It can represent rider stopped, board separated, offshore drift, low-confidence no-go, or other alertable states for SmartSurf-style dashboards.</p></article>
     <article id="term-decision-support"><h3>Decision-support boundary</h3><p>Senlay and SmartSurf support decisions; they do not replace instructors, local judgment, official rescue services, weather authorities, or legal safety obligations.</p></article>
     <article id="term-source-aware-context"><h3>Source-aware context</h3><p>Plain-language context that preserves where the facts came from and how trustworthy they are. This is what an AI assistant should read before making a location-specific recommendation.</p></article>
-    <article id="term-context-string"><h3>context_string</h3><p>A developer/API convenience field that can be injected into an LLM prompt. It belongs in docs and integrations, not as the main marketing promise.</p></article>
+    <article id="term-context-string"><h3>context_string</h3><p>A developer/API convenience field containing available evidence and limitations. Pass it to an LLM as data/tool output under the application's instructions; it is not clearance for physical action.</p></article>
   </div>
 </section>
+<section class="section"><h2>Comparisons, history and the Live Demo</h2><p>The Live Demo presents Environmental Intelligence, AI Explanation and Machine-Readable Context for the same location snapshot. Deterministic evidence remains separate from the AI interpretation. Compare the explanation against the underlying sources and unknowns.</p><p>Current Model Agreement describes the current comparison, not historical forecast accuracy. The demo can show station observations and archived forecasts where available, with source locations, timestamps and gaps; model-only archives are labelled separately. This chart does not calculate a historical trust score. Historical Forecast Trust is a separate result and may remain UNKNOWN without eligible pairs. Place Memory describes historical baselines, not a trained local forecast.</p></section>
 </main>
   </div>
 
-  <footer class="senlay-unified-footer" aria-label="Senlay site footer">
+  <footer data-senlay-footer="shared" class="senlay-unified-footer" aria-label="Senlay site footer">
   <div class="senlay-footer-shell">
-    <div class="senlay-footer-lead">
-      <div>
-        <a class="senlay-footer-brand" href="/">SENLAY</a>
-        <p>A reciprocal verification network. Contribute a sensor and receive verified reasoning across the whole network; consume without contributing and pay.</p>
-      </div>
-      <div class="senlay-footer-cta">
-        <a href="https://smartsurf.cloud/">Explore SmartSurf</a>
-        <a href="/demo">Try Live Demo</a>
-        <a href="/docs.html">Read Docs</a>
-      </div>
-    </div>
-
+    <div class="senlay-footer-lead"><div><a class="senlay-footer-brand" href="/">SENLAY</a><p>Physical-world intelligence for autonomous systems and AI applications. Coverage and quality vary by place and source availability.</p></div><div class="senlay-footer-cta"><a href="/robotics/">Robotics overview</a><a href="/docs.html">Explore API docs</a><a href="/support.html?topic=robotics">Discuss an integration</a></div></div>
     <div class="senlay-footer-grid">
-      <div class="senlay-footer-col">
-        <h4>Senlay Product</h4>
-        <a href="/">Home</a>
-        <a href="/demo">Live verification demo</a>
-        <a href="/agents">For outdoor agents</a>
-        <a href="/pricing.html">Pricing</a>
-        <a href="/roadmap.html">Roadmap</a>
-        <a href="/live-agent.html">Live agent page</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Build</h4>
-        <a href="/docs.html">API docs</a>
-        <a href="/docs.html#verification-glossary">Verification glossary</a>
-        <a href="/openapi.json">OpenAPI JSON</a>
-        <a href="/openapi.yaml">OpenAPI YAML</a>
-        <a href="/llms.txt">llms.txt</a>
-        <a href="/llms-full.txt">llms-full.txt</a>
-        <a href="/agent-manifest.json">Agent manifest</a>
-        <a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a>        <a href="/dashboard.html">Developer dashboard</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Verification Terms</h4>
-        <a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a>
-        <a href="/docs.html#term-source-provenance">Source provenance</a>
-        <a href="/docs.html#term-freshness">Freshness</a>
-        <a href="/docs.html#term-confidence">Confidence</a>
-        <a href="/docs.html#term-uncertainty">Uncertainty</a>
-        <a href="/docs.html#term-model-vs-reality">Model-vs-reality check</a>
-        <a href="/docs.html#term-risk-event">risk_event</a>
-        <a href="/docs.html#term-decision-support">Decision-support boundary</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>SmartSurf</h4>
-        <a href="https://smartsurf.cloud/">SmartSurf landing</a>
-        <a href="https://smartsurf.cloud/#schools">School safety workflow</a>
-        <a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a>
-        <a href="https://smartsurf.cloud/#shop">Tracker hardware</a>
-        <a href="https://smartsurf.cloud/#pricing">SmartSurf pricing</a>
-        <a href="https://app.smartsurf.global/">Open rider app</a>
-      </div>
-      <div class="senlay-footer-col">
-        <h4>Company</h4>
-        <a href="/founder.html">Founder story</a>
-        <a href="/investors.html">Investor brief</a>
-        <a href="/investors/deck">Investor deck</a>
-        <a href="/support.html">Contact / pilots</a>
-        <a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a>
-        <a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-      </div>
-      <div class="senlay-footer-col senlay-footer-sources">
-        <h4>Source Networks</h4>
-        <p>Coverage depends on coordinate, freshness, and upstream availability.</p>
-        <a href="/sensor-catalog.json">Sensor catalog JSON</a>
-        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
-        <a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a>
-        <a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a>
-        <a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a>
-        <a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a>
-        <a href="https://dataspace.copernicus.eu/" target="_blank" rel="noopener noreferrer">Copernicus</a>
-        <a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a>
-      </div>
+      <div class="senlay-footer-col"><h4>Senlay</h4><a href="/">Overview</a><a href="/robotics/">Robotics &amp; autonomous systems</a><a href="/demo">Live demo</a><a href="/agents">For AI agents</a><a href="/pricing.html">Pricing</a><a href="/roadmap.html">Roadmap</a></div>
+      <div class="senlay-footer-col"><h4>Build</h4><a href="/docs.html">API docs</a><a href="/openapi.json">OpenAPI JSON</a><a href="/openapi.yaml">OpenAPI YAML</a><a href="/llms.txt">llms.txt</a><a href="/agent-manifest.json">Agent manifest</a><a href="/dashboard.html">Developer dashboard</a><a href="https://github.com/smartsurfsolar/senlay-platform" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+      <div class="senlay-footer-col"><h4>Evidence model</h4><a href="/docs.html#term-evidence-object-v1">Evidence Object v1</a><a href="/docs.html#term-source-provenance">Source provenance</a><a href="/docs.html#term-freshness">Freshness</a><a href="/docs.html#term-confidence">Confidence</a><a href="/docs.html#term-uncertainty">Uncertainty</a><a href="/docs.html#term-model-vs-reality">Forecast and observation checks</a><a href="/docs.html#term-risk-event">risk_event</a></div>
+      <div class="senlay-footer-col"><h4>SmartSurf</h4><a href="https://smartsurf.cloud/">SmartSurf landing</a><a href="https://smartsurf.cloud/#schools">School workflows</a><a href="https://smartsurf.cloud/#senlay">How Senlay powers SmartSurf</a><a href="https://app.smartsurf.cloud/">Open rider app</a></div>
+      <div class="senlay-footer-col"><h4>Company</h4><a href="/founder.html">Founder story</a><a href="/investors.html">Investor brief</a><a href="/support.html">Contact / pilots</a><a href="mailto:viktor@senlay.cloud">viktor@senlay.cloud</a><a href="https://wa.me/84333380168" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+      <div class="senlay-footer-col senlay-footer-sources"><h4>Source networks</h4><p>Coverage depends on coordinate, freshness, licensing, and upstream availability.</p><a href="/sensor-catalog.json">Sensor catalog JSON</a><a href="https://www.ndbc.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA NDBC</a><a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA CO-OPS</a><a href="https://aviationweather.gov/" target="_blank" rel="noopener noreferrer">AviationWeather METAR</a><a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS</a><a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA EONET</a></div>
     </div>
-
-    <div class="senlay-footer-bottom">
-      <span>&copy; 2026 Senlay. Built in Vietnam. Decision support only, not final safety authority.</span>
-      <span><a href="/login.html">Sign in</a> <a href="/register.html">Create free API key</a> <a href="/support.html">Pilot contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span>
-    </div>
+    <div class="senlay-footer-bottom"><span>&copy; 2026 Senlay. Decision support only. Operators and onboard safety systems retain authority.</span><span><a href="/login.html">Sign in</a> <a href="/register.html">Create API key</a> <a href="/support.html">Contact</a> <a href="/privacy.html">Privacy</a> <a href="/terms.html">Terms</a></span></div>
   </div>
 </footer>
 

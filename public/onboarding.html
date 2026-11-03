@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch My Spot — Senlay</title>
+  <meta name="description" content="Tell Senlay where and how you ride. It watches forecasts, real observations, and local spot patterns, then notifies you when something meaningful changes.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
+  <link rel="stylesheet" href="/styles/landing.css?v=4">
+  <style>
+    .ob-container { max-width: 560px; margin: 0 auto; padding: 40px 24px 96px; }
+    .ob-progress { display: flex; gap: 6px; margin-bottom: 28px; }
+    .ob-progress span { flex: 1; height: 4px; border-radius: 2px; background: var(--border); }
+    .ob-progress span.done { background: var(--primary); }
+    .ob-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px; }
+    .ob-step-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .ob-step-sub { color: var(--text2); font-size: 14px; margin-bottom: 22px; }
+    .sport-grid, .type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+    .sport-opt, .type-opt { border: 1px solid var(--border); border-radius: 8px; padding: 14px; cursor: pointer; text-align: center; font-weight: 700; color: var(--text2); user-select: none; }
+    .sport-opt.selected { border-color: var(--primary); color: var(--primary); background: rgba(16,185,129,0.08); }
+    .type-opt { text-align: left; font-weight: 500; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+    .type-opt input { width: auto; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+    .form-group input, .form-group select { width: 100%; padding: 12px 14px; background: #0F172A; border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 15px; outline: none; }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+    .alert { padding: 12px 16px; border-radius: 6px; font-size: 14px; margin-bottom: 16px; }
+    .alert-ok { background: rgba(16,185,129,0.1); color: var(--primary); }
+    .alert-err { background: rgba(239,68,68,0.1); color: var(--danger); }
+    .hidden { display: none !important; }
+    .ob-actions { display: flex; justify-content: space-between; margin-top: 8px; gap: 12px; }
+    .ob-back { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 14px; }
+    .spot-suggestions { max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; margin-top: 4px; }
+    .spot-suggestion { padding: 8px 12px; font-size: 13px; cursor: pointer; color: var(--text); }
+    .spot-suggestion:hover { background: rgba(16,185,129,0.08); }
+    .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .summary-row b { color: var(--text); }
+    .summary-row span { color: var(--text2); }
+    .trial-note { font-size: 12px; color: var(--text2); text-align: center; margin-top: 10px; }
+  </style>
+  <link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness">
+</head>
+<body>
+  <header class="header header--marketing" data-shared-header="marketing" data-senlay-header="marketing">
+  <div class="header-inner">
+    <div class="logo-area"><a href="/" class="logo-link" aria-label="SENLAY, short for Sensory Layer" title="SENLAY = Sensory Layer"><span class="logo-lockup"><span class="logo-wordmark">SENLAY</span><span class="logo-definition">Sensory Layer</span></span></a></div>
+    <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <details class="nav-menu"><summary>Product</summary><div class="nav-menu-panel"><a href="/">Senlay overview</a><a href="/#physical-world-model">Physical World Model</a><a href="/#verification">Environmental verification</a><a href="/agents">For AI agents</a><a href="https://smartsurf.cloud/">SmartSurf</a></div></details>
+      <a href="/robotics/">Robotics</a>
+      <a href="/demo">Live Demo</a>
+      <a href="/docs.html">Developers</a>
+      <a href="/network.html">Sensor Network</a>
+      <a href="/pricing.html">Pricing</a>
+      <details class="nav-menu"><summary>Company</summary><div class="nav-menu-panel"><a href="/founder.html">Founder</a><a href="/roadmap.html">Roadmap</a><a href="/investors.html">Company brief</a><a href="/support.html">Contact</a><a href="/login.html">Sign In</a></div></details>
+      <a href="/register.html" class="nav-cta">Create API Key</a>
+    </nav>
+  </div>
+</header>
+
+  <main class="ob-container">
+    <div class="ob-progress">
+      <span id="p1" class="done"></span><span id="p2"></span><span id="p3"></span><span id="p4"></span><span id="p5"></span>
+    </div>
+    <div id="alertBox"></div>
+
+    <!-- Step 1: sport -->
+    <div id="step1" class="ob-card">
+      <div class="ob-step-title">What do you ride?</div>
+      <div class="ob-step-sub">Senlay adapts what it watches to your sport.</div>
+      <div class="sport-grid">
+        <div class="sport-opt" data-sport="kite">Kite</div>
+        <div class="sport-opt" data-sport="wing">Wing</div>
+        <div class="sport-opt" data-sport="windsurf">Windsurf</div>
+        <div class="sport-opt" data-sport="surf">Surf</div>
+      </div>
+      <div class="ob-actions"><span></span><button class="btn-primary" onclick="goStep(2)">Next</button></div>
+    </div>
+
+    <!-- Step 2: spot -->
+    <div id="step2" class="ob-card hidden">
+      <div class="ob-step-title">Where do you ride?</div>
+      <div class="ob-step-sub">Search for your spot.</div>
+      <div class="form-group">
+        <label for="spotQuery">Spot</label>
+        <input type="text" id="spotQuery" placeholder="Search a spot, e.g. An Bang" autocomplete="off">
+        <div id="spotSuggestions" class="spot-suggestions hidden"></div>
+      </div>
+      <div class="ob-actions"><button class="ob-back" onclick="goStep(1)">Back</button><button class="btn-primary" onclick="goStep(3)">Next</button></div>
+    </div>
+
+    <!-- Step 3: conditions -->
+    <div id="step3" class="ob-card hidden">
+      <div class="ob-step-title">What conditions work for you?</div>
+      <div class="ob-step-sub">Senlay only notifies you inside this range.</div>
+      <div class="form-row" id="windFields">
+        <div class="form-group"><label for="minWind">Min wind (km/h)</label><input type="number" id="minWind" value="7"></div>
+        <div class="form-group"><label for="maxWind">Max wind (km/h)</label><input type="number" id="maxWind" value="25"></div>
+      </div>
+      <div class="form-group hidden" id="offshoreGroup">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:500"><input type="checkbox" id="avoidOffshore" style="width:auto"> Avoid offshore wind</label>
+      </div>
+      <div class="form-row hidden" id="waveFields">
+        <div class="form-group"><label for="minWave">Min wave (m)</label><input type="number" id="minWave" value="0.5" step="0.1"></div>
+        <div class="form-group"><label for="maxWave">Max wave (m)</label><input type="number" id="maxWave" value="2.5" step="0.1"></div>
+      </div>
+      <div class="ob-actions"><button class="ob-back" onclick="goStep(2)">Back</button><button class="btn-primary" onclick="goStep(4)">Next</button></div>
+    </div>
+
+    <!-- Step 4: what to watch -->
+    <div id="step4" class="ob-card hidden">
+      <div class="ob-step-title">What should Senlay watch for?</div>
+      <div class="ob-step-sub">All of these are on by default — you can change this later.</div>
+      <div class="type-grid">
+        <label class="type-opt"><input type="checkbox" value="CONDITIONS_ENTERED_RANGE" checked>Good window forming</label>
+        <label class="type-opt"><input type="checkbox" value="CONDITIONS_LEFT_RANGE" checked>Conditions leaving my range</label>
+        <label class="type-opt"><input type="checkbox" value="FORECAST_DIVERGENCE" checked>Forecast not matching reality</label>
+        <label class="type-opt"><input type="checkbox" value="FORECAST_TRUST_DEGRADED" checked>Current forecast agreement dropped</label>
+        <label class="type-opt"><input type="checkbox" value="FORECAST_TRUST_RECOVERED" checked>Current forecast agreement recovered</label>
+        <label class="type-opt"><input type="checkbox" value="SOURCE_DISAGREEMENT" checked>Sources disagree</label>
+        <label class="type-opt"><input type="checkbox" value="INSUFFICIENT_EVIDENCE" checked>Not enough evidence</label>
+        <label class="type-opt"><input type="checkbox" value="GOOD_WINDOW_FORMING" checked>Session window forming</label>
+      </div>
+      <div class="ob-actions"><button class="ob-back" onclick="goStep(3)">Back</button><button class="btn-primary" onclick="goStep(5)">Next</button></div>
+    </div>
+
+    <!-- Step 5: account + summary -->
+    <div id="step5" class="ob-card hidden">
+      <div class="ob-step-title">Your spot watcher is ready</div>
+      <div id="summaryBox" class="ob-step-sub" style="margin-bottom:16px"></div>
+      <p id="accountHint" class="ob-step-sub hidden" style="margin:0 0 14px"></p>
+      <div id="accountFields">
+        <div class="form-group"><label for="email">Email — where Senlay will reach you</label><input type="email" id="email" autocomplete="email" placeholder="you@example.com"></div>
+        <div class="form-group"><label for="password">Password</label><input type="password" id="password" autocomplete="current-password" placeholder="At least 8 characters"></div>
+      </div>
+      <div class="ob-actions"><button class="ob-back" onclick="goStep(4)">Back</button><button class="btn-primary" onclick="finishOnboarding()" id="finishBtn">Start watching — free trial</button></div>
+      <p class="trial-note">No credit card required. Senlay will start monitoring this spot immediately.</p>
+    </div>
+
+    <!-- Success -->
+    <div id="stepDone" class="ob-card hidden">
+      <div class="ob-step-title">Senlay is watching your spot.</div>
+      <p class="ob-step-sub" id="doneSub"></p>
+      <a class="btn-primary" style="display:block;text-align:center;text-decoration:none;padding:12px" href="/watch.html">Go to my watches</a>
+    </div>
+  </main>
+
+  <script>
+    let state = { sport: 'kite', spot: null, conditions: {}, watchTypes: [] };
+    let spotSearchTimer = null;
+
+    document.querySelectorAll('.sport-opt').forEach(el => el.addEventListener('click', () => {
+      document.querySelectorAll('.sport-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      state.sport = el.dataset.sport;
+    }));
+    document.querySelector('.sport-opt[data-sport="kite"]').classList.add('selected');
+
+    function showAlert(msg, kind) {
+      const box = document.getElementById('alertBox');
+      const alert = document.createElement('div');
+      alert.className = `alert ${kind === 'error' ? 'alert-err' : 'alert-ok'}`;
+      alert.textContent = String(msg || '');
+      box.replaceChildren(alert);
+      setTimeout(() => { box.replaceChildren(); }, 6000);
+    }
+
+    function goStep(n) {
+      if (n === 3) {
+        const isWave = state.sport === 'surf';
+        document.getElementById('windFields').classList.toggle('hidden', isWave);
+        document.getElementById('offshoreGroup').classList.toggle('hidden', isWave);
+        document.getElementById('waveFields').classList.toggle('hidden', !isWave);
+      }
+      if (n === 3 && !state.spot) {
+        return showAlert('Search for and select a spot first.', 'error');
+      }
+      if (n === 5) renderSummary();
+      [1, 2, 3, 4, 5].forEach(i => document.getElementById('step' + i).classList.toggle('hidden', i !== n));
+      [1, 2, 3, 4, 5].forEach(i => document.getElementById('p' + i).classList.toggle('done', i <= n));
+    }
+
+    function storedSessionToken() {
+      try {
+        return sessionStorage.getItem('senlay_session_token') || localStorage.getItem('senlay_session_token') || '';
+      } catch (_) { return ''; }
+    }
+
+    function updateAccountStep() {
+      const signedIn = Boolean(storedSessionToken());
+      document.getElementById('accountFields').classList.toggle('hidden', signedIn);
+      const hint = document.getElementById('accountHint');
+      hint.classList.toggle('hidden', !signedIn);
+      hint.textContent = signedIn
+        ? 'You are already signed in. This watcher will be added to your account.'
+        : '';
+    }
+
+    document.getElementById('spotQuery').addEventListener('input', () => {
+      state.spot = null;
+      clearTimeout(spotSearchTimer);
+      const q = document.getElementById('spotQuery').value.trim().toLowerCase();
+      if (!q) { document.getElementById('spotSuggestions').classList.add('hidden'); return; }
+      spotSearchTimer = setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/v1/spots?sport=${encodeURIComponent(state.sport)}`);
+          const data = await res.json();
+          const matches = (data.spots || []).filter(s => s.name.toLowerCase().includes(q)).slice(0, 8);
+          const box = document.getElementById('spotSuggestions');
+          if (!matches.length) { box.classList.add('hidden'); box.replaceChildren(); return; }
+          box.replaceChildren();
+          for (const spot of matches) {
+            const option = document.createElement('button');
+            option.type = 'button'; option.className = 'spot-suggestion';
+            option.textContent = `${spot.name}${spot.region ? `, ${spot.region}` : ''}`;
+            option.addEventListener('click', () => {
+              state.spot = spot;
+              document.getElementById('spotQuery').value = spot.name;
+              box.classList.add('hidden');
+            });
+            box.append(option);
+          }
+          box.classList.remove('hidden');
+        } catch (_) { /* best-effort */ }
+      }, 250);
+    });
+
+    function renderSummary() {
+      updateAccountStep();
+      const isWave = state.sport === 'surf';
+      state.conditions = isWave
+        ? { min_wave_m: parseFloat(document.getElementById('minWave').value), max_wave_m: parseFloat(document.getElementById('maxWave').value) }
+        : {
+            min_wind_kmh: parseFloat(document.getElementById('minWind').value),
+            max_wind_kmh: parseFloat(document.getElementById('maxWind').value),
+            avoid_offshore: document.getElementById('avoidOffshore').checked
+          };
+      state.watchTypes = [...document.querySelectorAll('.type-opt input:checked')].map(el => el.value);
+      const condLabel = isWave ? `${state.conditions.min_wave_m}–${state.conditions.max_wave_m} m` : `${state.conditions.min_wind_kmh}–${state.conditions.max_wind_kmh} km/h`;
+      const box = document.getElementById('summaryBox');
+      box.replaceChildren();
+      for (const [label, value] of [
+        ['Spot', state.spot ? state.spot.name : '—'], ['Sport', state.sport],
+        ['Conditions', condLabel], ['Watching for', `${state.watchTypes.length} event types`]
+      ]) {
+        const row = document.createElement('div'); row.className = 'summary-row';
+        const strong = document.createElement('b'); strong.textContent = label;
+        const span = document.createElement('span'); span.textContent = value;
+        row.append(strong, span); box.append(row);
+      }
+    }
+
+    async function finishOnboarding() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const existingSessionToken = storedSessionToken();
+      if (!existingSessionToken && (!email || !password)) return showAlert('Email and password are required.', 'error');
+      if (!existingSessionToken && password.length < 8) return showAlert('Password must be at least 8 characters.', 'error');
+      if (!state.spot) return showAlert('Select a spot before finishing.', 'error');
+      const btn = document.getElementById('finishBtn');
+      btn.disabled = true; btn.textContent = 'Setting up...';
+      try {
+        // A rider may have selected a spot before reaching this screen while
+        // already owning an account. Sign in first; only register if that
+        // credential pair cannot sign in. This preserves the selected spot
+        // and avoids treating an existing email as a broken onboarding flow.
+        const signIn = async () => {
+          const response = await fetch('/api/login', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await response.json().catch(() => ({}));
+          return response.ok && data.sessionToken ? data : null;
+        };
+
+        let loginData = existingSessionToken ? { sessionToken: existingSessionToken } : await signIn();
+        if (!loginData) {
+          const regRes = await fetch('/api/register', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          // Do not expose whether an email exists. A second sign-in also
+          // covers a concurrent registration of the same address.
+          if (!regRes.ok) loginData = await signIn();
+          else loginData = await signIn();
+        }
+        if (!loginData?.sessionToken) {
+          throw new Error('Unable to sign in or create this account. Check your password, or use the password-reset page.');
+        }
+        try { sessionStorage.setItem('senlay_session_token', loginData.sessionToken); } catch (_) {}
+
+        const watchRes = await fetch('/api/v1/watches', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${loginData.sessionToken}` },
+          body: JSON.stringify({
+            sport: state.sport, spot_id: state.spot.id, spot_name: state.spot.name,
+            lat: state.spot.lat, lng: state.spot.lng,
+            conditions: state.conditions, watch_types: state.watchTypes
+          })
+        });
+        const watchData = await watchRes.json();
+        if (watchData.error) throw new Error(watchData.error);
+
+        document.getElementById('doneSub').textContent = `Senlay is now watching ${state.spot.name} for ${state.sport}. Email delivery activates only after Senlay verifies the notification channel.`;
+        document.getElementById('step5').classList.add('hidden');
+        document.getElementById('stepDone').classList.remove('hidden');
+        document.getElementById('p5').classList.add('done');
+
+        // Kick an immediate evaluation so the first useful signal (or an
+        // honest "insufficient evidence") arrives without waiting for the
+        // next scheduler tick.
+        fetch(`/api/v1/watches/${watchData.watch.id}/evaluate`, { method: 'POST', headers: { Authorization: `Bearer ${loginData.sessionToken}` } }).catch(() => {});
+      } catch (err) {
+        showAlert(err.message, 'error');
+        btn.disabled = false; btn.textContent = 'Start watching — free trial';
+      }
+    }
+  </script>
+</body>
+</html>

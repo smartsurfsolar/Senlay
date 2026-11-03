@@ -1,28 +1,12 @@
 (function () {
-  const CLOSE_DELAY_MS = 4200;
-
-  const timers = new WeakMap();
-
-  function clearTimer(element) {
-    const timer = timers.get(element);
-    if (timer) {
-      window.clearTimeout(timer);
-      timers.delete(element);
-    }
-  }
-
-  function schedule(element, closeFn) {
-    clearTimer(element);
-    timers.set(element, window.setTimeout(closeFn, CLOSE_DELAY_MS));
-  }
-
-  function closeMobileNav() {
+  function closeMobileNav(restoreFocus = false) {
     const nav = document.querySelector('.header .nav.open');
     const button = document.querySelector('.header .hamburger.active');
     if (nav) nav.classList.remove('open');
     if (button) {
       button.classList.remove('active');
       button.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) button.focus();
     }
   }
 
@@ -30,24 +14,13 @@
     document.querySelectorAll('.header details.nav-menu').forEach((menu) => {
       const close = () => {
         menu.open = false;
-        clearTimer(menu);
       };
 
       menu.addEventListener('toggle', () => {
-        if (!menu.open) {
-          clearTimer(menu);
-          return;
-        }
+        if (!menu.open) return;
 
         document.querySelectorAll('.header details.nav-menu[open]').forEach((other) => {
           if (other !== menu) other.open = false;
-        });
-        schedule(menu, close);
-      });
-
-      ['pointermove', 'focusin', 'click'].forEach((eventName) => {
-        menu.addEventListener(eventName, () => {
-          if (menu.open) schedule(menu, close);
         });
       });
 
@@ -68,21 +41,12 @@
 
     const close = () => {
       closeMobileNav();
-      clearTimer(nav);
     };
 
     button.addEventListener('click', () => {
-      button.setAttribute('aria-expanded', String(nav.classList.contains('open')));
       window.setTimeout(() => {
-        if (nav.classList.contains('open')) schedule(nav, close);
-        else clearTimer(nav);
+        button.setAttribute('aria-expanded', String(nav.classList.contains('open')));
       }, 0);
-    });
-
-    ['pointermove', 'focusin', 'click'].forEach((eventName) => {
-      nav.addEventListener(eventName, () => {
-        if (nav.classList.contains('open')) schedule(nav, close);
-      });
     });
 
     nav.querySelectorAll('a').forEach((link) => {
@@ -97,7 +61,6 @@
       if (!target.closest('.header')) {
         document.querySelectorAll('.header details.nav-menu[open]').forEach((menu) => {
           menu.open = false;
-          clearTimer(menu);
         });
         closeMobileNav();
       }
@@ -105,11 +68,16 @@
 
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
+      const active = document.activeElement;
+      const openMenu = active instanceof Element ? active.closest('.header details.nav-menu[open]') : null;
+      const mobileOpen = document.querySelector('.header .nav.open');
+      if (!openMenu && !mobileOpen) return;
+      event.preventDefault();
       document.querySelectorAll('.header details.nav-menu[open]').forEach((menu) => {
         menu.open = false;
-        clearTimer(menu);
+        if (menu === openMenu) menu.querySelector('summary')?.focus();
       });
-      closeMobileNav();
+      closeMobileNav(Boolean(mobileOpen));
     });
   }
 

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Senlay — Spot Event</title>
+  <meta name="description" content="A real physical-world event detected by Senlay at a watched spot.">
+  <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
+  <link rel="stylesheet" href="/styles/landing.css?v=4">
+  <style>
+    .ev-container { max-width: 520px; margin: 0 auto; padding: 48px 24px 96px; }
+    .ev-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+    .ev-kicker { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--text2); margin-bottom: 10px; }
+    .ev-title { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 10px; line-height: 1.25; }
+    .ev-summary { color: var(--text2); font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+    .ev-row { display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--border); font-size: 14px; }
+    .ev-row b { color: var(--text2); font-weight: 500; }
+    .ev-row span { color: var(--text); font-weight: 700; }
+    .ev-cta { display: block; text-align: center; text-decoration: none; padding: 13px; margin-top: 22px; }
+    .ev-note { font-size: 12px; color: var(--text2); text-align: center; margin-top: 14px; }
+    .hidden { display: none !important; }
+  </style>
+  <link rel="stylesheet" href="/styles/dark-map-override.css?v=20261031-readiness">
+</head>
+<body>
+  <header class="header header--marketing" data-shared-header="marketing" data-senlay-header="marketing">
+  <div class="header-inner">
+    <div class="logo-area"><a href="/" class="logo-link" aria-label="SENLAY, short for Sensory Layer" title="SENLAY = Sensory Layer"><span class="logo-lockup"><span class="logo-wordmark">SENLAY</span><span class="logo-definition">Sensory Layer</span></span></a></div>
+    <button class="hamburger" type="button" onclick="this.classList.toggle('active');this.parentElement.querySelector('.nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <details class="nav-menu"><summary>Product</summary><div class="nav-menu-panel"><a href="/">Senlay overview</a><a href="/#physical-world-model">Physical World Model</a><a href="/#verification">Environmental verification</a><a href="/agents">For AI agents</a><a href="https://smartsurf.cloud/">SmartSurf</a></div></details>
+      <a href="/robotics/">Robotics</a>
+      <a href="/demo">Live Demo</a>
+      <a href="/docs.html">Developers</a>
+      <a href="/network.html">Sensor Network</a>
+      <a href="/pricing.html">Pricing</a>
+      <details class="nav-menu"><summary>Company</summary><div class="nav-menu-panel"><a href="/founder.html">Founder</a><a href="/roadmap.html">Roadmap</a><a href="/investors.html">Company brief</a><a href="/support.html">Contact</a><a href="/login.html">Sign In</a></div></details>
+      <a href="/register.html" class="nav-cta">Create API Key</a>
+    </nav>
+  </div>
+</header>
+
+  <main class="ev-container">
+    <div id="loading" class="ev-card"><p style="color:var(--text2)">Loading event…</p></div>
+    <div id="missing" class="ev-card hidden">
+      <div class="ev-title">This event isn't available.</div>
+      <p class="ev-summary">It may have been removed, or it isn't a publicly shareable event.</p>
+      <a class="btn-primary ev-cta" href="/onboarding.html">Watch your own spot</a>
+    </div>
+    <div id="event" class="ev-card hidden">
+      <div class="ev-kicker" id="evKicker"></div>
+      <div class="ev-title" id="evTitle"></div>
+      <p class="ev-summary" id="evSummary"></p>
+      <div id="evRows"></div>
+      <a class="btn-primary ev-cta" id="evCta" href="/onboarding.html">Watch this spot</a>
+      <p class="ev-note">Decision support only. Conditions change quickly — always verify on site.</p>
+    </div>
+  </main>
+
+  <script>
+    function esc(v) { return String(v ?? '').replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])); }
+
+    (async function init() {
+      const id = window.location.pathname.split('/').filter(Boolean).pop();
+      // Preserve campaign attribution through the share -> watch funnel.
+      const params = new URLSearchParams(window.location.search);
+      const utm = [...params.entries()].filter(([k]) => k.startsWith('utm_'));
+      const ctaSuffix = utm.length ? `?${new URLSearchParams(utm).toString()}` : '';
+      try {
+        const res = await fetch(`/api/v1/public/events/${encodeURIComponent(id)}`);
+        if (!res.ok) throw new Error('not found');
+        const { event } = await res.json();
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('event').classList.remove('hidden');
+        document.getElementById('evKicker').textContent = `${event.spot_name || 'Spot'} · ${event.sport || ''}`;
+        document.getElementById('evTitle').textContent = event.title || event.event_type;
+        document.getElementById('evSummary').textContent = event.summary || '';
+        const rows = [
+          ['Event', event.event_type],
+          ['Forecast trust', event.trust_state || 'unknown'],
+          ['Confidence', event.confidence || 'unknown'],
+          event.window_start ? ['Likely window', `${event.window_start} – ${event.window_end || '?'}`] : null,
+          ['Detected', event.created_at]
+        ].filter(Boolean);
+        document.getElementById('evRows').innerHTML = rows.map(([k, v]) => `<div class="ev-row"><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join('');
+        const cta = document.getElementById('evCta');
+        cta.href = event.spot_id ? `/spots/${encodeURIComponent(event.spot_id)}${ctaSuffix}` : `/onboarding.html${ctaSuffix}`;
+      } catch (_) {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('missing').classList.remove('hidden');
+      }
+    })();
+  </script>
+</body>
+</html>

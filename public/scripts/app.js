@@ -24,6 +24,9 @@ let state = {
   profileLlmKeys: [],
   profileDefaultKey: null,
   profileLoaded: false,
+  snapshotId: null,
+  snapshot: null,
+  activeExplanationMode: 'ai',
   pwmFetchedAt: null  // timestamp of last sensor data fetch
 };
 
@@ -72,108 +75,80 @@ const DEMO_SCENARIOS = {
   drone: {
     field: 'drone',
     preset: 'san_francisco',
-    prompt: 'Can a drone safely fly here now? Give a go/no-go answer and explain the physical evidence.'
+    prompt: 'Summarize the measured and model wind evidence, source age and distance, disagreement, and missing flight inputs. Do not issue flight clearance.'
   },
   watersports: {
     field: 'kitesurfing',
     preset: 'tarifa',
-    prompt: 'Is this beach safe for kitesurfing right now? Explain wind, gusts, waves, and uncertainty.'
+    prompt: 'Summarize available wind and marine evidence, source freshness and uncertainty. Do not issue operational clearance.'
   },
   fieldwork: {
     field: 'construction',
     preset: 'berlin',
-    prompt: 'Are conditions safe for outdoor work here now? Consider wind, weather, air quality, temperature, and practical restrictions.'
+    prompt: 'Summarize available outdoor-work evidence and missing inputs. Keep model predictions distinct from observations.'
   }
 };
 
 const QUICK_PROMPTS = {
   drone: [
-    ['Drone go/no-go', 'Can a drone safely fly here now? Give a go/no-go answer and explain the physical evidence.'],
-    ['Can a drone fly safely now?', 'Can a drone fly safely now? Use source evidence, freshness, gust spread, visibility, precipitation, and terrain exposure.'],
-    ['Wind + gust risk', 'Are wind, gusts, visibility, and precipitation within a safe drone operating margin here now?'],
-    ['Next flight window', 'What is the best practical drone flight window in the next hour, and what should I watch?'],
-    ['Launch site risk', 'Is this launch site exposed to terrain turbulence, rotor, buildings, wires, or local wind acceleration?'],
-    ['Return margin', 'Do current wind, gusts, and battery-return margin create a risk for the flight back?'],
-    ['Pilot checklist', 'Give me a short drone pilot checklist for this location and current physical conditions.']
+    ['Flying conditions', 'What do the current wind measurements and forecasts mean for flying a drone here now?'],
+    ['Wind and gusts', 'How strong and variable are the wind and gusts, and how much do the sources disagree?'],
+    ['Check before flight', 'What additional local and aircraft-specific information should I check before flying?'],
+    ['Sensor vs forecast', 'How do nearby measured winds compare with the forecast for this location?']
   ],
   kitesurfing: [
-    ['Kite go/no-go', 'Is this spot safe for kitesurfing right now? Give a go/no-go answer with wind, gusts, waves, and uncertainty.'],
-    ['Can I kite safely now?', 'Can I kite safely now? Explain wind direction, gust factor, waves, tide/current risk, source freshness, and confidence.'],
-    ['Can a beginner kite here today?', 'Can a beginner kite here today, or are conditions only suitable for experienced riders? Explain the evidence.'],
-    ['Airport wind reliable?', 'Is wind from the airport reliable for this beach, or does local terrain/coastline exposure make it uncertain?'],
-    ['Is gust risk elevated?', 'Is gust risk elevated right now? Compare sustained wind, gusts, gust factor, and hardware/model confidence.'],
-    ['Gust + wind angle', 'How risky are the current wind direction and gusts for kitesurfing at this beach?'],
-    ['Next session call', 'What is the practical kitesurfing action for the next hour: ride, wait, change kite size, or avoid?'],
-    ['Kite size hint', 'Based on wind speed, gusts, and trend, what kite-size direction would be conservative?'],
-    ['Beginner safety', 'Would this be safe for a beginner lesson now, or only for experienced riders?'],
-    ['Rescue/drift risk', 'What is the drift or rescue risk if someone loses the board or kite here right now?']
+    ['Kite conditions now', 'What do the current wind and water conditions mean for kitesurfing here now?'],
+    ['Wind and gusts', 'What are the measured wind and gusts, and how reliable are they for kitesurfing here?'],
+    ['Wind direction', 'What do we know about wind direction here, and what local information is missing to judge it?'],
+    ['Water and waves', 'What do the available waves and current mean for a kitesurfer, and what is unknown?']
   ],
   sailing: [
-    ['Sailing go/no-go', 'Is it safe to sail here right now? Explain wind, gusts, waves, swell, and visibility.'],
-    ['Wave/current risk', 'Is this location exposed to wave or current risk right now? Explain source evidence, confidence, and uncertainty.'],
-    ['Sea state check', 'How challenging is the current sea state for a small boat, and what is the main risk?'],
-    ['Next hour route', 'What should a sailor do in the next hour based on wind, waves, tide, and weather?'],
-    ['Reefing call', 'Should a small sailboat reef or reduce sail based on wind and gust spread?'],
-    ['Harbor exit', 'Is it sensible to leave harbor now, or are entrance/nearshore conditions risky?'],
-    ['Crew comfort', 'Will conditions be comfortable for casual crew, or more suitable for experienced sailors?']
-  ],
-  fishing: [
-    ['Fishing conditions', 'Are conditions good and safe for fishing here now? Explain wind, waves, tide, and weather.'],
-    ['Boat comfort', 'Will a small fishing boat be comfortable or risky in the current sea state?'],
-    ['Next hour plan', 'What is the practical fishing plan for the next hour based on marine conditions?'],
-    ['Shore casting', 'Are wind direction, waves, and tide favorable for shore fishing here now?'],
-    ['Return safety', 'If leaving by small boat, what return risk could build over the next hour?'],
-    ['Weather window', 'Is there a useful fishing weather window, or should I wait for calmer conditions?']
-  ],
-  agriculture: [
-    ['Field work call', 'Are conditions good for field work right now? Consider heat, wind, rain, soil and crop stress signals.'],
-    ['Irrigation check', 'Is irrigation likely needed today based on temperature, humidity, wind, rain, and ET0 signals?'],
-    ['Spray risk', 'Is it safe to spray now, or is wind, rain, or heat making drift/evaporation too risky?'],
-    ['Heat stress', 'Is there crop or worker heat-stress risk in this field right now?'],
-    ['Rain timing', 'Should field work wait because of rain, humidity, or storm risk?'],
-    ['Soil moisture clue', 'What do current weather and recent conditions imply about soil moisture stress?']
+    ['Sailing conditions', 'What do the current wind and water conditions mean for sailing here now?'],
+    ['Wind and gusts', 'What wind and gusts are measured or forecast, and do sources agree?'],
+    ['Waves and current', 'What do we know about waves and current here, and what is missing?'],
+    ['Before departure', 'What local and vessel-specific conditions should I check before departure?']
   ],
   construction: [
-    ['Worksite go/no-go', 'Are conditions safe for outdoor construction work here now? Explain wind, heat, rain, and visibility risks.'],
-    ['Should outdoor work continue?', 'Should outdoor work continue here now? Consider wind, heat, rain, visibility, air quality, lightning risk, and uncertainty.'],
-    ['Crane/wind check', 'Are wind and gusts a concern for lifting, scaffolding, or elevated work right now?'],
-    ['Next hour work plan', 'What should the site crew do in the next hour based on weather and environmental risk?'],
-    ['Heat/rest breaks', 'Do temperature, humidity, and sun exposure suggest heat-rest adjustments for workers?'],
-    ['Dust/air quality', 'Is dust, PM2.5, wind, or air quality a concern for outdoor work today?'],
-    ['Secure materials', 'Should the crew secure loose materials, signage, lifts, or temporary structures now?']
+    ['Outdoor work now', 'What do the current conditions mean for outdoor work here now?'],
+    ['Wind and gusts', 'What wind and gust conditions are reported and how much do sources disagree?'],
+    ['Rain and visibility', 'What do the available weather data say about rain and visibility?'],
+    ['Site checks', 'What site and equipment-specific checks remain necessary?']
+  ],
+  agriculture: [
+    ['Field conditions', 'What do current conditions mean for working in the field here now?'],
+    ['Wind for spraying', 'What do the measured wind and gusts suggest about spray drift, and what information is missing?'],
+    ['Rain and humidity', 'What do the data show about rain and humidity?'],
+    ['Weather uncertainty', 'Where do nearby measurements and the forecast disagree?']
   ],
   hiking: [
-    ['Trail safety', 'Is this trail area safe for hiking right now? Explain weather, heat/cold, wind, rain, and terrain risk.'],
-    ['Exposure check', 'What is the main exposure risk for hikers here now: heat, wind, storm, visibility, or terrain?'],
-    ['Next hour trail plan', 'What should hikers do in the next hour based on current conditions?'],
-    ['Storm turnback', 'Is there any sign that hikers should turn back because of storm, wind, or visibility risk?'],
-    ['Layer/water hint', 'What clothing, water, or sun-protection adjustment makes sense for this hike now?'],
-    ['Ridge risk', 'Would exposed ridges, cliffs, or open terrain be riskier than sheltered trail sections?']
+    ['Hiking conditions', 'What do current weather conditions mean for hiking here now?'],
+    ['Wind and rain', 'What do the data show about wind, gusts, and precipitation?'],
+    ['Visibility and terrain', 'What do we know about visibility and terrain, and what is unknown?'],
+    ['Before setting out', 'Which local conditions should a hiker check before setting out?']
   ],
   paragliding: [
-    ['Paragliding go/no-go', 'Is it safe to paraglide here now? Explain wind, gusts, thermals, turbulence, and visibility.'],
-    ['Launch risk', 'How risky are the current wind direction, gusts, and terrain effects for launch?'],
-    ['Next flight window', 'What is the practical paragliding call for the next hour: fly, wait, relocate, or stop?'],
-    ['Thermal strength', 'Are thermals likely smooth, strong, broken, or risky based on sun, wind, humidity, and terrain?'],
-    ['Landing margin', 'How much landing risk is created by gusts, wind direction, turbulence, or terrain exposure?'],
-    ['Pilot level', 'Would these conditions suit students, intermediate pilots, experts only, or nobody?']
+    ['Flying conditions', 'What do the current wind observations and forecasts mean for paragliding here now?'],
+    ['Wind and gusts', 'What wind and gusts are reported, and are sources in agreement?'],
+    ['Wind direction', 'What do we know about wind direction, and what local launch information is missing?'],
+    ['Launch checks', 'What launch-site and pilot-specific conditions remain to be checked?']
+  ],
+  fishing: [
+    ['Fishing conditions', 'What do the current wind and water conditions mean for fishing here now?'],
+    ['Wind and gusts', 'What wind and gusts are reported for this location?'],
+    ['Waves and current', 'What do the data show about waves and current?'],
+    ['Coastal checks', 'What coastal and location-specific conditions are unknown?']
   ],
   events: [
-    ['Event safety', 'Are conditions safe for an outdoor event here now? Explain wind, rain, heat, air quality, and storm risk.'],
-    ['Tent/stage risk', 'Are wind, gusts, or precipitation a concern for tents, signage, stages, or crowds right now?'],
-    ['Next hour ops', 'What should event staff do in the next hour based on current physical conditions?'],
-    ['Crowd comfort', 'Will heat, humidity, wind, rain, or air quality affect crowd comfort now?'],
-    ['Delay/continue', 'Should an outdoor event continue, delay, reduce setup, or move indoors?'],
-    ['Staff checklist', 'Give event staff a short weather safety checklist for the next hour.']
+    ['Event conditions', 'What do current conditions mean for an outdoor event here now?'],
+    ['Wind and gusts', 'What winds and gusts are measured or forecast?'],
+    ['Rain and heat', 'What do we know about rain and temperature?'],
+    ['Site checks', 'What site-specific details remain to be checked?']
   ],
   general: [
-    ['Risk summary', 'What are the main physical-world risks at this place right now?'],
-    ['What data is missing?', 'What data is missing or uncertain for this location, and how should that affect the recommendation?'],
-    ['Evidence check', 'Which values are measured by sensors, which are forecast/model data, and how fresh are they?'],
-    ['Next hour action', 'Give me the practical action for the next hour based on weather, air quality, terrain, and local risk.'],
-    ['Sensor trust', 'Which source should I trust most here, and what uncertainty remains?'],
-    ['Model mismatch', 'Are live sensors and model data disagreeing in any important way?'],
-    ['Human decision', 'Turn this physical context into one clear human decision for the next hour.']
+    ['Conditions now', 'What do the available environmental observations and forecasts say about conditions here now?'],
+    ['Wind and gusts', 'What do the data say about wind and gusts?'],
+    ['Sources agree?', 'Where do measurements and models agree or disagree?'],
+    ['What is missing?', 'Which important conditions are unknown or lack fresh observations?']
   ]
 };
 
@@ -271,31 +246,39 @@ function humanizeSourceField(field) {
   return SOURCE_FIELD_LABELS[field] || field.replace(/_/g, ' ');
 }
 
+function observationAge(source = {}) {
+  for (const value of [source.observed_at, source.updated_at, source.timestamp]) {
+    // Receipt/fetch timestamps are intentionally not observation timestamps.
+    if (typeof value !== 'string' || !value.trim()) continue;
+    const parsed = Date.parse(value);
+    if (!Number.isFinite(parsed)) continue;
+    const minutes = (Date.now() - parsed) / 60000;
+    const text = minutes < -1 ? 'timestamp is in the future'
+      : minutes < 1 ? 'less than 1 min old' : `${Math.round(minutes)} min old`;
+    return { observedAt: value, text };
+  }
+  const suppliedValue = firstAvailable(source.freshness?.age_minutes, source.age_minutes, source.observation_age_minutes);
+  const supplied = suppliedValue == null ? null : Number(suppliedValue);
+  return {
+    observedAt: null,
+    text: Number.isFinite(supplied) && supplied >= 0
+      ? `${Math.round(supplied)} min old at capture; current age unknown`
+      : 'age unknown'
+  };
+}
+
 function sourceObservationSummaries(sourceInfo, limit = 4) {
   const grouped = new Map();
   for (const [field, source] of Object.entries(sourceInfo?.field_sources || {})) {
     if (!source) continue;
-    const observedAt = source.observed_at || null;
-    const suppliedAgeValue = source.freshness?.age_minutes;
-    const suppliedAge = suppliedAgeValue == null ? null : Number(suppliedAgeValue);
-    const parsed = Date.parse(observedAt || '');
-    const calculatedAge = Number.isFinite(parsed) ? (Date.now() - parsed) / 60000 : null;
-    const age = Number.isFinite(suppliedAge) ? suppliedAge : calculatedAge;
-    if (!observedAt && !Number.isFinite(age)) continue;
-    const key = `${observedAt || ''}|${Number.isFinite(age) ? Math.round(age) : ''}`;
-    if (!grouped.has(key)) grouped.set(key, { fields: [], observedAt, age });
+    const age = observationAge(source);
+    const key = `${age.observedAt || ''}|${age.text}`;
+    if (!grouped.has(key)) grouped.set(key, { fields: [], ...age });
     grouped.get(key).fields.push(humanizeSourceField(field));
   }
   return [...grouped.values()].slice(0, limit).map(item => {
-    const ageText = Number.isFinite(item.age)
-      ? item.age < -1
-        ? 'timestamp is in the future'
-        : item.age < 1
-          ? 'less than 1 min old'
-          : `${Math.round(item.age)} min old`
-      : 'age unknown';
     const timestampText = item.observedAt ? ` at ${item.observedAt}` : '';
-    return `${item.fields.join(', ')}: ${ageText}${timestampText}`;
+    return `${item.fields.join(', ')}: ${item.text}${timestampText}`;
   });
 }
 
@@ -355,6 +338,57 @@ function agreementDelta(item) {
   if (item.field === 'wave_height') return `Δ${sign}${cWave(abs)} ${uL('wave')}`;
   if (item.field === 'pressure') return `Δ${sign}${cPress(abs)} ${uL('press')}`;
   return `Δ${sign}${abs}${item.units ? ' ' + item.units : ''}`;
+}
+
+function demoComparisons(agreement) {
+  return (agreement?.comparisons || []).filter(item => Number.isFinite(item.hardware_value) && Number.isFinite(item.model_value));
+}
+function comparisonSourceText(item, agreement) {
+  const source = item.primary_source || agreement?.primary_sensor;
+  if (!source) return 'Physical source metadata unavailable';
+  return `${source.name || source.source || 'Physical station'}${source.distance_km != null ? ` · ${source.distance_km} km away` : ''} · ${observationAge(source).text}`;
+}
+function selectDemoComparison(index) {
+  const agreement = state.sensors?.forecast_agreement || state.extended?.forecast_agreement;
+  const item = demoComparisons(agreement)[index];
+  const detail = document.getElementById('comparisonDetail');
+  if (!item || !detail) return;
+  detail.textContent = `${item.label || item.field}: observed ${agreementValue(item, item.hardware_value)}; model ${agreementValue(item, item.model_value)}; ${agreementDelta(item)}. ${comparisonSourceText(item, agreement)}. Model: coordinate forecast; valid ${state.sensors?.layers?.atmosphere?.model_current?.valid_at || state.sensors?.layers?.atmosphere?.current?.valid_at || 'time unavailable'}.`;
+  document.querySelectorAll('.comparison-card').forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+}
+function renderIntelligenceOverview(layers, agreement) {
+  const assessment = state.riskAssessment || {};
+  const current = layers.atmosphere?.current || {};
+  const items = demoComparisons(agreement);
+  const values = [
+    ['Wind', current.wind_speed_10m == null ? null : `${cWind(current.wind_speed_10m)} ${uL('wind')}`],
+    ['Gusts', current.wind_gusts_10m == null ? null : `${cWind(current.wind_gusts_10m)} ${uL('wind')}`],
+    ['Temperature', current.temperature_2m == null ? null : `${cTemp(current.temperature_2m)}${uL('temp')}`],
+    ['Precipitation · model', state.droneWeather?.precipitation?.value == null ? null : `${state.droneWeather.precipitation.value} ${state.droneWeather.precipitation.unit}`]
+  ];
+  const reason = (assessment.reasons || [])[0] || 'Review available evidence and missing inputs.';
+  const severityRank = { major: 2, minor: 1 };
+  const featured = items.reduce((best, item, index) => (severityRank[item.severity] || 0) > (severityRank[items[best]?.severity] || 0) ? index : best, 0);
+  let html = `<div class="intel-values">${values.filter(([,value]) => value !== null).map(([label,value]) => `<span>${escHtml(label)}<b>${escHtml(value)}</b></span>`).join('')}</div>`;
+  html += `<div class="comparison-top"><strong>Forecast vs Observation</strong><span>Model agreement: ${escHtml((agreement?.forecast_trust || 'unknown').toUpperCase())}${agreement?.score != null ? ` · ${escHtml(agreement.score)}/100` : ''}</span></div>`;
+  html += '<div class="comparison-grid">';
+  items.forEach((item, index) => {
+    const observed = item.hardware_value, model = item.model_value;
+    const low = Math.min(0, observed, model), high = Math.max(0, observed, model);
+    const range = high - low || 1;
+    const x = value => 90 + (value - low) / range * 170;
+    const bar = (value,y,color) => `<rect x="${Math.min(x(0),x(value))}" y="${y}" width="${Math.abs(x(value)-x(0))}" height="16" rx="3" fill="${color}"/>`;
+    const description = `${item.label || item.field}: observed ${agreementValue(item, observed)}, model ${agreementValue(item, model)}, ${agreementDelta(item)}. ${comparisonSourceText(item, agreement)}`;
+    html += `<button type="button" class="comparison-card" aria-pressed="${index === featured}" onclick="selectDemoComparison(${index})" onfocus="selectDemoComparison(${index})"><strong>${escHtml(item.label || item.field)}</strong><div class="comparison-headline"><span>Observed<b>${escHtml(agreementValue(item,observed))}</b></span><span>Model<b>${escHtml(agreementValue(item,model))}</b></span></div><svg viewBox="0 0 280 100" role="img" aria-label="${escHtml(description)}"><title>${escHtml(description)}</title><text x="0" y="26" fill="#bacbd2" font-size="12">Observed</text><text x="0" y="57" fill="#bacbd2" font-size="12">Model</text><line x1="${x(0)}" y1="8" x2="${x(0)}" y2="68" stroke="#52636e"/>${bar(observed,13,'#20cfa0')}${bar(model,44,'#6baaff')}<text x="90" y="90" fill="#bacbd2" font-size="10">${escHtml(agreementValue(item,low))}</text><text x="270" y="90" text-anchor="end" fill="#bacbd2" font-size="10">${escHtml(agreementValue(item,high))}</text></svg><small>Observed ${escHtml(agreementValue(item,observed))} · Model ${escHtml(agreementValue(item,model))}</small><small>${escHtml(agreementDelta(item))} · ${escHtml(severityLabel(item.severity))}</small></button>`;
+  });
+  html += `</div><p id="comparisonDetail" class="comparison-detail">${items.length ? escHtml(comparisonSourceText(items[featured], agreement)) + '. Select or hover over a comparison for values and source details.' : 'No comparable observation/model pair is available in this snapshot.'}</p>`;
+  html += renderHistoricalSensorChart();
+  html += `<div class="intel-status"><strong>Senlay: ${escHtml(assessment.outcome || 'INSUFFICIENT_EVIDENCE')}</strong><p>${escHtml(reason)}</p></div>`;
+  return html;
+}
+async function copyDemoJSON(button) {
+  try { await navigator.clipboard.writeText(document.getElementById('machineOutput').textContent); button.textContent = 'Copied'; }
+  catch (_) { button.textContent = 'Select JSON to copy'; }
 }
 
 function renderForecastAgreement(agreement) {
@@ -625,7 +659,7 @@ function emptyFeedMessage(source, availableMessage, unavailableMessage) {
   const health = sourceHealthEntry(source);
   const status = String(health?.status || '').trim().toLowerCase();
   if (status === 'error') return unavailableMessage;
-  if (status === 'not_applicable') return `${unavailableMessage} The integration is not configured or does not apply here.`;
+  if (status === 'not_applicable') return `${unavailableMessage} This source was not requested for the selected profile.`;
   if (!health) return `${unavailableMessage} Feed status is unknown.`;
   return `${availableMessage} This is not a safety clearance.`;
 }
@@ -1262,7 +1296,7 @@ function renderLayerMapFallback(message) {
   const tileUrl = state.connected ? fallbackTileUrl() : '';
   fallback.style.display = 'grid';
   if (tileUrl) {
-    fallback.style.backgroundImage = `linear-gradient(180deg, rgba(7,17,31,0.20), rgba(7,17,31,0.64)), radial-gradient(circle at 50% 50%, rgba(24,211,154,0.10), transparent 34%), url("${tileUrl}")`;
+    fallback.style.backgroundImage = `linear-gradient(180deg, rgba(7,17,31,0.78), rgba(7,17,31,0.88)), radial-gradient(circle at 50% 50%, rgba(24,211,154,0.10), transparent 34%), url("${tileUrl}")`;
     fallback.style.backgroundSize = 'cover, cover, cover';
     fallback.style.backgroundPosition = 'center';
   } else {
@@ -1274,6 +1308,7 @@ function renderLayerMapFallback(message) {
     <span class="layer-map-target"></span>
     <strong>${escHtml(message || (state.connected ? state.locationName || 'Selected spot' : 'Select and connect a location'))}</strong>
     ${lat && lng ? `<small>${escHtml(lat)}, ${escHtml(lng)}</small>` : ''}
+    ${state.connected && (layerMapFailed || !window.maplibregl) ? '<p>Interactive map unavailable in this browser. Environmental evidence remains available above.</p>' : ''}
   `;
 }
 
@@ -1401,11 +1436,56 @@ function legacyRiskAssessment(summary, events) {
   };
 }
 
+function evidenceOutcomeCode(assessment) {
+  const outcome = String(assessment?.outcome || '').trim().toUpperCase();
+  if (outcome) return outcome;
+  if (['insufficient', 'unknown'].includes(String(assessment?.assessment_state || '').toLowerCase())) {
+    return 'INSUFFICIENT_EVIDENCE';
+  }
+  return 'OUTCOME_UNAVAILABLE';
+}
+
+function evidenceOutcomeLabel(assessment) {
+  const code = evidenceOutcomeCode(assessment);
+  if (code === 'INSUFFICIENT_EVIDENCE') return state.field === 'drone' ? 'Insufficient wind evidence' : 'Insufficient environmental evidence';
+  if (code === 'NO_GO') return 'Configured physical flag triggered';
+  if (code === 'CAUTION') return 'Caution from configured profile rules';
+  if (code === 'GO') return 'No configured profile rule triggered';
+  return 'Outcome unavailable';
+}
+
+function evidenceOutcomeDetail(assessment) {
+  const details = Array.isArray(assessment?.unknowns)
+    ? assessment.unknowns.map(item => item?.detail).filter(Boolean)
+    : [];
+  const reasons = Array.isArray(assessment?.reasons) ? assessment.reasons.filter(Boolean) : [];
+  return [...details, ...reasons].slice(0, 2).join(' ');
+}
+
+function evidenceCoverageLabel(assessment) {
+  const status = String(assessment?.assessment_state || 'unknown').toLowerCase();
+  if (status === 'sufficient') return 'Required profile fields are present. This describes coverage only.';
+  if (status === 'partial') return 'Some required profile fields are missing.';
+  if (status === 'insufficient') return 'Required profile evidence is insufficient.';
+  return 'Required profile field coverage is unknown.';
+}
+
+function physicalFlagsLabel(assessment) {
+  const score = Number(assessment?.risk_score);
+  const hasScore = assessment?.risk_score !== null && assessment?.risk_score !== undefined && assessment?.risk_score !== '';
+  if (hasScore && score === 0) return 'No configured physical thresholds triggered from the available fields.';
+  if (hasScore && Number.isFinite(score)) return `Configured physical flag score: ${score}/100. This is not a safety or mission score.`;
+  return 'No physical flag score is available.';
+}
+
 function renderRiskAssessmentPanel() {
   const assessment = state.riskAssessment || legacyRiskAssessment(state.riskSummary, state.riskEvents);
   if (!assessment) return '';
   const alertBand = assessment.alert_band || {};
   const color = riskLevelColor(assessment.risk_level);
+  const outcomeCode = evidenceOutcomeCode(assessment);
+  const outcomeLabel = evidenceOutcomeLabel(assessment);
+  const outcomeDetail = evidenceOutcomeDetail(assessment);
   const reasons = Array.isArray(assessment.reasons) ? assessment.reasons.slice(0, 3) : [];
   const provenance = assessment.source_provenance || {};
   const sources = Array.isArray(provenance.primary_sources) && provenance.primary_sources.length
@@ -1413,13 +1493,13 @@ function renderRiskAssessmentPanel() {
     : Array.isArray(provenance.source_chain) && provenance.source_chain.length
       ? provenance.source_chain.slice(0, 3).join(' | ')
     : 'available evidence (may be incomplete)';
-  const scoreText = assessment.risk_score == null ? 'not scored' : `${assessment.risk_score}/100`;
   let html = `<div class="sensor-section hw-border">
-    <div class="sensor-section-title">DETERMINISTIC RISK ENGINE <span class="badge-hw" style="color:${color}">${escHtml(String(assessment.risk_level || 'unknown').toUpperCase())}</span></div>
-    <div class="sensor-row"><span class="sense-verb">Score:</span> <span class="sense-value">${escHtml(scoreText)} | ${escHtml(alertBand.label || (assessment.risk_level === 'unknown' ? 'Evidence unavailable' : 'Evidence check'))} | confidence ${escHtml(assessment.confidence || 'low')}</span></div>
-    <div class="sensor-row"><span class="sense-verb">Evidence:</span> <span class="sense-value">${escHtml(assessment.assessment_state || 'unknown')}</span></div>
+    <div class="sensor-section-title">EVIDENCE OUTCOME · ${state.field === 'drone' ? 'WIND PROFILE' : 'SPOT CONTEXT'} <span class="badge-hw" style="color:${color}">${escHtml(outcomeCode)}</span></div>
+    <div class="sensor-row"><span class="sense-verb">Outcome:</span> <span class="sense-value">${escHtml(outcomeLabel)}${outcomeDetail ? ` — ${escHtml(outcomeDetail)}` : ''}</span></div>
+    <div class="sensor-row"><span class="sense-verb">Evidence coverage:</span> <span class="sense-value">${escHtml(evidenceCoverageLabel(assessment))} This is not whole-flight or mission coverage.</span></div>
+    <div class="sensor-row"><span class="sense-verb">Physical flags:</span> <span class="sense-value">${escHtml(physicalFlagsLabel(assessment))} Confidence: ${escHtml(assessment.confidence || 'low')}.</span></div>
     <div class="sensor-row"><span class="sense-verb">State:</span> <span class="sense-value">${escHtml(assessment.incident_state || 'no_flags_from_available_evidence')} | ${escHtml(assessment.escalation_stage || 'baseline_monitoring')}</span></div>
-    <div class="sensor-row"><span class="sense-verb">Action:</span> <span class="sense-value">${escHtml(assessment.recommended_action || 'Continue normal monitoring.')}</span></div>`;
+    <div class="sensor-row"><span class="sense-verb">Review:</span> <span class="sense-value">Review the environmental evidence with platform limits, onboard measurements, mission details, and applicable requirements. No operational clearance is provided.</span></div>`;
   if (reasons.length) {
     html += `<div class="sensor-row"><span class="sense-verb">Why:</span> <span class="sense-value">${escHtml(reasons.join(' | '))}</span></div>`;
   }
@@ -1554,15 +1634,16 @@ function renderLlmResponseContext(payload = {}) {
   }
 
   if (assessment) {
-    const alertBand = assessment.alert_band || {};
-    const scoreText = assessment.risk_score == null ? 'not scored' : `${assessment.risk_score}/100`;
     const riskBits = [
-      `${alertBand.label || assessment.risk_level || 'Evidence unavailable'} ${scoreText}`,
-      `evidence ${assessment.assessment_state || 'unknown'}`,
+      `${evidenceOutcomeCode(assessment)} — ${evidenceOutcomeLabel(assessment)}`,
+      evidenceCoverageLabel(assessment),
+      physicalFlagsLabel(assessment),
       `confidence ${assessment.confidence || 'medium'}`
     ];
+    const outcomeDetail = evidenceOutcomeDetail(assessment);
+    if (outcomeDetail) riskBits.push(outcomeDetail);
     if (assessment.recommended_action) riskBits.push(assessment.recommended_action);
-    rows.push({ label: 'Risk state', value: riskBits.join('; ') });
+    rows.push({ label: 'Evidence outcome', value: riskBits.join('; ') });
   }
 
   return `<div class="llm-response-context">
@@ -1584,17 +1665,18 @@ function renderHumanDemoResponseContext(payload = {}) {
   const wind = layerContext?.contexts?.wind || null;
   const rows = [];
 
-  rows.push({
-    label: 'Checked',
-    value: `${payload.active_sources ?? state.activeSources ?? 0} live source${Number(payload.active_sources ?? state.activeSources ?? 0) === 1 ? '' : 's'}${activeLayers != null ? ` and ${activeLayers} map/context layers` : ''}`
-  });
+  rows.push({ label: 'Scope', value: state.field === 'drone' ? 'Wind observations and model rain / thunderstorm indications. No whole-flight or mission assessment.' : 'Spot-level environmental evidence. No operational clearance.' });
+  rows.push({ label: 'Sources', value: `${payload.active_sources ?? state.activeSources ?? 0} source families returned data${activeLayers != null ? `; ${activeLayers} context layers` : ''}. Availability is not complete operational coverage.` });
+  const snapshot = payload.snapshot || state.snapshot;
+  if (snapshot?.captured_at) rows.push({ label: 'Captured', value: snapshot.captured_at });
 
   if (assessment) {
-    const band = assessment.alert_band?.label || assessment.risk_level || 'Evidence unavailable';
     rows.push({
-      label: 'Risk',
-      value: `${band}, ${assessment.risk_score == null ? 'not scored' : `${assessment.risk_score}/100`}, evidence ${assessment.assessment_state || 'unknown'}, confidence ${assessment.confidence || 'medium'}`
+      label: 'Evidence outcome',
+      value: `${evidenceOutcomeCode(assessment)} — ${evidenceOutcomeLabel(assessment)}${evidenceOutcomeDetail(assessment) ? `; ${evidenceOutcomeDetail(assessment)}` : ''}`
     });
+    rows.push({ label: 'Evidence coverage', value: evidenceCoverageLabel(assessment) });
+    rows.push({ label: 'Physical flags', value: physicalFlagsLabel(assessment) });
   }
 
   const details = [];
@@ -1610,7 +1692,7 @@ function renderHumanDemoResponseContext(payload = {}) {
   if (details.length) rows.push({ label: 'Place', value: details.join(' | ') });
 
   return `<div class="llm-response-context">
-    <div class="llm-response-context-title">WHAT SENLAY CHECKED</div>
+    <div class="llm-response-context-title">EVIDENCE SCOPE AND LIMITS</div>
     ${rows.map(row => `<div class="llm-context-row"><span>${escHtml(row.label)}:</span><strong>${escHtml(row.value)}</strong></div>`).join('')}
   </div>`;
 }
@@ -1976,7 +2058,7 @@ function renderDomainMemory(layers, ext, agreement) {
       }
       if (nearestShip.wave_height_m != null) shipBits.push(`waves ${cWave(nearestShip.wave_height_m)} ${uL('wave')}`);
       if (nearestShip.pressure_hpa != null) shipBits.push(`pressure ${cPress(nearestShip.pressure_hpa)} ${uL('press')}`);
-      const ageText = nearestShip.age_minutes != null ? `, ${nearestShip.age_minutes} min old` : '';
+      const ageText = `, ${observationAge(nearestShip).text}`;
       const identityNote = nearestShip.identity_status === 'anonymized_by_noaa_ndbc' ? 'source anonymized' : 'source identity';
       html += `<div class="sensor-row"><span class="sense-verb">Ship/offshore:</span> <span class="sense-value">${escHtml(shipDisplayName(nearestShip))} ${nearestShip.distance_km}km away${escHtml(ageText)}; ${escHtml(shipBits.join(', ') || 'marine report available')} — ${escHtml(identityNote)}, comparison only</span></div>`;
     } else if ((ext.ship_observations || []).length > 0) {
@@ -2141,6 +2223,13 @@ function selectSearchResult(index) {
 }
 
 function applyLocation(lat, lng, name) {
+  if (state.lat !== lat || state.lng !== lng) {
+    cancelDemoRequest('connect');
+    cancelDemoRequest('chat');
+    resetHistoricalSensorHistory();
+    state.snapshotId = null;
+    state.snapshot = null;
+  }
   const hadConnection = state.connected;
   state.lat = lat;
   state.lng = lng;
@@ -2252,9 +2341,59 @@ function loadPrefs() {
 }
 
 function hasUsableProvider() {
-  if (state.provider === 'demo') return true;
-  if (state.provider === 'profile') return !!state.profileDefaultKey;
-  return !!state.apiKey;
+  // Loading evidence never requires an AI key.
+  return true;
+}
+function hasHumanAIProvider() {
+  if (state.provider === 'profile') return !!state.profileDefaultKey && !!state.profileSessionToken;
+  return !['demo', 'profile'].includes(state.provider) && !!state.apiKey;
+}
+function renderMachineOutput(data) {
+  const el = document.getElementById('machineOutput');
+  if (!el) return;
+  const fields = ['snapshot_id', 'field', 'active_sources', 'assessment_state', 'outcome', 'unknowns', 'drone_weather'];
+  const selected = {};
+  for (const field of fields) if (Object.prototype.hasOwnProperty.call(data, field)) selected[field] = data[field];
+  // Preserve names and values from the actual response while selecting only
+  // the location and current layer readings for a readable example.
+  if (data.sensors && typeof data.sensors === 'object') {
+    const sensorFields = {};
+    for (const key of ['coordinates', 'timestamp']) {
+      if (Object.prototype.hasOwnProperty.call(data.sensors, key)) sensorFields[key] = data.sensors[key];
+    }
+    const layers = {};
+    for (const [name, layer] of Object.entries(data.sensors.layers || {})) {
+      if (!layer || typeof layer !== 'object' || !Object.prototype.hasOwnProperty.call(layer, 'current')) continue;
+      layers[name] = { current: layer.current };
+      if (Object.prototype.hasOwnProperty.call(layer, 'current_units')) layers[name].current_units = layer.current_units;
+    }
+    if (Object.keys(layers).length) sensorFields.layers = layers;
+    selected.sensors = sensorFields;
+  }
+  for (const field of ['evidence_summary', 'confidence_components', 'risk_events']) {
+    if (Object.prototype.hasOwnProperty.call(data, field)) selected[field] = data[field];
+  }
+  el.textContent = JSON.stringify(data, null, 2);
+  const agreement = data.sensors?.forecast_agreement || data.extended?.forecast_agreement;
+  const comparison = field => (agreement?.comparisons || []).find(item => item.field === field);
+  document.getElementById('machinePreview').textContent = JSON.stringify({
+    snapshot_id: data.snapshot_id ?? null,
+    assessment: data.risk_assessment?.outcome ?? data.outcome ?? null,
+    sources: data.active_sources ?? null,
+    observed_wind_kmh: comparison('wind_speed')?.hardware_value ?? null,
+    model_wind_kmh: comparison('wind_speed')?.model_value ?? null,
+    observed_gust_kmh: comparison('wind_gust')?.hardware_value ?? null,
+    model_gust_kmh: comparison('wind_gust')?.model_value ?? null,
+    observed_temperature_c: comparison('temperature')?.hardware_value ?? null,
+    model_temperature_c: comparison('temperature')?.model_value ?? null,
+    model_agreement: agreement?.forecast_trust ?? null
+  }, null, 2);
+  const summary = document.getElementById('machineSummary');
+  if (summary) {
+    const current = data.sensors?.layers?.atmosphere?.current || {};
+    const values = [current.wind_speed_10m != null ? `Wind ${current.wind_speed_10m} km/h` : null, current.wind_gusts_10m != null ? `gust ${current.wind_gusts_10m} km/h` : null, data.drone_weather?.precipitation?.value != null ? `precipitation ${data.drone_weather.precipitation.value} ${data.drone_weather.precipitation.unit}` : null].filter(Boolean);
+    summary.textContent = `Assessment: ${data.risk_assessment?.outcome || data.outcome || 'unknown'} · Sources: ${data.active_sources ?? 'unknown'}${values.length ? ' · ' + values.join(' · ') : ''}`;
+  }
 }
 
 function currentGuideStep() {
@@ -2279,7 +2418,6 @@ function updateDemoGuide() {
     step.classList.toggle('active', n === current || (current > 4 && n === 4));
   });
   const status = document.getElementById('guideStatus');
-  if (!status) return;
   const messages = {
     1: 'Choose the activity first.',
     2: 'Search any place, choose a result, use your location, or pin exact coordinates.',
@@ -2287,7 +2425,13 @@ function updateDemoGuide() {
     4: 'Ask a question or use a prompt chip below the chat.',
     5: 'Demo complete. Change the place, use case, or units to compare another scenario.'
   };
-  status.textContent = messages[current] || messages[5];
+  if (status) status.textContent = messages[current] || messages[5];
+  const primaryAction = document.getElementById('demoPrimaryAction');
+  if (primaryAction) {
+    primaryAction.textContent = state.lat === null
+      ? 'Choose a place'
+      : state.connected ? 'Explain this evidence' : state.field === 'drone' ? 'Connect live data' : 'Load live evidence';
+  }
   const action = document.getElementById('guideAction');
   if (action) {
     const actions = {
@@ -2299,6 +2443,20 @@ function updateDemoGuide() {
     };
     action.textContent = actions[current] || actions[5];
   }
+}
+
+function runDemoPrimaryAction() {
+  if (state.lat === null || state.lng === null) {
+    focusDemoStep('location');
+    return;
+  }
+  if (!state.connected) {
+    connectToPWM();
+    return;
+  }
+  const prompt = promptSetForField(state.field)[0]?.[1]
+    || 'Summarize the available evidence and unknowns.';
+  usePrompt(prompt);
 }
 
 function promptSetForField(field) {
@@ -2369,7 +2527,6 @@ function loadDemoScenario(key) {
   if (chatInput) chatInput.value = scenario.prompt;
   const status = document.getElementById('guideStatus');
   if (status) status.textContent = 'Scenario loaded. Connect to fetch live physical data, then send the prepared question.';
-  focusDemoStep('connect');
 }
 
 function focusDemoStep(step) {
@@ -2401,9 +2558,14 @@ function focusDemoStep(step) {
 }
 
 // ─── Init ───────────────────────────────────────────────────────────
+let profileKeyReady = Promise.resolve();
 document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('.demo-map-details')?.addEventListener('toggle', event => {
+    if (event.currentTarget.open && state.connected) renderLayerMap();
+  });
   loadPrefs();
-  loadProfileKeyState();
+  updateDroneDetailsVisibility();
+  profileKeyReady = loadProfileKeyState();
   loadSpots();
   loadTicker();
   updatePromptChips();
@@ -2429,13 +2591,13 @@ function providerDisplayName() {
   }
   if (state.provider === 'demo') return 'Senlay Demo';
   if (state.provider === 'openrouter') return 'OpenRouter';
-  if (state.provider === 'openai') return 'GPT-4o';
+  if (state.provider === 'openai') return 'OpenAI';
   if (state.provider === 'anthropic') return 'Claude';
   return 'Senlay Demo';
 }
 
 function publicConnectionLabel() {
-  return 'Physical World Model';
+  return 'Environmental evidence';
 }
 
 function updateProviderRows() {
@@ -2457,7 +2619,7 @@ function updateProfileKeyUi() {
   if (option) {
     option.textContent = key
       ? `Saved profile key: ${key.label || key.providerLabel || key.provider}`
-      : 'Saved profile key (paid BYOK)';
+      : 'Saved account key';
   }
   if (!hint) return;
   if (key) {
@@ -2485,6 +2647,12 @@ async function loadProfileKeyState() {
     if (!res.ok || data.error) throw new Error(data.error || 'Profile unavailable');
     state.profileLlmKeys = data.llmKeys || [];
     state.profileDefaultKey = state.profileLlmKeys.find(k => k.isDefault) || state.profileLlmKeys[0] || null;
+    if (state.profileDefaultKey && state.provider === 'demo') {
+      state.provider = 'profile';
+      const select = document.getElementById('providerSelect');
+      if (select) select.value = 'profile';
+      updateProviderRows();
+    }
   } catch (_) {
     state.profileLlmKeys = [];
     state.profileDefaultKey = null;
@@ -2499,6 +2667,12 @@ async function loadProfileKeyState() {
 // ─── Setup: Provider ────────────────────────────────────────────────
 function onProviderChange() {
   const val = document.getElementById('providerSelect').value;
+  if (val !== state.provider) {
+    // Never send a key entered for one provider to another provider.
+    state.apiKey = '';
+    const input = document.getElementById('userApiKey');
+    if (input) input.value = '';
+  }
   state.provider = val;
   updateProviderRows();
   savePrefs();
@@ -2552,20 +2726,54 @@ const FIELD_LABELS = {
   general: 'General Physical-World Query'
 };
 
+function updateDroneDetailsVisibility() {
+  const show = state.field === 'drone';
+  document.getElementById('droneDetails')?.classList.toggle('hidden', !show);
+  document.getElementById('droneEditHint')?.classList.toggle('hidden', !show);
+}
+function editDroneDetails() {
+  const panel = document.getElementById('setupPanel');
+  if (panel?.classList.contains('collapsed')) toggleSetup();
+  const details = document.getElementById('droneDetails');
+  if (details) { details.open = true; details.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+}
+function collectDroneDetails() {
+  if (state.field !== 'drone') return undefined;
+  const output = {};
+  const model = document.getElementById('droneModel')?.value.trim();
+  if (model) output.model = model;
+  for (const [id, key] of [['droneWeight', 'weight_g'], ['droneWindLimit', 'wind_limit_kmh'], ['droneBattery', 'battery_percent'], ['droneReserve', 'battery_reserve_percent'], ['droneCapacity', 'battery_capacity_mah'], ['droneAltitude', 'planned_altitude_m']]) {
+    const input = document.getElementById(id);
+    if (!input || input.value === '') continue;
+    if (!input.validity.valid || !Number.isFinite(input.valueAsNumber)) throw new Error(`Check the ${input.previousElementSibling?.textContent || input.parentElement?.firstChild?.textContent || 'drone'} value.`);
+    output[key] = input.valueAsNumber;
+  }
+  return Object.keys(output).length ? output : undefined;
+}
+
 function onFieldChange() {
   const sel = document.getElementById('fieldSelect');
   if (!sel) return;
   state.field = sel.value;
+  updateDroneDetailsVisibility();
+  cancelDemoRequest('connect');
+  cancelDemoRequest('chat');
+  state.snapshotId = null;
+  state.snapshot = null;
   savePrefs();
   refreshSpotDropdown();
   updatePromptChips();
   updateLayerMapShell();
-  // Reset conversation when field changes — new persona, fresh context
+  // A different profile needs its own server-issued snapshot.
   if (state.connected) {
+    state.connected = false;
+    state.sensors = null;
     document.getElementById('chatMessages').innerHTML = '';
     state.messages = [];
-    addSystemMessage(`Field changed to ${FIELD_LABELS[state.field] || state.field}. Ask me anything — I'm now tuned to this use case.`);
-    renderLayerMap();
+    document.getElementById('mainArea').classList.add('hidden');
+    document.getElementById('statusBar').classList.add('hidden');
+    document.getElementById('setupPanel').classList.remove('collapsed');
+    setConnectionStatus(document.getElementById('connectionStatus'), 'disconnected', 'Use case changed. Connect to request a new evidence profile.');
   }
   updateDemoGuide();
 }
@@ -2636,7 +2844,6 @@ function usePresetLocation(key) {
   const preset = DEMO_PRESETS[key];
   if (!preset) return;
   applyLocation(preset.lat, preset.lng, preset.name);
-  focusDemoStep('connect');
 }
 
 async function searchCity() {
@@ -2669,19 +2876,83 @@ async function searchCity() {
 }
 
 // ─── Connect ────────────────────────────────────────────────────────
+const demoRequests = new Map();
+let lastDemoQuestion = '';
+
+function cancelDemoRequest(kind) {
+  demoRequests.get(kind)?.abort('user');
+}
+
+function demoProgress(kind, text, recovery = false) {
+  const el = document.getElementById(kind === 'connect' ? 'connectProgress' : 'chatProgress');
+  if (!el) return;
+  el.replaceChildren();
+  const message = document.createElement('span');
+  message.textContent = text;
+  el.appendChild(message);
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = recovery === 'reconnect' ? 'Reload evidence' : recovery ? 'Retry' : 'Cancel';
+  button.addEventListener('click', () => recovery === 'reconnect' ? connectToPWM() : recovery
+    ? kind === 'connect' ? connectToPWM() : retryLastDemoMessage()
+    : cancelDemoRequest(kind));
+  el.appendChild(button);
+}
+
+async function demoFetch(kind, url, options = {}, timeoutMs = 25000) {
+  cancelDemoRequest(kind);
+  const controller = new AbortController();
+  demoRequests.set(kind, controller);
+  const started = Date.now();
+  const update = () => demoProgress(kind, `${kind === 'connect' ? 'Requesting available environmental sources' : 'Preparing the requested explanation'} · ${Math.floor((Date.now() - started) / 1000)}s. Partial or missing evidence will remain visible. `);
+  update();
+  const progress = setInterval(update, 1000);
+  const timeout = setTimeout(() => controller.abort('timeout'), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    const data = await response.json();
+    if (!response.ok || data.error) throw Object.assign(new Error(data.error || `Request failed (HTTP ${response.status}).`), { reconnect: kind === 'chat' && response.status === 409 });
+    const el = document.getElementById(kind === 'connect' ? 'connectProgress' : 'chatProgress');
+    if (el) el.textContent = `Completed in ${((Date.now() - started) / 1000).toFixed(1)}s.`;
+    return data;
+  } catch (error) {
+    const message = controller.signal.aborted
+      ? controller.signal.reason === 'user' ? 'Request cancelled.' : 'Request timed out. Try again or use the labeled example.'
+      : error instanceof SyntaxError ? 'The service did not return a valid result. Please retry.' : error.message || 'Request failed.';
+    if (error.reconnect) {
+      state.snapshotId = null;
+      state.snapshot = null;
+      state.connected = false;
+      document.getElementById('setupPanel')?.classList.remove('collapsed');
+      setConnectionStatus(document.getElementById('connectionStatus'), 'disconnected', 'Evidence snapshot expired. Reload current evidence.');
+      const statusText = document.getElementById('statusBarText');
+      if (statusText) statusText.textContent = 'Evidence snapshot expired. Reload current evidence.';
+    }
+    demoProgress(kind, message + ' ', error.reconnect ? 'reconnect' : true);
+    throw new Error(message);
+  } finally {
+    clearTimeout(timeout);
+    clearInterval(progress);
+    if (demoRequests.get(kind) === controller) demoRequests.delete(kind);
+  }
+}
+
+function retryLastDemoMessage() {
+  if (!lastDemoQuestion || demoRequests.has('chat')) return;
+  document.getElementById('chatInput').value = lastDemoQuestion;
+  sendMessage(true);
+}
+
 async function connectToPWM() {
   if (state.lat === null || state.lng === null) { alert('Select a location first'); return; }
-
-  if (state.provider === 'profile') {
-    if (!state.profileDefaultKey) {
-      alert('No saved profile model key found. Sign in on the dashboard and save a default LLM key first.');
-      return;
-    }
-  } else if (state.provider !== 'demo') {
-    state.apiKey = document.getElementById('userApiKey').value.trim();
-    if (!state.apiKey) { alert('Enter your API key'); return; }
-  }
+  if (demoRequests.has('connect')) return;
   savePrefs();
+  cancelDemoRequest('chat');
+  document.getElementById('chatMessages').innerHTML = '';
+  state.messages = [];
+  state.connected = false;
+  resetHistoricalSensorHistory();
+  document.getElementById('mainArea').classList.add('hidden');
 
   const statusEl = document.getElementById('connectionStatus');
   const btn = document.getElementById('connectBtn');
@@ -2692,12 +2963,11 @@ async function connectToPWM() {
   btn.textContent = 'Connecting...';
 
   try {
-    const res = await fetch(`/api/pwm?lat=${state.lat}&lng=${state.lng}&field=${encodeURIComponent(state.field)}&view=full`);
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `HTTP ${res.status}`);
-    }
-    const data = await res.json();
+    const profileQuery = state.field === 'drone' ? '&profile=wind' : '';
+    const data = await demoFetch('connect', `/api/pwm?lat=${state.lat}&lng=${state.lng}&field=${encodeURIComponent(state.field)}${profileQuery}&view=full`);
+    state.snapshotId = data.snapshot_id || data.snapshot?.id || null;
+    state.snapshot = data.snapshot || null;
+    state.droneWeather = data.drone_weather || null;
     state.sensors = data.sensors;
     state.satellite = data.satellite;
     state.extended = data.extended || null;
@@ -2723,16 +2993,25 @@ async function connectToPWM() {
     document.getElementById('statusBarText').textContent =
       `${connectionLabel} connected — ${state.locationName} — ${state.activeSources} source layers reporting data`;
 
-    document.getElementById('chatProviderLabel').textContent = connectionLabel;
+    document.getElementById('chatProviderLabel').textContent = '02 · AI EXPLANATION';
+    renderMachineOutput(data);
 
     requestAnimationFrame(renderLayerMap);
     renderSensorFeed();
+    loadHistoricalSensorHistory(state.lat,state.lng);
+    document.getElementById('mainArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     document.getElementById('chatMessages').innerHTML = '';
     state.messages = [];
     const fieldLabel = FIELD_LABELS[state.field] || state.field;
-    addSystemMessage(`Senlay connected at ${state.locationName}. ${state.activeSources} source layers are reporting data. Mode: ${fieldLabel}. Missing feeds remain unknown. What would you like to know?`);
+    addSystemMessage(`Evidence loaded at ${state.locationName}. ${state.activeSources} source layers returned data. ${state.field === 'drone' ? 'The outcome considers wind and model rain / thunderstorm indications; local lightning is not measured.' : `Domain: ${fieldLabel}.`}`);
     updateDemoGuide();
+    await profileKeyReady;
+    if (hasHumanAIProvider() && state.snapshotId === (data.snapshot_id || data.snapshot?.id)) {
+      await sendMessage(false, true);
+    } else if (!hasHumanAIProvider()) {
+      addSystemMessage('For an AI explanation, sign in and save an OpenAI key in Dashboard, or choose your provider below.');
+    }
 
   } catch (e) {
     setConnectionStatus(statusEl, 'disconnected', 'Connection failed: ' + e.message);
@@ -2740,7 +3019,7 @@ async function connectToPWM() {
   }
 
   btn.disabled = false;
-  btn.textContent = 'Connect to Physical World';
+  btn.textContent = 'Load environmental evidence';
 }
 
 function toggleSetup() {
@@ -2767,19 +3046,19 @@ function renderDecisionCards(layers, ext, agreement) {
   const cards = [];
 
   if (assessment) {
-    const band = assessment.alert_band?.label || assessment.risk_level || 'Evidence unavailable';
+    const outcomeCode = evidenceOutcomeCode(assessment);
     cards.push({
-      title: 'Risk',
-      meta: String(band).toUpperCase(),
-      value: assessment.recommended_action || `${assessment.risk_score == null ? 'not scored' : `${assessment.risk_score}/100`}, evidence ${assessment.assessment_state || 'unknown'}, confidence ${assessment.confidence || 'medium'}`
+      title: 'Evidence outcome',
+      meta: outcomeCode,
+      value: `${evidenceOutcomeLabel(assessment)}${evidenceOutcomeDetail(assessment) ? ` · ${evidenceOutcomeDetail(assessment)}` : ''}. ${evidenceCoverageLabel(assessment)} ${physicalFlagsLabel(assessment)} No operational clearance.`
     });
   }
 
   const trust = agreement?.forecast_trust || layers.atmosphere?.current_source?.mode || 'live context';
   cards.push({
-    title: 'Trust',
+    title: 'Model comparison',
     meta: agreement?.score != null ? `${agreement.score}/100` : 'source check',
-    value: String(trust).replace(/_/g, ' ')
+    value: `${String(trust).replace(/_/g, ' ')} agreement indicator; not aircraft or mission confidence`
   });
 
   const atm = layers.atmosphere?.current;
@@ -2789,7 +3068,7 @@ function renderDecisionCards(layers, ext, agreement) {
     const temp = atm.temperature_2m != null ? `${cTemp(atm.temperature_2m)}${uL('temp')}` : null;
     cards.push({
       title: 'Atmosphere',
-      meta: 'now',
+      meta: 'snapshot values',
       value: [wind, gust, temp].filter(Boolean).join(' | ')
     });
   }
@@ -2821,11 +3100,11 @@ function renderDecisionCards(layers, ext, agreement) {
     if (observedWind.wind_speed_kmh != null) windBits.push(`${cWind(observedWind.wind_speed_kmh)} ${uL('wind')}`);
     if (observedWind.wind_direction != null) windBits.push(`from ${compactDirection(observedWind.wind_direction)}`);
     if (observedWind.wind_gust_kmh != null) windBits.push(`gusts ${cWind(observedWind.wind_gust_kmh)} ${uL('wind')}`);
-    const age = firstAvailable(observedWind.age_minutes, observedWind.observation_age_minutes);
+    const age = observationAge(observedWind).text;
     cards.push({
       title: 'Wind sensor',
       meta: String(observedWind.source || 'hardware').replace(/_/g, ' '),
-      value: `${observedWind.name || observedWind.station_id || 'Nearby station'}${observedWind.distance_km != null ? ` • ${observedWind.distance_km} km away` : ''}${age != null ? ` • ${age} min old` : ''}${windBits.length ? ` | ${windBits.join(' ')}` : ' | reading metadata available'}`
+      value: `${observedWind.name || observedWind.station_id || 'Nearby station'}${observedWind.distance_km != null ? ` • ${observedWind.distance_km} km away` : ''} • ${age}${windBits.length ? ` | ${windBits.join(' ')}` : ' | reading metadata available'}`
     });
   }
 
@@ -2854,7 +3133,7 @@ function renderDecisionCards(layers, ext, agreement) {
   cards.push({
     title: 'Sources',
     meta: activeLayers != null ? `${activeLayers} layers` : 'live',
-    value: `${state.activeSources ?? 0} live source${Number(state.activeSources ?? 0) === 1 ? '' : 's'} • open details for station names, distance, freshness, and readings`
+    value: `${state.activeSources ?? 0} live source${Number(state.activeSources ?? 0) === 1 ? '' : 's'} • station names, distance, freshness, and readings are shown below`
   });
 
   return `<div class="decision-card-grid">
@@ -2867,6 +3146,36 @@ function renderDecisionCards(layers, ext, agreement) {
 }
 
 // ─── Sensor Feed ────────────────────────────────────────────────────
+function renderEvidenceOverview(layers, ext, agreement) {
+  const target = document.getElementById('evidenceOverview');
+  if (!target) return;
+  const atm = layers.atmosphere?.current || {};
+  const source = layers.atmosphere?.current_source;
+  const comparison = (agreement?.comparisons || []).find(item => item.field === 'wind_speed');
+  const gustComparison = (agreement?.comparisons || []).find(item => item.field === 'wind_gust');
+  const observations = sourceObservationSummaries(source);
+  const rows = [];
+  const windReading = value => value == null ? 'unavailable' : `${cWind(value)} ${uL('wind')}`;
+  const measuredWind = comparison?.hardware_value ?? layers.atmosphere?.hardware_current?.wind_speed_10m;
+  const measuredGust = gustComparison?.hardware_value ?? layers.atmosphere?.hardware_current?.wind_gusts_10m;
+  const measuredMode = measuredWind != null;
+  rows.push(['Scope', state.field === 'drone' ? 'Wind observations and model rain / thunderstorm indicators' : 'Spot-level environmental evidence']);
+  rows.push(['Source', sourceSummary(source, atm)]);
+  rows.push(['Observation', measuredMode ? `Wind ${windReading(measuredWind)}; gust ${windReading(measuredGust)}` : 'No measured wind established by the returned source metadata']);
+  rows.push(['Time / age', observations.join(' | ') || 'Observation time and age unavailable; do not assume freshness']);
+  rows.push(['Model', comparison ? `Wind ${windReading(comparison.model_value)}; ${agreementDelta(comparison)} versus observation` : measuredMode ? 'Comparable model wind unavailable' : `Wind ${windReading(atm.wind_speed_10m)}; gust ${windReading(atm.wind_gusts_10m)} (model-derived, not measured)`]);
+  if (state.field === 'drone') {
+    const weather = state.droneWeather;
+    const rain = weather?.precipitation?.value;
+    const rainText = rain == null ? 'unknown' : `${rain} ${weather.precipitation.unit} (model${weather.precipitation.interval_seconds ? ` per ${Math.round(weather.precipitation.interval_seconds / 60)} min` : ''})`;
+    const thunder = weather?.thunderstorm?.status === 'indicated_by_model' ? 'thunderstorm indicated by model' : weather?.thunderstorm?.status === 'not_indicated_by_model' ? 'not indicated by model; local lightning unknown' : 'unknown';
+    rows.push(['Rain / thunder', `${rainText}; ${thunder}. Valid: ${weather?.valid_at || 'unknown'}.`]);
+  }
+  rows.push(['Unknowns', state.field === 'drone' ? 'Aircraft limits, route, altitude, obstacles, airspace, local visibility and operational permission, local rainfall and lightning are not measured by this assessment.' : 'Platform limits, route, operating permission and unreturned observations remain unknown.']);
+  if (state.snapshot?.captured_at) rows.push(['Snapshot', state.snapshot.captured_at]);
+  target.innerHTML = `<h3>Evidence first</h3><dl>${rows.map(([label, value]) => `<dt>${escHtml(label)}</dt><dd>${escHtml(value)}</dd>`).join('')}</dl><p class="demo-boundary">Source availability or a low environmental flag level is never flight or mission clearance. Compare this evidence with onboard readings and your own operating requirements.</p>`;
+}
+
 function renderSensorFeed() {
   const feed = document.getElementById('sensorFeed');
   if (!state.sensors) { feed.innerHTML = '<p class="sensor-placeholder">No data</p>'; return; }
@@ -2874,8 +3183,8 @@ function renderSensorFeed() {
   const { layers } = state.sensors;
   const ext = state.extended || {};
   const agreement = state.sensors.forecast_agreement || ext.forecast_agreement;
-  let html = renderRiskAssessmentPanel();
-  html += renderLayerStackPanel();
+  renderEvidenceOverview(layers, ext, agreement);
+  let html = '';
 
   // Atmosphere
   const atm = layers.atmosphere?.current;
@@ -2902,7 +3211,6 @@ function renderSensorFeed() {
     </div>`;
   }
 
-  html += renderForecastAgreement(agreement);
   html += renderDomainMemory(layers, ext, agreement);
 
   // Hydrosphere
@@ -2951,25 +3259,6 @@ function renderSensorFeed() {
       <div class="sensor-row"><span class="sense-verb">Elevation profile:</span> <span class="sense-value">${(ter.depth_profile || []).map(d => cElev(d) + uL('elev')).join(', ') || 'unavailable'}</span></div>
     </div>`;
   }
-
-  // Satellite
-  html += `<div class="sensor-section">
-    <div class="sensor-section-title">SATELLITE</div>`;
-  if (state.satellite?.google_satellite_url) {
-    html += `<img src="${escHtml(state.satellite.google_satellite_url)}" style="width:100%;border-radius:6px;margin:6px 0" alt="Satellite view">`;
-  } else if (state.lat && state.lng) {
-    const z = 13;
-    const tileX = Math.floor((state.lng + 180) / 360 * Math.pow(2, z));
-    const tileY = Math.floor((1 - Math.log(Math.tan(state.lat * Math.PI / 180) + 1 / Math.cos(state.lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, z));
-    html += `<img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${tileY}/${tileX}" style="width:100%;border-radius:6px;margin:6px 0" alt="Satellite view" onerror="this.style.display='none'">`;
-  }
-  if (state.satellite?.sentinel2?.available) {
-    const s = state.satellite.sentinel2;
-    html += `<div class="sensor-row"><span class="sense-verb">Sentinel-2:</span> <span class="sense-value">${escHtml(new Date(s.date).toLocaleDateString())} (${s.cloud_cover}% cloud)</span></div>`;
-  } else {
-    html += `<div class="sensor-row"><span class="sense-value">Sentinel-2: ${escHtml(state.satellite?.sentinel2?.reason || 'Checking...')}</span></div>`;
-  }
-  html += `</div>`;
 
   // Air Quality
   const aq = layers.air_quality?.current;
@@ -3089,7 +3378,7 @@ function renderSensorFeed() {
       <div class="sensor-section-title">SHIP OBSERVATIONS <span class="badge-model">MOBILE</span></div>
       <div class="sensor-row"><span class="sense-value" style="color:var(--text2)">Moving marine hardware. Offshore comparison only, not the beach anchor. NOAA/NDBC often anonymizes vessel names as SHIP.</span></div>`;
     for (const ship of ships.slice(0, 3)) {
-      const age = ship.age_minutes != null ? `, ${ship.age_minutes} min old` : '';
+      const age = `, ${observationAge(ship).text}`;
       html += `<div class="sensor-row"><span class="sense-verb">${escHtml(shipDisplayName(ship))}:</span> <span class="sense-value">${ship.distance_km}km away${escHtml(age)}</span></div>`;
       if (ship.identity_status === 'anonymized_by_noaa_ndbc') {
         html += `<div class="sensor-row" style="padding-left:36px"><span class="sense-value" style="color:var(--text2)">Vessel name unavailable in public NDBC feed; label is report position/time.</span></div>`;
@@ -3232,7 +3521,7 @@ function renderSensorFeed() {
       <div class="sensor-row"><span class="sense-value" style="color:var(--text2)">Context only: provisional station-relative levels with no common vertical datum. Not a local tide prediction.</span></div>`;
     for (const gauge of iocSeaLevelGauges.slice(0, 2)) {
       const level = gauge.water_level_m == null ? 'level unavailable' : `${cElev(gauge.water_level_m)} ${uL('elev')}`;
-      const age = gauge.age_minutes == null ? 'age unknown' : `${gauge.age_minutes} min old`;
+      const age = observationAge(gauge).text;
       html += `<div class="sensor-row"><span class="sense-verb">${escHtml(gauge.name || gauge.station_id || 'Gauge')}:</span> <span class="sense-value">${escHtml(level)} | ${escHtml(age)} | ${escHtml(String(gauge.distance_km ?? '?'))}km</span></div>`;
       if (gauge.observed_at) html += `<div class="sensor-row" style="padding-left:36px"><span class="sense-value">Observed ${escHtml(gauge.observed_at)}</span></div>`;
     }
@@ -3312,6 +3601,7 @@ function renderSensorFeed() {
   html += `</div>`;
 
   // ── System Health Monitor ──
+  html += `<details class="sensor-section"><summary>Layer stack and technical diagnostics</summary>${renderLayerStackPanel()}`;
   const healthData = state.health || [];
   if (healthData.length > 0) {
     html += `<div class="sensor-section" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;margin-top:12px">
@@ -3320,7 +3610,7 @@ function renderSensorFeed() {
       const normalizedStatus = String(h.status || 'unknown').trim().toLowerCase();
       const statusLabel = normalizedStatus === 'ok' && h.has_data ? 'OK'
         : normalizedStatus === 'ok' || normalizedStatus === 'no_data' ? 'NO DATA'
-        : normalizedStatus === 'not_applicable' ? 'NOT CONFIGURED'
+        : normalizedStatus === 'not_applicable' ? 'NOT REQUESTED'
         : normalizedStatus === 'error' ? 'ERROR' : normalizedStatus.toUpperCase();
       const latency = Number(h.latency_ms);
       const latColor = !Number.isFinite(latency) ? 'var(--text2)' : latency < 500 ? 'var(--green)' : latency < 2000 ? 'var(--yellow)' : 'var(--red)';
@@ -3332,18 +3622,16 @@ function renderSensorFeed() {
     html += `</div>`;
   }
 
+  html += `</details>`;
   const sourceCount = Number(state.activeSources ?? 0);
-  feed.innerHTML = `${renderDecisionCards(layers, ext, agreement)}
-    <details class="sensor-details" open>
-      <summary>All sensor measurements &amp; source details (${sourceCount} live)</summary>
-      <div class="sensor-details-body">${html}</div>
-    </details>`;
+  feed.innerHTML = renderIntelligenceOverview(layers, agreement);
+  document.getElementById('fullEvidence').innerHTML = `${renderDecisionCards(layers, ext, agreement)}${renderRiskAssessmentPanel()}${renderForecastAgreement(agreement)}<div class="sensor-details-body">${html}</div>`;
 
   // Staleness indicator
   const ts = document.getElementById('sensorTimestamp');
   if (ts) {
     const stale = stalenessLabel();
-    ts.textContent = `Data fetched ${stale}`;
+    ts.textContent = `Response received ${stale}. Observation/model ages are separate; receipt time does not establish freshness.`;
     const ageMinutes = state.pwmFetchedAt ? (Date.now() - state.pwmFetchedAt) / 60000 : 0;
     if (ageMinutes > 15) {
       ts.style.color = 'var(--yellow)';
@@ -3383,14 +3671,20 @@ function usePrompt(text) {
   }
 }
 
-function addAiMessage(htmlContent, contextHtml = '') {
+function addAiMessage(htmlContent, contextHtml = '', providerLabel = '', detailsSent = '') {
   const container = document.getElementById('chatMessages');
   const div = document.createElement('div');
   div.className = 'msg ai';
   const label = document.createElement('div');
   label.className = 'msg-label';
-  label.textContent = 'Senlay local guide';
+  label.textContent = providerLabel || 'AI explanation · verify against evidence';
   div.appendChild(label);
+  if (detailsSent) {
+    const note = document.createElement('div');
+    note.className = 'msg-label';
+    note.textContent = 'Drone details sent: ' + detailsSent;
+    div.appendChild(note);
+  }
   const body = document.createElement('div');
   body.innerHTML = htmlContent; // htmlContent is already sanitized via renderMarkdown
   div.appendChild(body);
@@ -3424,7 +3718,7 @@ function showTyping() {
   const div = document.createElement('div');
   div.className = 'typing';
   div.id = 'typingIndicator';
-  div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div><span class="typing-text">Checking the live conditions...</span>';
+  div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div><span class="typing-text">Preparing the explanation from available evidence...</span>';
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
 }
@@ -3435,20 +3729,41 @@ function removeTyping() {
 }
 
 function normalizeHumanDemoAnswer(text) {
-  return String(text || '')
+  const cleaned = String(text || '')
     .trimStart()
     .replace(/^(?:#{1,6}\s*)?(?:\*\*)?\s*(?:bottom line|short answer)\s*(?:\*\*)?\s*:?\s*(?:\r?\n)+/i, '')
     .trimStart();
+  const words = cleaned.match(/\S+/g) || [];
+  return words.length > 80 ? words.slice(0, 79).join(' ') + ' …' : cleaned;
 }
 
-async function sendMessage() {
+async function sendMessage(retry = false, automatic = false) {
   const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text || !state.connected) return;
+  const explanationMode = 'ai';
+  const text = automatic ? (state.field === 'drone' ? 'Explain what these conditions mean for my drone in plain language. Use the drone details I provided, explain what they do and do not tell me, and identify the most useful missing detail. Include rain and thunderstorm model context or say when it is unknown. Mention important source disagreements and unknowns. Avoid JSON, internal field names and scores; do not give flight clearance.' : 'In a few short sentences, explain these conditions in plain language. Mention important source disagreements and what is unknown. Avoid JSON, internal field names and scores; do not decide whether an operation is safe.') : input.value.trim();
+  if (!text || !state.connected || demoRequests.has('chat')) return;
+  if (explanationMode === 'ai' && state.provider === 'profile' && !state.profileDefaultKey) {
+    addAiError('Open Settings in the setup panel to choose an AI provider and key.');
+    return;
+  }
+  if (explanationMode === 'ai' && !['demo', 'profile'].includes(state.provider)) {
+    state.apiKey = document.getElementById('userApiKey').value.trim();
+    if (!state.apiKey) { addAiError('Open Settings in the setup panel and add your provider key to generate an explanation.'); return; }
+  }
+  let droneDetails;
+  try { droneDetails = collectDroneDetails(); } catch (error) { addAiError(error.message); editDroneDetails(); return; }
+  state.activeExplanationMode = explanationMode;
+  if (explanationMode === 'ai') {
+    const settings = document.querySelector('.demo-provider-settings');
+    if (settings) settings.open = false;
+  }
+  lastDemoQuestion = text;
 
   input.value = '';
-  addUserMessage(text);
-  state.messages.push({ role: 'user', content: text });
+  if (!retry) {
+    if (!automatic) addUserMessage(text);
+    state.messages.push({ role: 'user', content: text });
+  }
 
   // Trim history to prevent context overflow (keep last MAX_MESSAGES)
   if (state.messages.length > MAX_MESSAGES) {
@@ -3468,33 +3783,42 @@ async function sendMessage() {
       field: state.field,
       provider: state.provider === 'demo' ? 'openrouter' : state.provider,
       audience: 'human_demo',
-      responseMode: 'human_demo'
+      responseMode: 'human_demo',
+      explanation_mode: explanationMode,
+      profile: state.field === 'drone' ? 'wind' : 'full',
+      ...(droneDetails ? { drone_details: droneDetails } : {}),
+      ...(state.snapshotId ? { snapshot_id: state.snapshotId } : {})
     };
     const headers = { 'Content-Type': 'application/json' };
-    if (state.provider === 'profile') {
+    if (explanationMode === 'ai' && state.provider === 'profile') {
       body.savedLlmKeyId = state.profileDefaultKey?.id;
       headers.Authorization = `Bearer ${state.profileSessionToken}`;
-    } else if (state.provider !== 'demo') {
+    } else if (explanationMode === 'ai' && state.provider !== 'demo') {
       body.apiKey = state.apiKey;
     }
 
-    const res = await fetch('/api/chat', {
+    const data = await demoFetch('chat', '/api/chat', {
       method: 'POST',
       headers,
       body: JSON.stringify(body)
-    });
-
-    const data = await res.json();
+    }, explanationMode === 'ai' ? 45000 : 25000);
     removeTyping();
 
     if (data.error) {
       addAiError(data.error);
     } else {
+      state.activeExplanationMode = data.explanation_mode || explanationMode;
+      if (data.snapshot) state.snapshot = data.snapshot;
+      if (data.snapshot_id || data.snapshot?.id) state.snapshotId = data.snapshot_id || data.snapshot.id;
       const answer = data.response_mode === 'human_demo'
         ? normalizeHumanDemoAnswer(data.answer || '')
         : (data.answer || '');
       state.messages.push({ role: 'assistant', content: answer });
-      addAiMessage(renderMarkdown(answer), renderLlmResponseContext(data));
+      const providerLabel = ['For people', data.provider === 'openai' ? 'OpenAI' : data.provider, data.model].filter(Boolean).join(' · ');
+      const droneDetailLabels = { model: 'model', weight_g: 'weight (g)', wind_limit_kmh: 'wind limit (km/h)', battery_percent: 'battery (%)', battery_reserve_percent: 'reserve (%)', battery_capacity_mah: 'capacity (mAh)', planned_altitude_m: 'altitude (m)' };
+      const detailsSent = droneDetails ? Object.entries(droneDetails).map(([key, value]) => `${droneDetailLabels[key]}: ${value}`).join(' · ') : '';
+      addAiMessage(renderMarkdown(answer), '', providerLabel, detailsSent);
+      lastDemoQuestion = '';
 
       if (data.sensors) {
         state.sensors = data.sensors;
@@ -3517,7 +3841,7 @@ async function sendMessage() {
   }
 
   btn.disabled = false;
-  input.focus();
+  if (!automatic) input.focus();
 }
 
 // ─── Ticker ─────────────────────────────────────────────────────────
@@ -3547,25 +3871,33 @@ async function loadTicker() {
 // ─── Markdown renderer ──────────────────────────────────────────────
 // Escape HTML first, THEN apply markdown — prevents XSS from AI responses.
 function renderMarkdown(text) {
-  // Step 1: escape all HTML special chars in the raw text
-  let html = escHtml(text);
-
-  // Step 2: apply markdown patterns (these introduce safe, controlled HTML tags)
-  html = html
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+  // Build blocks before adding markup, so blank lines between list items never
+  // produce invalid nested paragraphs or large gaps. Escape all model text first.
+  const lines = String(text || '').replace(/\r\n?/g, '\n').split('\n')
+    .map(line => line.replace(/\\[ \t]*$/, ''));
+  const inline = line => escHtml(line)
+    .replace(/\[([^\]\n]+)\]\\?\((https?:\/\/[^\s<>"'()\\]+)\\?\)/gi, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/^[-*] (.+)$/gm, '<li>$1</li>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>');
-
-  // Step 3: wrap adjacent <li> items in <ul>
-  html = html.replace(/((?:<li>.*?<\/li>(?:<br>)?)+)/g, '<ul>$1</ul>');
-  html = html.replace(/<br><\/ul>/g, '</ul>');
-  html = html.replace(/<ul><br>/g, '<ul>');
-
-  return '<p>' + html + '</p>';
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+  const blocks = [];
+  let paragraph = [], items = [];
+  const flushParagraph = () => {
+    if (paragraph.length) { blocks.push('<p>' + paragraph.map(inline).join('<br>') + '</p>'); paragraph = []; }
+  };
+  const flushList = () => {
+    if (items.length) { blocks.push('<ul>' + items.map(item => '<li>' + inline(item) + '</li>').join('') + '</ul>'); items = []; }
+  };
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) { flushParagraph(); continue; }
+    const list = trimmed.match(/^[-*]\s+(.+)$/);
+    if (list) { flushParagraph(); items.push(list[1]); continue; }
+    flushList();
+    const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) { flushParagraph(); const tag = 'h' + heading[1].length; blocks.push('<' + tag + '>' + inline(heading[2]) + '</' + tag + '>'); }
+    else paragraph.push(trimmed);
+  }
+  flushParagraph(); flushList();
+  return blocks.join('');
 }

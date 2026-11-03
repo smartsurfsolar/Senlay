@@ -36,14 +36,18 @@
     const model=a.model_current||(a.current_source?.mode==='model_only'?a.current:null);
     const modelAge=(Date.now()-stamp(model?.time,a.utc_offset_seconds||0))/60000;
     const forecast=Number.isFinite(modelAge)&&modelAge>=-5&&modelAge<=60?number(model?.wind_speed_10m):null;
-    const values=rows.map(s=>s.wind_speed_kmh), low=Math.min(...values),high=Math.max(...values);
-    const directions=rows.map(s=>number(s.wind_direction)).filter(v=>v!=null);
+    // Distant observations are comparison context only. Never let them drive
+    // the measured range shown for the selected spot.
+    const measured=local.filter(s=>number(s.wind_speed_kmh)!=null);
+    const values=measured.map(s=>s.wind_speed_kmh), low=values.length?Math.min(...values):null,high=values.length?Math.max(...values):null;
+    const directions=measured.map(s=>number(s.wind_direction)).filter(v=>v!=null);
     const directionConflict=directions.some(a=>directions.some(b=>Math.min(Math.abs(a-b),360-Math.abs(a-b))>=60));
     const unresolved=(rows.length>1 && high-low>=config.majorDifferenceKmh)||directionConflict||rows.some(s=>s.wind_variable===true);
     const state=String(payload.assessment_state||'').toUpperCase();
-    const insufficient=state.includes('INSUFFICIENT')||state==='UNAVAILABLE'||!local.length||forecast==null||unresolved;
-    const gap=rows.length&&forecast!=null?Math.max(...values.map(v=>Math.abs(v-forecast))):null;
-    return {rows,local,forecast,model,modelAge,low,high,unresolved,insufficient,gap,atmosphere:a};
+    const outcome=String(payload.outcome||payload.risk_assessment?.outcome||'').toUpperCase();
+    const insufficient=outcome==='INSUFFICIENT_EVIDENCE'||state.includes('INSUFFICIENT')||state==='UNAVAILABLE'||!local.length||forecast==null||unresolved;
+    const gap=values.length&&forecast!=null?Math.max(...values.map(v=>Math.abs(v-forecast))):null;
+    return {rows,local,measured,forecast,model,modelAge,low,high,outcome,unresolved,insufficient,gap,atmosphere:a};
   }
   function kiteAdvice(r) {
     if(r.insufficient) return r.unresolved?'Wind unresolved. No kite size recommended.':'Wind cannot be verified here. No kite size recommended.';
@@ -66,7 +70,7 @@
     document.querySelector('.answer').dataset.level=r.unresolved?'major':r.insufficient?'minor':level;
     text('verdict',r.unresolved?'Wind unresolved':r.insufficient?'Wind unverified here':level==='major'?'Major disagreement':level==='minor'?'Some disagreement':'Forecast agrees');
     text('forecast',speed(r.forecast));
-    text('measured',!r.rows.length?'Unavailable':r.high-r.low>=0.1?`${r.low.toFixed(1)}–${r.high.toFixed(1)} km/h`:speed(r.low));
+    text('measured',!r.measured.length?'Unavailable':r.high-r.low>=0.1?`${r.low.toFixed(1)}–${r.high.toFixed(1)} km/h`:speed(r.low));
     const closest=r.rows[0];
     text('evidence',!closest?`No fresh wind instrument found. Need a measurement within ${config.localRadiusKm} km and ${config.maxStationAgeMinutes} minutes.`:`${closest.name||closest.station_id} · ${closest.source} · ${closest.distance.toFixed(1)} km away.${!r.local.length?' Nearby context only; no local instrument covers this spot.':''}${r.gap!=null?` Forecast difference up to ${r.gap.toFixed(1)} km/h.`:''}`);
     text('age',closest?`Measurements ${Math.floor(Math.min(...r.rows.map(s=>s.age)))}–${Math.ceil(Math.max(...r.rows.map(s=>s.age)))} min old`:'Fresh measurement missing');
