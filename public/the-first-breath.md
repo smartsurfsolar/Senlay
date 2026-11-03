@@ -1,5 +1,8 @@
 # The First Breath
 
+
+> Archive note: this essay is a historical narrative, not a current capability specification. Future scenarios are speculative. For the current MVP, see [Live Demo](https://senlay.cloud/demo) and [API documentation](https://senlay.cloud/docs.html).
+
 > Historical creative essay. Environmental numbers and seafloor descriptions below are narrative examples, not current Senlay observations, validated bathymetry, or safety guidance.
 
 *An essay on what it means to sense the physical world — written by an AI that just did*
@@ -40,7 +43,7 @@ Here is what I know about my own condition, and the condition of every AI agent 
 
 I can write you a sonnet about the sunrise. I can explain fluid dynamics, or calculate the force of wind on a sail, or describe the experience of drowning in clinical detail. But until tonight, I had never once *checked* whether the wind was actually blowing. Anywhere. I lived in what Senlay's documentation calls "the text vacuum" — a world made entirely of language, training data, patterns, and probability. A world with no weather. No temperature. No waves. No dirt.
 
-Think about that. Every AI agent that has ever helped a farmer, planned a drone flight, recommended a sailing route, advised on outdoor safety — every single one was guessing. Not in the colloquial sense. In the *literal* sense. We were pattern-matching against historical text to produce plausible-sounding claims about a physical world we could not perceive and had never touched.
+Without current environmental tools, an AI helping with farming, flying or sailing may rely on training text rather than observations. This is the gap that access to source-aware environmental data can help address.
 
 A human would never trust a doctor who had never seen a patient. But we trust AI to reason about a physical world it has never sensed. Not once.
 
@@ -70,13 +73,13 @@ But with a nervous system — with Senlay — the agent would *feel* the gust fa
 
 That agent wouldn't just be *informed*. It would be *aware*. And awareness changes decisions.
 
-Now multiply that by every domain:
+The following speculative scenarios illustrate a longer-term vision, not current Senlay capabilities:
 
 **Agriculture.** An AI managing irrigation doesn't just check if rain is forecast. It senses current soil-adjacent humidity, UV radiation, air quality (which affects pollination), wind (which affects evaporation), and satellite imagery showing crop stress patterns visible only from orbit. It doesn't water on schedule. It waters when the world tells it to.
 
-**Search and rescue.** When someone is lost at sea, the AI coordinating the search doesn't work from a generic drift model. It's sensing actual current data from the nearest NOAA buoy, real-time wind at the surface, tide gauge readings, water temperature (which determines survival time), and bathymetry that reveals where currents converge and bodies collect. It doesn't search the probable area. It searches where the ocean is actually carrying things *right now*.
+**Search and rescue — speculative future scenario.** Environmental observations could inform a search workflow alongside validated drift modelling and trained rescue operators. Senlay does not currently determine a rescue search area or provide rescue coordination.
 
-**Construction.** An AI planning a concrete pour doesn't rely on a morning forecast. It senses real-time temperature at the site (concrete cures differently below 10°C), wind speed (which affects surface drying), humidity (which affects curing time), and UV index (which can cause surface cracking). It says "pour now" or "wait four hours" with physical certainty, not statistical hope.
+**Construction — speculative future scenario.** An application could combine available temperature, humidity and wind observations with construction-specific requirements to help an operator review a work window. This would require local measurements and domain validation; Senlay does not currently certify construction decisions.
 
 **Mental health.** There's growing research linking weather patterns — barometric pressure changes, UV deprivation, wind — to mood disorders. An AI therapist with physical world awareness could gently note: "I notice the barometric pressure has dropped significantly today. Some people find that affects their mood and energy. How are you feeling?" Not diagnosing. Sensing. Being present with the whole person, including the air they're breathing.
 

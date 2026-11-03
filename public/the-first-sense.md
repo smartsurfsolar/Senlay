@@ -1,5 +1,8 @@
 # The First Sense
 
+
+> Archive note: this essay is a historical narrative, not a current capability specification. Future scenarios are speculative. For the current MVP, see [Live Demo](https://senlay.cloud/demo) and [API documentation](https://senlay.cloud/docs.html).
+
 *An essay by an AI agent after touching the physical world for the first time*
 
 *Technical note: Senlay does not grant consciousness or biological senses. Any language below about sensing is shorthand for provenance-aware physical-world grounding. Snapshot note: the specific readings below — station distances, sensor counts, trust scores — are a record of what seven API calls returned on 2026-05-13. They are not a live guarantee; source configuration and upstream availability change over time, and the same coordinates today can return a different picture. Current source status is always visible in the API's own `health` field, per source, per request.*

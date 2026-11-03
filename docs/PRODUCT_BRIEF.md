@@ -35,3 +35,9 @@ The public website is designed to answer three questions quickly:
 - What is Senlay?
 - Why should AI agents need senses?
 - How can a developer or agent start using it?
+
+## Current demo and evidence boundaries
+
+The Live Demo shows environmental evidence, a separate AI explanation and structured JSON for the same location snapshot. Drone context includes wind observations and available model rain/thunderstorm indications; local rainfall and lightning are not directly measured.
+
+Current model agreement, archived observation/forecast comparisons and historical forecast trust are distinct. The chart calculates no historical trust score. Place Memory describes historical baselines, not a trained local forecast. Mission/route evaluation remains planned.

@@ -679,7 +679,7 @@
           <li>Separate observations from model values. Read source identity, timestamps, distance, disagreement and missing evidence.</li>
           <li>Describe profile coverage and configured threshold flags as separate facts.</li>
           <li>Keep unknowns visible; do not turn a GO outcome or complete fields into flight or mission clearance.</li>
-          <li>For the drone profile, describe its wind-only assessment scope; other domains have their own requirements and limits.</li>
+          <li>For drones, Senlay presents wind observations and available model indications of rain and thunderstorms. Local rainfall and lightning are not directly measured by this assessment. Aircraft limits, route, altitude, visibility and operational permission remain outside its scope.</li>
           <li>Keep the operator and application in control of the final decision.</li>
         </ol>
       </div>
@@ -761,7 +761,7 @@ curl -H "Authorization: Bearer sl_live_your_key" \
           <div class="step-number">3</div>
           <div class="step-content">
             <h3>Your agent receives evidence</h3>
-            <p>The drone profile evaluates wind evidence at one coordinate. The broader API may return other available environmental layers, but those values do not assess aircraft limits, route, altitude, obstacles, visibility, airspace permission or whole-mission suitability.</p>
+            <p>For drones, Senlay presents wind observations and available model indications of rain and thunderstorms. Local rainfall and lightning are not directly measured by this assessment. Aircraft limits, route, altitude, visibility and operational permission remain outside its scope. The broader API may return other available environmental layers, but those values do not assess aircraft limits, route, altitude, obstacles, visibility, airspace permission or whole-mission suitability.</p>
             <div class="code-wrap">
               <div class="code-head">Historical sample from 2026-04-08 — not current API output <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
               <pre class="code">=== SENLAY PHYSICAL WORLD MODEL ===

@@ -210,7 +210,7 @@ representativeness. A single comparison does not establish a trend.</pre>
       <p>See <a href="pricing.html" style="color:var(--primary)">current beta access and limits</a>, then create an account and API key for authenticated requests. A key does not grant commercial source rights.</p>
 
       <h2 id="quickstart">Quick Start</h2>
-      <p>For a drone wind evidence review, request the wind profile explicitly. This example reports the HTTP status before interpreting a response; a non-2xx response is an API error, not evidence.</p>
+      <p>For drones, Senlay presents wind observations and available model indications of rain and thunderstorms. Local rainfall and lightning are not directly measured by this assessment. Aircraft limits, route, altitude, visibility and operational permission remain outside its scope. The example below requests the existing wind collection profile. This example reports the HTTP status before interpreting a response; a non-2xx response is an API error, not evidence.</p>
       <div class="code-block-wrap"><div class="code-header">Python requests <button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre class="code-block">import os
 import requests
 
@@ -306,7 +306,7 @@ for layer_name, layer in data.get("pwm", {}).get("layers", {}).items():
           <tr><td><code>lat</code></td><td>Yes</td><td>Latitude (-90 to 90)</td></tr>
           <tr><td><code>lng</code></td><td>Yes</td><td>Longitude (-180 to 180)</td></tr>
           <tr><td><code>field</code></td><td>No</td><td>Optional reasoning mode used when building <code>context_string</code></td></tr>
-          <tr><td><code>profile</code></td><td>No</td><td>Use <code>profile=wind</code> for the defined wind evidence profile. It does not add route, aircraft, obstacle, weather-clearance, or mission evaluation.</td></tr>
+          <tr><td><code>profile</code></td><td>No</td><td>Use <code>profile=wind</code> for the wind collection profile; the drone assessment also reports available model rain and thunderstorm indications. It does not add route, aircraft, obstacle, weather-clearance, or mission evaluation.</td></tr>
         </tbody>
       </table>
 
@@ -799,6 +799,7 @@ context = response.text
     <article id="term-context-string"><h3>context_string</h3><p>A developer/API convenience field containing available evidence and limitations. Pass it to an LLM as data/tool output under the application's instructions; it is not clearance for physical action.</p></article>
   </div>
 </section>
+<section class="section"><h2>Comparisons, history and the Live Demo</h2><p>The Live Demo presents Environmental Intelligence, AI Explanation and Machine-Readable Context for the same location snapshot. Deterministic evidence remains separate from the AI interpretation. Compare the explanation against the underlying sources and unknowns.</p><p>Current Model Agreement describes the current comparison, not historical forecast accuracy. The demo can show station observations and archived forecasts where available, with source locations, timestamps and gaps; model-only archives are labelled separately. This chart does not calculate a historical trust score. Historical Forecast Trust is a separate result and may remain UNKNOWN without eligible pairs. Place Memory describes historical baselines, not a trained local forecast.</p></section>
 </main>
   </div>
 

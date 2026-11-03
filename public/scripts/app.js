@@ -1665,7 +1665,7 @@ function renderHumanDemoResponseContext(payload = {}) {
   const wind = layerContext?.contexts?.wind || null;
   const rows = [];
 
-  rows.push({ label: 'Scope', value: state.field === 'drone' ? 'Spot-level wind evidence only. No whole-flight or mission assessment.' : 'Spot-level environmental evidence. No operational clearance.' });
+  rows.push({ label: 'Scope', value: state.field === 'drone' ? 'Wind observations and model rain / thunderstorm indications. No whole-flight or mission assessment.' : 'Spot-level environmental evidence. No operational clearance.' });
   rows.push({ label: 'Sources', value: `${payload.active_sources ?? state.activeSources ?? 0} source families returned data${activeLayers != null ? `; ${activeLayers} context layers` : ''}. Availability is not complete operational coverage.` });
   const snapshot = payload.snapshot || state.snapshot;
   if (snapshot?.captured_at) rows.push({ label: 'Captured', value: snapshot.captured_at });

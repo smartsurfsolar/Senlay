@@ -7,9 +7,9 @@ Senlay is an evaluation beta and is pre-revenue. Free Developer access includes 
 
 The current evaluation setup does not establish commercial Open-Meteo access. Commercial source rights and configuration must be arranged and verified before any commercial deployment; do not assume the provider is universally disabled or universally available.
 
-The public drone demo uses `field=drone&profile=wind`: spot-level wind/gust evidence, source provenance, observation age and distance, model comparison, and unknowns. The assessment scope covers wind evidence only, not route, altitude, aircraft limits, obstacles, visibility, airspace permission, or mission suitability.  The broader API can return additional available layers for `profile=full`; availability is not mission coverage. No environmental flag or GO outcome is flight or mission clearance. Route-level mission evaluation and platform-specific operating approval remain outside the current MVP.
+For drones, Senlay presents wind observations and available model indications of rain and thunderstorms. Local rainfall and lightning are not directly measured by this assessment. Aircraft limits, route, altitude, visibility and operational permission remain outside its scope. The existing request parameter `profile=wind` is unchanged. Other available layers do not establish whole-mission suitability.
 
-The demo defaults to a deterministic evidence summary without an LLM. AI narrative is optional and must be checked against the evidence. A static walkthrough at https://senlay.cloud/demo-example.html uses explicitly synthetic position and environmental values. Reference robotics examples are downloadable at https://senlay.cloud/downloads/senlay-robotics-v0.1.0.zip; real-hardware validation is pending.
+The Live Demo presents Environmental Intelligence, AI Explanation and Machine-Readable Context for the same location snapshot. Deterministic evidence remains separate from the AI interpretation. Compare the explanation against the underlying sources and unknowns. Reference adapters and explicitly synthetic offline replay are documented at https://senlay.cloud/robotics/; real-hardware validation remains pending.
 
 
 ## Browser URL / no-key agent trial
@@ -26,7 +26,7 @@ https://senlay.cloud/agents/live?lat=37.6213&lng=-122.3790&field=drone&agentName
 
 ## Scoped drone wind evidence request
 
-The authenticated request below uses `field=drone&profile=wind`. A non-2xx response is an API error, never evidence; inspect `outcome`, `evaluation_scope`, `unknowns`, and timestamps/source distance in the returned layers. The profile covers wind evidence at one coordinate only.
+The authenticated request below uses `field=drone&profile=wind`. A non-2xx response is an API error, never evidence; inspect `outcome`, `evaluation_scope`, `unknowns`, and timestamps/source distance in the returned layers. For drones, Senlay presents wind observations and available model indications of rain and thunderstorms. Local rainfall and lightning are not directly measured by this assessment. Aircraft limits, route, altitude, visibility and operational permission remain outside its scope.
 
 ```bash
 curl --fail-with-body -H "Authorization: Bearer $SENLAY_API_KEY" \
@@ -98,3 +98,7 @@ For the drone workflow under evaluation, request a coordinate and inspect the wi
 ## MCP gateway contract
 
 Endpoint: `https://senlay.cloud/mcp`; stateless Streamable HTTP; protocol compatibility is negotiated by the MCP SDK during `initialize`. The four tools are `sense_location`, `check_operability`, `list_domains`, and `get_forecast_trust`. `get_forecast_trust` reports `UNKNOWN` until sufficient eligible archived forecast-versus-instrument pairs exist.
+
+## Reading comparisons and history
+
+Current Model Agreement describes the current comparison, not historical forecast accuracy. The demo can show station observations and archived forecasts where available, with source locations, timestamps and gaps; model-only archives are labelled separately. This chart does not calculate a historical trust score. Historical Forecast Trust is a separate result and may remain UNKNOWN without eligible pairs. Place Memory describes historical baselines, not a trained local forecast.
