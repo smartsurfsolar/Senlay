@@ -12,7 +12,7 @@
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 20000);
   try {
-    const response = await fetch('/api/pwm?lat=37.7749&lng=-122.4194&field=drone&profile=wind&view=full', { signal: controller.signal });
+    const response = await fetch('/api/pwm?lat=37.7749&lng=-122.4194&field=drone&profile=wind&view=full', { signal: controller.signal, cache: 'no-store' });
     if (!response.ok) throw new Error('Snapshot unavailable');
     const data = await response.json();
     const sensors = data.sensors || {};
