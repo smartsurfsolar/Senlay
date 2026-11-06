@@ -29,7 +29,22 @@
     const nearby = (sensors.forecast_agreement?.comparison_sensors || [])
       .filter(item => number(item.wind_speed_kmh))
       .slice(0, 3);
-    set('heroNearby', nearby.length ? nearby.map(item => `${item.name || item.station_id}: ${wind(item.wind_speed_kmh)}${number(item.distance_km) ? ` · ${item.distance_km} km away` : ''} · ${time(item.observed_at)}`).join('; ') : 'No other wind observations returned');
+    const primaryCheck = consistency?.stations?.find(item => item.station_id === String(source?.station_id || '').toLowerCase());
+    const peerIds = new Set((primaryCheck?.peers || []).map(item => item.station_id));
+    const nearbyNode = document.getElementById('heroNearby');
+    nearbyNode.replaceChildren();
+    if (!nearby.length) nearbyNode.textContent = 'No other wind observations returned';
+    for (const item of nearby) {
+      const row = document.createElement('div');
+      row.style.marginBottom = '0.65rem';
+      const reading = document.createElement('strong');
+      reading.textContent = `${item.name || item.station_id}: ${wind(item.wind_speed_kmh)}`;
+      const detail = document.createElement('small');
+      detail.style.display = 'block';
+      detail.textContent = `${number(item.distance_km) ? `${item.distance_km} km away · ` : ''}${time(item.observed_at)} · ${peerIds.has(String(item.station_id || '').toLowerCase()) ? 'used in station cross-check' : 'additional reference; not used in this cross-check'}`;
+      row.append(reading, detail);
+      nearbyNode.append(row);
+    }
     const valid = sensors.layers?.atmosphere?.model_current?.valid_at;
     set('heroForecast', number(model) ? `Wind ${wind(model)} · model value · valid ${time(valid)}` : 'Comparable forecast unavailable');
     if (number(observed) && number(model)) {
