@@ -22,20 +22,24 @@
     const source = comparison?.primary_source || sensors.forecast_agreement?.primary_sensor;
     const observed = comparison?.hardware_value;
     const model = comparison?.model_value;
-    set('heroObservation', number(observed) ? `Wind ${wind(observed)}${number(gust?.hardware_value) ? ` · gust ${wind(gust.hardware_value)}` : ''}` : 'Physical wind observation unavailable');
+    set('heroObservation', number(observed) ? `Station reports ${wind(observed)}${number(gust?.hardware_value) ? ` · gust ${wind(gust.hardware_value)}` : ''}` : 'Physical wind observation unavailable');
     const distance = number(source?.distance_km) ? ` · ${source.distance_km} km away` : '';
     set('heroSource', source ? `${source.name || source.station_id || 'Station'}${source.source ? ` (${source.source})` : ''}${distance} · measured ${time(source.observed_at)}` : 'No physical station returned');
+    const nearby = (sensors.forecast_agreement?.comparison_sensors || [])
+      .filter(item => number(item.wind_speed_kmh))
+      .slice(0, 3);
+    set('heroNearby', nearby.length ? nearby.map(item => `${item.name || item.station_id}: ${wind(item.wind_speed_kmh)}${number(item.distance_km) ? ` · ${item.distance_km} km away` : ''} · ${time(item.observed_at)}`).join('; ') : 'No other wind observations returned');
     const valid = sensors.layers?.atmosphere?.model_current?.valid_at;
     set('heroForecast', number(model) ? `Wind ${wind(model)} · model value · valid ${time(valid)}` : 'Comparable forecast unavailable');
     if (number(observed) && number(model)) {
       const delta = observed - model;
       set('heroDifference', delta === 0 ? 'Observed wind matches model' : `Observed wind is ${wind(Math.abs(delta))} ${delta > 0 ? 'higher' : 'lower'} than model`);
     } else set('heroDifference', 'Comparison unavailable');
-    set('heroEvidenceStatus', number(observed) ? 'Real station observation + model context' : 'Partial real evidence');
-    set('heroEvidenceTime', `Snapshot: ${time(data.snapshot?.captured_at || sensors.timestamp)}. Latest available source readings; not a measurement at your location.`);
+    set('heroEvidenceStatus', number(observed) ? 'Station-level wind + model comparison' : 'Partial real evidence');
+    set('heroEvidenceTime', `Snapshot: ${time(data.snapshot?.captured_at || sensors.timestamp)}. Latest available readings. Wind is station-specific, not a city-wide measurement. Station exposure and calibration are unverified.`);
   } catch {
     set('heroEvidenceStatus', 'Live evidence temporarily unavailable');
-    for (const id of ['heroObservation', 'heroSource', 'heroForecast', 'heroDifference']) set(id, 'Unavailable');
+    for (const id of ['heroObservation', 'heroSource', 'heroNearby', 'heroForecast', 'heroDifference']) set(id, 'Unavailable');
     set('heroEvidenceTime', 'Could not load current evidence. Open the Live Demo to request a location.');
   } finally {
     clearTimeout(timeout);
