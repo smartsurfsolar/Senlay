@@ -16,6 +16,7 @@
     if (!response.ok) throw new Error('Snapshot unavailable');
     const data = await response.json();
     const sensors = data.sensors || {};
+    const consistency = data.station_consistency || data.risk_assessment?.station_consistency;
     const comparisons = sensors.forecast_agreement?.comparisons || [];
     const comparison = comparisons.find(item => item.field === 'wind_speed');
     const gust = comparisons.find(item => item.field === 'wind_gust');
@@ -35,11 +36,12 @@
       const delta = observed - model;
       set('heroDifference', delta === 0 ? 'Observed wind matches model' : `Observed wind is ${wind(Math.abs(delta))} ${delta > 0 ? 'higher' : 'lower'} than model`);
     } else set('heroDifference', 'Comparison unavailable');
-    set('heroEvidenceStatus', number(observed) ? 'Station-level wind + model comparison' : 'Partial real evidence');
+    set('heroEvidenceStatus', consistency?.primary_under_review ? 'Station reading needs review' : number(observed) ? 'Multi-station evidence + model context' : 'Partial real evidence');
+    if (consistency) set('heroStationCheck', consistency.summary);
     set('heroEvidenceTime', `Snapshot: ${time(data.snapshot?.captured_at || sensors.timestamp)}. Latest available readings. Wind is station-specific, not a city-wide measurement. Station exposure and calibration are unverified.`);
   } catch {
     set('heroEvidenceStatus', 'Live evidence temporarily unavailable');
-    for (const id of ['heroObservation', 'heroSource', 'heroNearby', 'heroForecast', 'heroDifference']) set(id, 'Unavailable');
+    for (const id of ['heroObservation', 'heroSource', 'heroNearby', 'heroForecast', 'heroDifference', 'heroStationCheck']) set(id, 'Unavailable');
     set('heroEvidenceTime', 'Could not load current evidence. Open the Live Demo to request a location.');
   } finally {
     clearTimeout(timeout);

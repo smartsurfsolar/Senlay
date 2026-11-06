@@ -21,6 +21,7 @@
   "core_capabilities": [
     "Coordinate-level environmental API with source-aware observations and model values where available",
     "Timestamps, source distance, freshness/confidence components, conflicts, and unknowns",
+    "Multi-station wind screening flags suspect readings for review; it does not confirm sensor failure",
     "Deterministic environmental evidence with a separate AI explanation in the Live Demo",
     "Public MCP gateway with four tools: sense_location, check_operability, list_domains, get_forecast_trust",
     "Reference robotics adapters and offline synthetic replay"

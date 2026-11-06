@@ -370,6 +370,8 @@ function renderIntelligenceOverview(layers, agreement) {
   const severityRank = { major: 2, minor: 1 };
   const featured = items.reduce((best, item, index) => (severityRank[item.severity] || 0) > (severityRank[items[best]?.severity] || 0) ? index : best, 0);
   let html = `<div class="intel-values">${values.filter(([,value]) => value !== null).map(([label,value]) => `<span>${escHtml(label)}<b>${escHtml(value)}</b></span>`).join('')}</div>`;
+  const stationCheck = state.riskAssessment?.station_consistency;
+  if (stationCheck) html += `<div class="comparison-source"><strong>Multi-station check: ${escHtml(stationCheck.status.replace(/_/g, ' '))}</strong><p>${escHtml(stationCheck.summary)}</p></div>`;
   html += `<div class="comparison-top"><strong>Forecast vs Observation</strong><span>Model agreement: ${escHtml((agreement?.forecast_trust || 'unknown').toUpperCase())}${agreement?.score != null ? ` · ${escHtml(agreement.score)}/100` : ''}</span></div>`;
   html += '<div class="comparison-grid">';
   items.forEach((item, index) => {
@@ -2386,6 +2388,7 @@ function renderMachineOutput(data) {
     model_gust_kmh: comparison('wind_gust')?.model_value ?? null,
     observed_temperature_c: comparison('temperature')?.hardware_value ?? null,
     model_temperature_c: comparison('temperature')?.model_value ?? null,
+    station_check: data.station_consistency?.status ?? data.risk_assessment?.station_consistency?.status ?? 'unavailable',
     model_agreement: agreement?.forecast_trust ?? null
   }, null, 2);
   const summary = document.getElementById('machineSummary');
@@ -3044,6 +3047,8 @@ function renderDecisionCards(layers, ext, agreement) {
     ? state.layerContext.active_layers.filter(layer => isLayerActiveStatus(layer.status)).length
     : null;
   const cards = [];
+  const consistency = assessment?.station_consistency;
+  if (consistency) cards.push({ title: 'Multi-station check', meta: consistency.status.replace(/_/g, ' '), value: consistency.summary });
 
   if (assessment) {
     const outcomeCode = evidenceOutcomeCode(assessment);
