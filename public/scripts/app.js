@@ -2347,6 +2347,7 @@ function hasUsableProvider() {
   return true;
 }
 function hasHumanAIProvider() {
+  if (state.provider === 'demo') return true;
   if (state.provider === 'profile') return !!state.profileDefaultKey && !!state.profileSessionToken;
   return !['demo', 'profile'].includes(state.provider) && !!state.apiKey;
 }
@@ -2592,11 +2593,11 @@ function providerDisplayName() {
     if (!key) return 'Saved Profile Key';
     return key.label || key.providerLabel || key.provider || 'Saved Profile Key';
   }
-  if (state.provider === 'demo') return 'Senlay Demo';
+  if (state.provider === 'demo') return 'OpenAI · Senlay Demo';
   if (state.provider === 'openrouter') return 'OpenRouter';
   if (state.provider === 'openai') return 'OpenAI';
   if (state.provider === 'anthropic') return 'Claude';
-  return 'Senlay Demo';
+  return 'OpenAI · Senlay Demo';
 }
 
 function publicConnectionLabel() {
@@ -2640,6 +2641,12 @@ async function loadProfileKeyState() {
   localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
   if (!state.profileSessionToken) {
     state.profileLoaded = true;
+    if (state.provider === 'profile' || !state.apiKey) {
+      state.provider = 'demo';
+      const select = document.getElementById('providerSelect');
+      if (select) select.value = 'demo';
+      updateProviderRows();
+    }
     updateProfileKeyUi();
     updateDemoGuide();
     return;
@@ -2660,6 +2667,12 @@ async function loadProfileKeyState() {
     state.profileLlmKeys = [];
     state.profileDefaultKey = null;
     state.profileSessionToken = '';
+    if (state.provider === 'profile') {
+      state.provider = 'demo';
+      const select = document.getElementById('providerSelect');
+      if (select) select.value = 'demo';
+      updateProviderRows();
+    }
     try { sessionStorage.removeItem(SESSION_TOKEN_STORAGE_KEY); localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY); } catch (_) {}
   }
   state.profileLoaded = true;
@@ -3013,7 +3026,7 @@ async function connectToPWM() {
     if (hasHumanAIProvider() && state.snapshotId === (data.snapshot_id || data.snapshot?.id)) {
       await sendMessage(false, true);
     } else if (!hasHumanAIProvider()) {
-      addSystemMessage('For an AI explanation, sign in and save an OpenAI key in Dashboard, or choose your provider below.');
+      addSystemMessage('Choose Senlay Demo (OpenAI) for an AI explanation without signing in.');
     }
 
   } catch (e) {
@@ -3786,7 +3799,7 @@ async function sendMessage(retry = false, automatic = false) {
       lng: state.lng,
       units: state.units,
       field: state.field,
-      provider: state.provider === 'demo' ? 'openrouter' : state.provider,
+      provider: state.provider,
       audience: 'human_demo',
       responseMode: 'human_demo',
       explanation_mode: explanationMode,
