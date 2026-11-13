@@ -117,11 +117,16 @@
   <script>
     let sessionToken = '';
 
+    const REDIRECT_ATTEMPT_KEY = 'senlay_login_redirect_attempt';
+
     function getNextUrl() {
       const next = new URLSearchParams(location.search).get('next');
-      // Only allow same-site relative paths, never an absolute/external URL.
-      if (next && /^\/[^/\\]/.test(next)) return next;
-      return '';
+      if (!next || !/^\/[^/\\]/.test(next)) return '';
+      try {
+        const target = new URL(next, location.origin);
+        if (target.origin !== location.origin || /^\/login(?:\.html)?\/*$/i.test(target.pathname)) return '';
+        return target.pathname + target.search + target.hash;
+      } catch (_) { return ''; }
     }
 
     async function updateGoogleAuthUi() {
@@ -160,28 +165,51 @@
         sessionToken = data.sessionToken || '';
         if (!sessionToken) throw new Error('Login did not return a session. Please try again.');
         document.getElementById('password').value = '';
-        showSignedIn(data);
+        try { sessionStorage.removeItem(REDIRECT_ATTEMPT_KEY); } catch (_) {}
 
         try {
           localStorage.setItem('senlay_email', email);
           if (sessionToken) sessionStorage.setItem('senlay_session_token', sessionToken);
         } catch(e){}
+        await showSignedIn(data);
       } catch (e) {
         showAlert(e.message, 'error');
       }
     }
 
-    function showSignedIn(data) {
-      const next = getNextUrl();
-      if (next) {
-        window.location.replace(next);
-        return;
-      }
+    async function showSignedIn(data) {
       document.getElementById('userEmail').textContent = data.email || '';
       renderKeys(data.apiKeys || []);
       document.getElementById('loginForm').classList.add('hidden');
       document.getElementById('successView').classList.remove('hidden');
       document.getElementById('alertBox').replaceChildren();
+      const next = getNextUrl();
+      if (!next) return;
+      try {
+        const attempt = JSON.parse(sessionStorage.getItem(REDIRECT_ATTEMPT_KEY) || 'null');
+        if (attempt?.target === next && Date.now() - attempt.at < 60000) {
+          showAlert('Unable to finish opening that page. Allow site cookies and try again from Dashboard.', 'error');
+          return;
+        }
+      } catch (_) {}
+      try {
+        if (new URL(next, location.origin).pathname.replace(/\/+$/, '') === '/admin') {
+          // The admin console requires its own HttpOnly cookie in addition to
+          // the ordinary Bearer session held by this page.
+          const response = await fetch('/api/admin/session', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { Authorization: `Bearer ${sessionToken}`, 'Content-Type': 'application/json' },
+            body: '{}'
+          });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.error || 'Admin access could not be opened for this account.');
+        }
+        try { sessionStorage.setItem(REDIRECT_ATTEMPT_KEY, JSON.stringify({ target: next, at: Date.now() })); } catch (_) {}
+        window.location.replace(next);
+      } catch (error) {
+        showAlert(error.message || 'Unable to open the requested page. Please try again from Dashboard.', 'error');
+      }
     }
 
     function renderKeys(keys) {
@@ -287,7 +315,7 @@
         const res = await fetch('/api/profile', { headers: { Authorization: `Bearer ${sessionToken}` } });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Session expired');
-        showSignedIn(data);
+        await showSignedIn(data);
       } catch (_) {
         sessionToken = '';
         try { sessionStorage.removeItem('senlay_session_token'); localStorage.removeItem('senlay_session_token'); } catch (_) {}
