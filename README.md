@@ -14,6 +14,19 @@ Senlay provides physical-world intelligence for autonomous systems and AI applic
 
 The history chart requests archives for the chosen location. Where station archives are available, it compares actual observations with archived ECMWF forecasts and shows their difference. Station distance, timestamps and gaps remain visible. Where observations are unavailable, the chart labels the forecast archive separately and disables the difference view. These charts do not establish mission readiness or a historical accuracy score.
 
+## Recent public development
+
+The public `develop` branch includes the current browser work:
+
+- Live homepage evidence with nearby station readings and observation/model differences.
+- Location-specific observation and archived forecast charts in the Live Demo, with source attribution and visible gaps.
+- AI explanations in the hosted demo without requiring visitors to configure their own provider key.
+- Login redirect handling and refreshed public API examples.
+
+[Try the running demo](https://senlay.cloud/demo) · [Browse public development](https://github.com/smartsurfsolar/Senlay/tree/develop) · [Review changes proposed for main](https://github.com/smartsurfsolar/Senlay/pulls)
+
+Browser source is public here; hosted functionality also relies on the private backend. Station disagreements are review signals, not proof of a faulty sensor.
+
 ## What Is Here
 
 This repository contains the public Senlay website, client scripts, curated assets and an explicitly licensed robotics example bundle:
