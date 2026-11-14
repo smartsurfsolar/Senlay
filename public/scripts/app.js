@@ -370,6 +370,8 @@ function renderIntelligenceOverview(layers, agreement) {
   const severityRank = { major: 2, minor: 1 };
   const featured = items.reduce((best, item, index) => (severityRank[item.severity] || 0) > (severityRank[items[best]?.severity] || 0) ? index : best, 0);
   let html = `<div class="intel-values">${values.filter(([,value]) => value !== null).map(([label,value]) => `<span>${escHtml(label)}<b>${escHtml(value)}</b></span>`).join('')}</div>`;
+  const stationCheck = state.riskAssessment?.station_consistency;
+  if (stationCheck) html += `<div class="comparison-source"><strong>Multi-station check: ${escHtml(stationCheck.status.replace(/_/g, ' '))}</strong><p>${escHtml(stationCheck.summary)}</p></div>`;
   html += `<div class="comparison-top"><strong>Forecast vs Observation</strong><span>Model agreement: ${escHtml((agreement?.forecast_trust || 'unknown').toUpperCase())}${agreement?.score != null ? ` · ${escHtml(agreement.score)}/100` : ''}</span></div>`;
   html += '<div class="comparison-grid">';
   items.forEach((item, index) => {
@@ -2345,6 +2347,7 @@ function hasUsableProvider() {
   return true;
 }
 function hasHumanAIProvider() {
+  if (state.provider === 'demo') return true;
   if (state.provider === 'profile') return !!state.profileDefaultKey && !!state.profileSessionToken;
   return !['demo', 'profile'].includes(state.provider) && !!state.apiKey;
 }
@@ -2386,6 +2389,7 @@ function renderMachineOutput(data) {
     model_gust_kmh: comparison('wind_gust')?.model_value ?? null,
     observed_temperature_c: comparison('temperature')?.hardware_value ?? null,
     model_temperature_c: comparison('temperature')?.model_value ?? null,
+    station_check: data.station_consistency?.status ?? data.risk_assessment?.station_consistency?.status ?? 'unavailable',
     model_agreement: agreement?.forecast_trust ?? null
   }, null, 2);
   const summary = document.getElementById('machineSummary');
@@ -2589,11 +2593,11 @@ function providerDisplayName() {
     if (!key) return 'Saved Profile Key';
     return key.label || key.providerLabel || key.provider || 'Saved Profile Key';
   }
-  if (state.provider === 'demo') return 'Senlay Demo';
+  if (state.provider === 'demo') return 'OpenAI · Senlay Demo';
   if (state.provider === 'openrouter') return 'OpenRouter';
   if (state.provider === 'openai') return 'OpenAI';
   if (state.provider === 'anthropic') return 'Claude';
-  return 'Senlay Demo';
+  return 'OpenAI · Senlay Demo';
 }
 
 function publicConnectionLabel() {
@@ -2637,6 +2641,12 @@ async function loadProfileKeyState() {
   localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
   if (!state.profileSessionToken) {
     state.profileLoaded = true;
+    if (state.provider === 'profile' || !state.apiKey) {
+      state.provider = 'demo';
+      const select = document.getElementById('providerSelect');
+      if (select) select.value = 'demo';
+      updateProviderRows();
+    }
     updateProfileKeyUi();
     updateDemoGuide();
     return;
@@ -2657,6 +2667,12 @@ async function loadProfileKeyState() {
     state.profileLlmKeys = [];
     state.profileDefaultKey = null;
     state.profileSessionToken = '';
+    if (state.provider === 'profile') {
+      state.provider = 'demo';
+      const select = document.getElementById('providerSelect');
+      if (select) select.value = 'demo';
+      updateProviderRows();
+    }
     try { sessionStorage.removeItem(SESSION_TOKEN_STORAGE_KEY); localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY); } catch (_) {}
   }
   state.profileLoaded = true;
@@ -3010,7 +3026,7 @@ async function connectToPWM() {
     if (hasHumanAIProvider() && state.snapshotId === (data.snapshot_id || data.snapshot?.id)) {
       await sendMessage(false, true);
     } else if (!hasHumanAIProvider()) {
-      addSystemMessage('For an AI explanation, sign in and save an OpenAI key in Dashboard, or choose your provider below.');
+      addSystemMessage('Choose Senlay Demo (OpenAI) for an AI explanation without signing in.');
     }
 
   } catch (e) {
@@ -3044,6 +3060,8 @@ function renderDecisionCards(layers, ext, agreement) {
     ? state.layerContext.active_layers.filter(layer => isLayerActiveStatus(layer.status)).length
     : null;
   const cards = [];
+  const consistency = assessment?.station_consistency;
+  if (consistency) cards.push({ title: 'Multi-station check', meta: consistency.status.replace(/_/g, ' '), value: consistency.summary });
 
   if (assessment) {
     const outcomeCode = evidenceOutcomeCode(assessment);
@@ -3781,7 +3799,7 @@ async function sendMessage(retry = false, automatic = false) {
       lng: state.lng,
       units: state.units,
       field: state.field,
-      provider: state.provider === 'demo' ? 'openrouter' : state.provider,
+      provider: state.provider,
       audience: 'human_demo',
       responseMode: 'human_demo',
       explanation_mode: explanationMode,

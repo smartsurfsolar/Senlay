@@ -102,3 +102,7 @@ Endpoint: `https://senlay.cloud/mcp`; stateless Streamable HTTP; protocol compat
 ## Reading comparisons and history
 
 Current Model Agreement describes the current comparison, not historical forecast accuracy. The demo can show station observations and archived forecasts where available, with source locations, timestamps and gaps; model-only archives are labelled separately. This chart does not calculate a historical trust score. Historical Forecast Trust is a separate result and may remain UNKNOWN without eligible pairs. Place Memory describes historical baselines, not a trained local forecast.
+
+## Multi-station wind checks
+
+Senlay cross-checks fresh nearby station wind readings independently of the forecast. The station_consistency result flags calm-report disagreements and strong outliers for review, with peer values and timestamps. Suspect primary readings lower assessment confidence. This snapshot screening does not confirm equipment failure, calibration or persistent stuck sensors; local shelter and measurement heights can also explain differences.
